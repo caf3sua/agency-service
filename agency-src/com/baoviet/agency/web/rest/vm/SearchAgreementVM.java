@@ -47,4 +47,7 @@ public class SearchAgreementVM {
     private Date toDate;
 	
 	private String createType;
+	
+	@ApiModelProperty(value = "Id phòng ban")
+	private String departmentId;
 }

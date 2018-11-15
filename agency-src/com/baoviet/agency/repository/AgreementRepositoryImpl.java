@@ -294,6 +294,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         return dataPage;
 	}
 	
+	
 	@Override
 	public Page<Agreement> searchAdmin(SearchAgreementWaitVM obj, String departmentId) {
 		String expression = "SELECT * FROM AGREEMENT WHERE BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
@@ -678,6 +679,8 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	if (!StringUtils.isEmpty(StringUtils.join(obj.getLstStatusPolicy(), "','"))) {
         		String tempId = "'" + StringUtils.join(obj.getLstStatusPolicy(), "','") + "'";
             	expression = expression +  " AND STATUS_POLICY_ID IN (" + tempId + ")";//  :pStatusPolicy)";
+        	} else {
+        		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','100')";//  đơn hàng đại ly
         	}
         }
         // SEND_DATE
@@ -690,6 +693,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
         }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartmentId";
+        }
+        
         
         // ORDER
         expression = expression +  " ORDER BY AGREEMENT_ID DESC";
@@ -1042,6 +1049,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	query.setParameter("pCreateType", obj.getCreateType());
+        }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	query.setParameter("pDepartmentId", obj.getDepartmentId());
         }
 	}
 	

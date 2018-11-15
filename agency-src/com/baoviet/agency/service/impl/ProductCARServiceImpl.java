@@ -121,7 +121,7 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 		param.setPremium(param.getTndsbbPhi() + param.getTndstnPhi() + param.getNntxPhi() + param.getVcxPhi());
 
 		if (param.getChangePremium() > 0) {
-			param.setTotalPremium(param.getPremium() - param.getChangePremium());
+			param.setTotalPremium(param.getPremium() -  (param.getPremium() * param.getChangePremium()/100));
 		} else {
 			param.setTotalPremium(param.getPremium());
 		}
