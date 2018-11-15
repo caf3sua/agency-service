@@ -20,6 +20,10 @@ import lombok.Setter;
 public class ReminderSearchVM implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private String reminderId;
+	
+	private String active;
+	
 	@ApiModelProperty(value = "Id khách hàng")
 	private String contactId;
 	

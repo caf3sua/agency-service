@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baoviet.agency.domain.AgentReminder;
 import com.baoviet.agency.domain.CategoryReminder;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -341,6 +342,27 @@ public class ContactResource extends AbstractAgencyResource {
 		
 		// Return data
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
+    @PostMapping("/update-status-reminder")
+    @Timed
+    public ResponseEntity<AgentReminder> updateStatusReminder(@Valid @RequestBody ReminderSearchVM param) throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to updateStatusReminder : {}", param);
+		// Get current agency
+//		AgencyDTO currentAgency = getCurrentAccount();
+				
+		// Call service
+		AgentReminder agentReminder = agentReminderRepository.findOne(param.getReminderId());
+		if (agentReminder == null) {
+			throw new AgencyBusinessException("reminderId", ErrorCode.INVALID, "Không tồn tại mã reminderId");
+		}
+		
+		agentReminder.setActive(param.getActive());
+		
+		agentReminderRepository.save(agentReminder);
+		
+		// Return data
+        return new ResponseEntity<>(agentReminder, HttpStatus.OK);
     }
     
     @GetMapping("/get-all-ower")
