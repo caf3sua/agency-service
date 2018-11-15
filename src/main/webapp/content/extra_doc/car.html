@@ -1,0 +1,439 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Car</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Car product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<!-- TODO: -->
+   						<tr><td>Chưa có tài liệu đang viết</td></tr>
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/car/premium</td>
+								<td>obj PremiumCARVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumCARVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm ô tô</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/car/createPolicy</td>
+								<td>obj CARBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>CARBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin bảo hiểm Xe máy</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/car/updatePolicy</td>
+								<td>obj UpdateAgreementCarVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementCarVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật thông tin bảo hiểm Xe máy</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy năm sản xuất min của chiếc xe</td>
+								<td>getMinManufactureYear</td>
+								<td>GET /api/agency/product/car/getMinManufactureYear</td>
+								<td>String carId: mã xe</td>
+								<td>Trả về năm sản xuất min của chiếc xe.</td>
+								<td></td>
+							</tr>
+							
+							<tr>
+								<td>Lấy năm sản xuất max của chiếc xe</td>
+								<td>getMaxManufactureYear</td>
+								<td>GET /api/agency/product/car/getMaxManufactureYear</td>
+								<td>String carId: mã xe</td>
+								<td>Trả về năm sản xuất max của chiếc xe.</td>
+								<td></td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách chi tiết hãng xe</td>
+								<td>getCarInfo</td>
+								<td>POST /api/agency/product/car/getCarInfo</td>
+								<td></td>
+								<td>Trả về thông tin CAR (Hãng, Model,...). Json kết quả là List&lt;SppCarDTO&gt;</td>
+								<td></td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách hãng xe ô tô</td>
+								<td>getCarMakes</td>
+								<td>POST /api/agency/product/car/getCarMakes</td>
+								<td></td>
+								<td><b>DataTable</b>: danh sách hãng xe</td>
+								<td>Lấy danh sách hãng xe ô tô</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách Model xe theo hãng xe</td>
+								<td>getCarModel</td>
+								<td>GET /api/agency/product/car/getCarModel</td>
+								<td>string model: mã hãng xe</td>
+								<td><b>DataTable</b>: danh sách model xe theo hãng xe</td>
+								<td>Lấy danh sách Model xe theo hãng xe</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy giá trị xe ô tô dự kiến theo thị trường</td>
+								<td>getCarPriceWithYear</td>
+								<td>POST /api/agency/product/car/getCarPriceWithYear</td>
+								<td>
+									<table>
+										<tr>
+											<td>- string carId: Mã xe( dòng xe)</td>
+										</tr>
+										<tr>
+											<td>- int yearOfMake: năm sản xuất( năm đăng ký xe)</td>
+										</tr>
+									</table>
+								</td>
+								<td>giá trị xe </td>
+								<td>Lấy giá trị xe</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- String type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm lấy thông tin Khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td>searchAgreement</td>
+								<td>POST /api/agency/product/agreement/search</td>
+								<td>
+									<table>
+										<tr>
+											<td>- string contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- string type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									Thành công trả về obj <b>List&lt;Agreemen&gt;</b>. Nếu có lỗi trả về giá trị Null
+								</td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "GARAGE": true,
+								  "agencyRole": "1",
+								  "changePremium": 0,
+								  "garage": true,
+								  "khauHao": false,
+								  "khauTru": false,
+								  "matCap": false,
+								  "namSX": 0,
+								  "ngapNuoc": false,
+								  "nntxCheck": false,
+								  "nntxPhi": 0,
+								  "nntxSoCho": 0,
+								  "nntxSoTien": 0,
+								  "premium": 0,
+								  "purposeOfUsageId": "15",
+								  "tndsSoCho": "1",
+								  "tndsbbCheck": true,
+								  "tndsbbPhi": 0,
+								  "tndstnCheck": false,
+								  "tndstnPhi": 0,
+								  "tndstnSoTien": 0,
+								  "totalPremium": 0,
+								  "vcxCheck": false,
+								  "vcxPhi": 0,
+								  "vcxSoTien": 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "changePremium": 0,
+								  "GARAGE": true,
+								  "khauHao": false,
+								  "khauTru": false,
+								  "matCap": false,
+								  "namSX": 0,
+								  "nntxCheck": false,
+								  "nntxPhi": 0,
+								  "nntxSoCho": 0,
+								  "nntxSoTien": 0,
+								  "ngapNuoc": false,
+								  "premium": 480700,
+								  "purposeOfUsageId": "15",
+								  "tndsSoCho": "1",
+								  "tndsbbCheck": true,
+								  "tndsbbPhi": 480700,
+								  "tndstnCheck": false,
+								  "tndstnPhi": 0,
+								  "tndstnSoTien": 0,
+								  "totalPremium": 480700,
+								  "vcxCheck": false,
+								  "vcxPhi": 0,
+								  "vcxSoTien": 0,
+								  "agencyRole": "1",
+								  "garage": true
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Nguyễn Văn A",
+								    "address" : "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "test@gmail.com",
+								    "mobile" : "0976075335"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : null,
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000005",
+								  "contactName" : "Nguyễn Văn A",
+								  "contactDob" : "24/12/1991",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.CAR.18.214",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "actualValue" : 0,
+								  "changePremium" : 0,
+								  "chassisNumber" : "số khung",
+								  "engineNumber" : "SỐ MÁY",
+								  "garageCheck" : false,
+								  "insuredAddress" : "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								  "insuredName" : "Nguyễn Văn A",
+								  "khaoHaoCheck" : false,
+								  "khauTruCheck" : false,
+								  "makeId" : "1",
+								  "makeName" : null,
+								  "matCapCheck" : false,
+								  "modelId" : null,
+								  "modelName" : null,
+								  "nntxCheck" : false,
+								  "ngapNuocCheck" : false,
+								  "passengersAccidentNumber" : 0,
+								  "passengersAccidentPremium" : 0,
+								  "passengersAccidentSi" : 0,
+								  "policyNumber" : "",
+								  "premium" : 480700,
+								  "purposeOfUsageId" : "15",
+								  "physicalDamagePremium" : 0,
+								  "physicalDamageSi" : 0,
+								  "registrationNumber" : "BKSOAT",
+								  "tndsSoCho" : "1",
+								  "tndsbbCheck" : true,
+								  "tndstnCheck" : false,
+								  "tndstnPhi" : 0,
+								  "tndstnSotien" : 0,
+								  "totalPremium" : 480700,
+								  "thirdPartyPremium" : 480700,
+								  "thoihanden" : "03/10/2019",
+								  "thoihantu" : "04/10/2018",
+								  "vcxCheck" : false,
+								  "yearOfMake" : "0",
+								  "userAgent" : ""
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Nguyễn Văn A",
+								    "address" : "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "test@gmail.com",
+								    "mobile" : "0976075335"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : "82951",
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000005",
+								  "contactName" : "Nguyễn Văn A",
+								  "contactDob" : "24/12/1991",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.CAR.18.214",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "actualValue" : 0,
+								  "changePremium" : 0,
+								  "chassisNumber" : "số khung",
+								  "engineNumber" : "SỐ MÁY",
+								  "garageCheck" : false,
+								  "insuredAddress" : "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								  "insuredName" : "Nguyễn Văn A",
+								  "khaoHaoCheck" : false,
+								  "khauTruCheck" : false,
+								  "makeId" : "1",
+								  "makeName" : null,
+								  "matCapCheck" : false,
+								  "modelId" : null,
+								  "modelName" : null,
+								  "nntxCheck" : false,
+								  "ngapNuocCheck" : false,
+								  "passengersAccidentNumber" : 0,
+								  "passengersAccidentPremium" : 0,
+								  "passengersAccidentSi" : 0,
+								  "policyNumber" : "",
+								  "premium" : 480700,
+								  "purposeOfUsageId" : "15",
+								  "physicalDamagePremium" : 0,
+								  "physicalDamageSi" : 0,
+								  "registrationNumber" : "BKSOAT",
+								  "tndsSoCho" : "1",
+								  "tndsbbCheck" : true,
+								  "tndstnCheck" : false,
+								  "tndstnPhi" : 0,
+								  "tndstnSotien" : 0,
+								  "totalPremium" : 480700,
+								  "thirdPartyPremium" : 480700,
+								  "thoihanden" : "03/10/2019",
+								  "thoihantu" : "04/10/2018",
+								  "vcxCheck" : false,
+								  "yearOfMake" : "0",
+								  "userAgent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+								   (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>

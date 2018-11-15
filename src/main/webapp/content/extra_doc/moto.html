@@ -1,0 +1,321 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Moto</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Moto product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<!-- TODO: -->
+   						<tr><td>Chưa có tài liệu đang viết</td></tr>
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/moto/premium</td>
+								<td>obj PremiumMotoVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumMotoVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm Xe máy</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/moto/createPolicy</td>
+								<td>obj MotoBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>MotoBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin bảo hiểm Xe máy</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/moto/updatePolicy</td>
+								<td>obj UpdateAgreementMotoVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementMotoVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật thông tin bảo hiểm Xe máy</td>
+							</tr>
+																				
+							<tr>
+								<td>Lấy thông tin Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- String type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm lấy thông tin Khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td>searchAgreement</td>
+								<td>POST /api/agency/product/agreement/search</td>
+								<td>
+									<table>
+										<tr>
+											<td>- string contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- string type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									Thành công trả về obj <b>List&lt;Agreemen&gt;</b>. Nếu có lỗi trả về giá trị Null
+								</td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p> 
+    					<p><b>* Chú ý: Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "typeOfMoto" : "2",
+								  "tndsbbCheck" : true,
+								  "tndsbbPhi" : 0,
+								  "tndstnCheck" : false,
+								  "tndstnSotien" : 0,
+								  "tndstnPhi" : 0,
+								  "nntxCheck" : false,
+								  "nntxStbh" : 0,
+								  "nntxSoNguoi" : 0,
+								  "nntxPhi" : 0,
+								  "chaynoCheck" : false,
+								  "chaynoStbh" : 0,
+								  "chaynoPhi" : 0,
+								  "tongPhi" : 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "typeOfMoto" : "2",
+								  "tndsbbCheck" : true,
+								  "tndsbbPhi" : 66000,
+								  "tndstnCheck" : false,
+								  "tndstnSotien" : 0,
+								  "tndstnPhi" : 0,
+								  "nntxCheck" : false,
+								  "nntxStbh" : 0,
+								  "nntxSoNguoi" : 0,
+								  "nntxPhi" : 0,
+								  "chaynoCheck" : false,
+								  "chaynoStbh" : 0,
+								  "chaynoPhi" : 0,
+								  "tongPhi" : 66000
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Phạm Văn B",
+								    "address" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "string@gmail.com",
+								    "mobile" : "0988777666"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : null,
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000003",
+								  "contactName" : "Phạm Văn B",
+								  "contactDob" : "24/06/1988",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.MOT.18.46",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "insuredName" : "Lê Minh Đức",
+								  "insuredAddress" : "23 Phạm Hùng::Phường Mai Dịch, Quận Cầu Giấy, Hà Nội::00070001",
+								  "registrationNumber" : "33B1-3333",
+								  "sokhung" : "SK1101100101",
+								  "somay" : "SM11011111110",
+								  "hieuxe" : "SH",
+								  "thoihantu" : "04/10/2018",
+								  "thoihanden" : "03/10/2019",
+								  "typeOfMoto" : "2",
+								  "tndsbbCheck" : true,
+								  "tndsbbPhi" : 66000,
+								  "tndstnCheck" : false,
+								  "tndstnSotien" : 0,
+								  "tndstnPhi" : 0,
+								  "nntxCheck" : false,
+								  "nntxStbh" : 0,
+								  "nntxSoNguoi" : 0,
+								  "nntxPhi" : 0,
+								  "chaynoCheck" : false,
+								  "chaynoStbh" : 0,
+								  "chaynoPhi" : 0,
+								  "tongPhi" : 66000
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser": {
+								    "name": "Phạm Văn B",
+								    "address": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email": "string@gmail.com",
+								    "mobile": "0988777666"
+								  },
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": "",
+								    "company": "",
+								    "taxNo": "",
+								    "address": "",
+								    "accountNo": ""
+								  },
+								  "agreementId": "82972",
+								  "gycbhId": null,
+								  "contactCode": "ITL20000003",
+								  "contactName": "Phạm Văn B",
+								  "contactDob": "24/06/1988",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "AG.MOT.18.46",
+								  "oldGycbhNumber": null,
+								  "lineId": null,
+								  "insuredName": "Lê Minh Đức",
+								  "insuredAddress": "23 Phạm Hùng::Phường Mai Dịch, Quận Cầu Giấy, Hà Nội::00070001",
+								  "registrationNumber": "33B1-3333",
+								  "sokhung": "SK1101100101",
+								  "somay": "SM11011111110",
+								  "hieuxe": "SH",
+								  "thoihantu": "04/10/2018",
+								  "thoihanden": "03/10/2019",
+								  "typeOfMoto": "2",
+								  "tndsbbCheck": true,
+								  "tndsbbPhi": 66000,
+								  "tndstnCheck": false,
+								  "tndstnSotien": 0,
+								  "tndstnPhi": 0,
+								  "nntxCheck": false,
+								  "nntxStbh": 0,
+								  "nntxSoNguoi": 0,
+								  "nntxPhi": 0,
+								  "chaynoCheck": false,
+								  "chaynoStbh": 0,
+								  "chaynoPhi": 0,
+								  "tongPhi": 66000
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>

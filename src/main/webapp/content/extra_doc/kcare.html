@@ -1,0 +1,424 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Kcare</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Kcare product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+							<tr> 
+								<th scope="row">2</th> 
+								<td>Lưu thông tin bảo hiểm</td> 
+								<td>Lưu thông tin vào hệ thống partner</td> 
+								<td></td> 
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>Thanh toán thành công</td>
+								<td>
+									<ul>
+										<li>3.1 Gọi service lấy thông tin CONTACT
+											<ul>
+												<li>3.1.1 Service trả về thông tin ContactDTO. Đến bước 3.3</li>
+												<li>3.1.2 Service không trả về kết quả. Đến bước 3.2</li>
+											</ul>
+										</li>
+										<li>3.2 Gọi service tạo CONTACT. Service trả vể thông tin ContactDTO</li>
+										<li>3.3 Gọi service tạo Đơn bảo hiểm
+											<ul>
+												<li>Lấy thông tin ContactDTO từ bước trước</li>
+												<li>Gọi service tạo Đơn bảo hiểm với input là object  KcareBaseVM</li>
+												<li>Service trả về thông tin object KcareBaseVM với thông tin đầy đủ</li>
+											</ul>
+										</li>
+									</ul> 
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th scope="row">4</th>
+								<td>Nhận đơn bảo hiểm điện tử</td>
+								<td>
+									<ul>
+										<b>Gửi hợp đồng điện tử điện tử cho khách hàng:</b>
+										<li>4.1 Gọi service lấy hợp đồng điện tử. Service trả về file hợp đồng bảo hiểm điện tử có chữ ký số</li>
+										<li>4.2 Gửi mail cho khách hàng</li>
+									</ul>
+								</td>
+								<td>Trường hợp Partner không có nhu cầu gửi hợp đồng bản mềm cho khách hàng. Bảo Việt sẽ gửi từ hệ thống của Bảo Việt</td>
+							</tr>
+							<tr>
+								<th scope="row">5</th>
+								<td>Tra cứu danh sách đơn</td>
+								<td>
+									<ul>
+										<li>5.1 Gọi service Lấy danh sách đơn bảo hiểm theo contactCode. Service trả về danh sách đơn bảo hiểm với những thông tin cơ bản nhất</li>
+										<li>5.2 Hiển thị thông tin đến khách hàng</li>
+									</ul>  
+								</td>
+								<td></td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/kcare/premium</td>
+								<td>obj PremiumKcareVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumKcareVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm KCR</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/kcare/createPolicy</td>
+								<td>obj KcareBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>KcareBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin bảo hiểm Bệnh ung thư</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/kcare/updatePolicy</td>
+								<td>obj UpdateAgreementKcareVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementKcareVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật thông tin bảo hiểm Bệnh ung thư</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- String type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm lấy thông tin Khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td>searchAgreement</td>
+								<td>POST /api/agency/product/agreement/search</td>
+								<td>
+									<table>
+										<tr>
+											<td>- string contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- string type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									Thành công trả về obj <b>List&lt;Agreemen&gt;</b>. Nếu có lỗi trả về giá trị Null
+								</td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 	
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "gioiTinh": "1",
+								  "ngayBatDau": "04/10/2018",
+								  "ngaySinh": "24/12/1991",
+								  "premiumDiscount": 0,
+								  "premiumKCare": 0,
+								  "premiumNet": 0,
+								  "typeOfKcare": "PGM1"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "typeOfKcare" : "PGM1",
+								  "ngaySinh" : "24/12/1991",
+								  "ngayBatDau" : "04/10/2018",
+								  "gioiTinh" : "1",
+								  "premiumKCare" : 403650,
+								  "premiumNet" : 403650,
+								  "premiumDiscount" : 0
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Phạm Văn T",
+								    "address" : "Hà nội::Phường Đống Mác, Quận Hai Bà Trưng::00040014",
+								    "email" : "31321@gmail.com",
+								    "mobile" : "11233123121"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : null,
+								    "company" : null,
+								    "taxNo" : null,
+								    "address" : null,
+								    "accountNo" : null
+								  },
+								  "agreementId" : "",
+								  "gycbhId" : "",
+								  "contactCode" : "ITL20000006",
+								  "contactName" : "Phạm Văn T",
+								  "contactDob" : "24/12/1991",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.KCR.18.77",
+								  "oldGycbhNumber" : null,
+								  "lineId" : "KCR",
+								  "policyNumber" : "AG.KCR.18.70",
+								  "thoihantu" : "04/10/2018",
+								  "thoihanden" : "03/10/2023",
+								  "insuredName" : "Phạm Văn A",
+								  "insuredSex" : "1",
+								  "insuredNgaysinh" : "24/12/1991",
+								  "insuredIdNumber" : "1414151511",
+								  "insuredRelationship" : "31",
+								  "planId" : "PGM1",
+								  "q1" : "0",
+								  "q2" : "0",
+								  "q3" : "0",
+								  "q4" : "0",
+								  "q5" : "0",
+								  "qtreatment" : "0",
+								  "qresultTre" : "0",
+								  "qtypeCancer" : "0",
+								  "qresultCan" : "0",
+								  "beneficiaryName" : null,
+								  "beneficiaryNgaysinh" : "01/01/0001",
+								  "beneficiaryIdNumber" : null,
+								  "beneficiaryRelationship" : null,
+								  "beneficiaryNameD" : null,
+								  "beneficiaryNgaysinhD" : "01/01/0001",
+								  "beneficiaryIdNumberD" : null,
+								  "beneficiaryRelationshipD" : null,
+								  "netPremium" : 403650,
+								  "changePremium" : 0,
+								  "totalPremium" : 403650,
+								  "lstTinhtrangSKs" : [ 
+									{
+								      "benhvienorbacsy": "",
+								      "bvSysdate": "",
+								      "chitietdieutri": "",
+								      "chuandoan": "",
+								      "congtybh": "",
+								      "dkdacbiet": "",
+								      "id": "",
+								      "idThamchieu": "",
+								      "ketqua": "",
+								      "khuoctu": "",
+								      "lydodc": "",
+								      "lydoycbt": "",
+								      "masanpham": "",
+								      "ngaybatdau": "",
+								      "ngaydieutri": "",
+								      "ngayhethan": "",
+								      "ngayycbt": "",
+								      "questionThamchieu": "",
+								      "sohd": "",
+								      "sotienbh": 0,
+								      "sotienycbt": 0
+								    }
+								  ]
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser": {
+								    "name": "Phạm Văn T",
+								    "address": "Hà nội::Phường Đống Mác, Quận Hai Bà Trưng::00040014",
+								    "email": "31321@gmail.com",
+								    "mobile": "11233123121"
+								  },
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": null,
+								    "company": null,
+								    "taxNo": null,
+								    "address": null,
+								    "accountNo": null
+								  },
+								  "agreementId": "82962",
+								  "gycbhId": "",
+								  "contactCode": "ITL20000006",
+								  "contactName": "Phạm Văn T",
+								  "contactDob": "24/12/1991",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "AG.KCR.18.77",
+								  "oldGycbhNumber": null,
+								  "lineId": "KCR",
+								  "policyNumber": "AG.KCR.18.70",
+								  "thoihantu": "04/10/2018",
+								  "thoihanden": "03/10/2023",
+								  "insuredName": "Phạm Văn A",
+								  "insuredSex": "1",
+								  "insuredNgaysinh": "24/12/1991",
+								  "insuredIdNumber": "1414151511",
+								  "insuredRelationship": "31",
+								  "planId": "PGM1",
+								  "q1": "0",
+								  "q2": "0",
+								  "q3": "0",
+								  "q4": "0",
+								  "q5": "0",
+								  "qtreatment": "0",
+								  "qresultTre": "0",
+								  "qtypeCancer": "0",
+								  "qresultCan": "0",
+								  "beneficiaryName": null,
+								  "beneficiaryNgaysinh": "01/01/0001",
+								  "beneficiaryIdNumber": null,
+								  "beneficiaryRelationship": null,
+								  "beneficiaryNameD": null,
+								  "beneficiaryNgaysinhD": "01/01/0001",
+								  "beneficiaryIdNumberD": null,
+								  "beneficiaryRelationshipD": null,
+								  "netPremium": 403650,
+								  "changePremium": 0,
+								  "totalPremium": 403650,
+								  "lstTinhtrangSKs": [
+								    {
+								      "sotienbh": 0,
+								      "sotienycbt": 0
+								    }
+								  ]
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 </div>
+
+	</div>
+</body>
+</html>

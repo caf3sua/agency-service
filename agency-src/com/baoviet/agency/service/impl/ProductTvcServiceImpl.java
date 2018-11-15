@@ -1,0 +1,689 @@
+package com.baoviet.agency.service.impl;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.stereotype.Service;
+
+import com.baoviet.agency.domain.BenifitTravel;
+import com.baoviet.agency.domain.Contact;
+import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.TravelCareAddDTO;
+import com.baoviet.agency.dto.TravelcareDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.exception.ErrorCode;
+import com.baoviet.agency.repository.BenifitTravelRepository;
+import com.baoviet.agency.repository.ContactRepository;
+import com.baoviet.agency.repository.TravelCareAddRepository;
+import com.baoviet.agency.service.ProductTvcService;
+import com.baoviet.agency.service.TravelCareAddService;
+import com.baoviet.agency.service.TravelcareService;
+import com.baoviet.agency.utils.AppConstants;
+import com.baoviet.agency.utils.DateUtils;
+import com.baoviet.agency.utils.ValidateUtils;
+import com.baoviet.agency.web.rest.vm.PremiumTvcVM;
+import com.baoviet.agency.web.rest.vm.ProductTvcVM;
+import com.baoviet.agency.web.rest.vm.TvcAddBaseVM;
+
+/**
+ * Service Implementation for managing TVC.
+ * 
+ * @author Nam, Nguyen Hoai
+ */
+@Service
+@Transactional
+@CacheConfig(cacheNames = "product")
+public class ProductTvcServiceImpl extends AbstractProductService implements ProductTvcService {
+
+	private final Logger log = LoggerFactory.getLogger(ProductTvcServiceImpl.class);
+
+	@Autowired
+	private BenifitTravelRepository benifitTravelRepository;
+
+	@Autowired
+	private ContactRepository contactRepository;
+
+	@Autowired
+	private TravelcareService travelcareService;
+	
+	@Autowired
+	private TravelCareAddService travelCareAddService;
+	
+	@Autowired
+	private TravelCareAddRepository travelCareAddRepository;
+	
+	@Override
+	public ProductTvcVM createOrUpdatePolicy(ProductTvcVM tvcBase, AgencyDTO currentAgency) throws AgencyBusinessException {
+		log.debug("request to createOrUpdatePolicy, ProductTvcVM {}", tvcBase);
+		// ValidGycbhNumber : Không dùng trong TH update
+		if (StringUtils.isEmpty(tvcBase.getAgreementId())) {
+			validateGycbhNumber(tvcBase.getGycbhNumber(), currentAgency.getMa());	
+		}
+
+        // type contact = agency_id
+ 		Contact co = contactRepository.findOneByContactCodeAndType(tvcBase.getContactCode(), currentAgency.getMa());
+ 		if (co == null) {
+ 			throw new AgencyBusinessException("contactCode", ErrorCode.INVALID, "Không tồn tại dữ liệu");
+ 		}
+ 		
+ 		// Check validate data
+        validateDataPolicy(tvcBase);
+        tvcBase.setPolicyNumber(tvcBase.getGycbhNumber());            
+        
+        // TRAVELCARE
+        TravelcareDTO pTRAVELCARE = getObjectProduct(tvcBase, co, currentAgency);
+        int idTravelCare = travelcareService.insertTravelcare(pTRAVELCARE);
+
+        //  AGREEMENT
+        AgreementDTO voAg = getObjectAgreement(tvcBase, co, currentAgency);
+        voAg.setGycbhId(String.valueOf(idTravelCare));            
+        AgreementDTO agreementDTOSave = agreementService.save(voAg);
+        voAg.setAgreementId(agreementDTOSave.getAgreementId());
+
+        List<Integer> lstTravelCareAddDTO = new ArrayList<Integer>();
+        if (StringUtils.isNotEmpty(tvcBase.getGycbhId())) {
+        	// xóa ds bảo hiểm
+        	travelCareAddRepository.deleteByTravaelcareId(tvcBase.getGycbhId());
+        }
+        
+        for (TvcAddBaseVM item : tvcBase.getListTvcAddBaseVM())
+        {
+        	TravelCareAddDTO tvcad = new TravelCareAddDTO();
+        	tvcad.setTvcAddId("");
+            tvcad.setTravaelcareId(String.valueOf(idTravelCare));
+            tvcad.setInsuredName(item.getInsuredName());
+            tvcad.setDob(DateUtils.str2Date(item.getDob()));
+            tvcad.setDateofbỉth(DateUtils.str2Date(item.getDob()));
+            tvcad.setIdPasswport(item.getIdPasswport());
+            tvcad.setRelationshipId(item.getRelationship());                
+            
+            switch (item.getRelationship())
+            {
+                case "30":
+                    tvcad.setRelationship("30");
+                    tvcad.setRelationshipName("bản thân");
+                    break;
+                case "31":
+                    tvcad.setRelationship("31");
+                    tvcad.setRelationshipName("vợ/chồng");
+                    break;
+                case "32":
+                    tvcad.setRelationship("32");
+                    tvcad.setRelationshipName("con");
+                    break;
+                case "33":
+                    tvcad.setRelationship("33");
+                    tvcad.setRelationshipName("bố/mẹ");
+                    break;
+                case "34":
+                    tvcad.setRelationship("34");
+                    tvcad.setRelationshipName("bố mẹ của vợ/chồng");
+                    break;
+                case "35":
+                    tvcad.setRelationship("35");
+                    tvcad.setRelationshipName("anh chị em ruột");
+                    break;
+                case "36":
+                    tvcad.setRelationship("36");
+                    tvcad.setRelationshipName("anh chị em ruột của vợ/chồng");
+                    break;
+                case "37":
+                    tvcad.setRelationship("37");
+                    tvcad.setRelationshipName("ông bà");
+                    break;
+                case "38":
+                    tvcad.setRelationship("38");
+                    tvcad.setRelationshipName("cháu");
+                    break;
+                case "39":
+                    tvcad.setRelationship("39");
+                    tvcad.setRelationshipName("thành viên đoàn");
+                    break;
+                default:
+                    tvcad.setRelationship("");
+                    tvcad.setRelationshipName("");
+                    break;
+            }
+
+            tvcad.setTitle("");
+            tvcad.setJob("");
+            tvcad.setCity("");
+            tvcad.setAddress("");
+            tvcad.setHomePhone("");
+            tvcad.setCellPhone("");
+            tvcad.setEmailAdress("");                
+            tvcad.setDiagnose("");
+            
+            Date dateNow = new Date();
+            tvcad.setDayTreatment(dateNow);
+            tvcad.setDetailTreatment("");
+            tvcad.setResultTreatment("");
+            tvcad.setNameDoctor("");
+
+            int tvcAddId =  travelCareAddService.insertTravelCareAdd(tvcad);
+            lstTravelCareAddDTO.add(tvcAddId);
+        }
+        
+        // pay_action
+     	sendSmsAndSavePayActionInfo(co, agreementDTOSave);
+        
+        tvcBase.setNetPremium(voAg.getNetPremium());
+        tvcBase.setPremium(voAg.getStandardPremium());
+        tvcBase.setChangePremium(voAg.getChangePremium());
+        tvcBase.setAgreementId(voAg.getAgreementId());
+        tvcBase.setTravelCareId(idTravelCare);
+        return tvcBase;
+	}
+
+	@Override
+	public PremiumTvcVM calculatePremium(PremiumTvcVM obj) throws AgencyBusinessException {
+		log.debug("START calculatePremium PremiumTvcVM, obj: {}", obj);
+		// Validate data
+		validateDataPremium(obj);
+
+		// Call database
+		BenifitTravel vo = new BenifitTravel();
+		// neu package = 3, tinh phi nhu ca nhan * so luong nguoi
+        if (obj.getPremiumPackage().equals("3")) {
+        	vo = benifitTravelRepository.getByParam(obj.getSongay(), "1",
+    				obj.getDestination(), obj.getPlanId());
+        } else {
+        	vo = benifitTravelRepository.getByParam(obj.getSongay(), obj.getPremiumPackage(),
+        			obj.getDestination(), obj.getPlanId());
+        }
+
+		if (vo == null)
+			throw new AgencyBusinessException("InvalidData", ErrorCode.INVALID, "Chưa có dữ liệu phù hợp để tính phí");
+
+		// kiem tra discount va tinh tong phi
+        if (obj.getPremiumPackage().equals("2")) { // gói gia đình thì phí ko nhân với số người
+        	obj.setPremiumNet(vo.getPremium());
+        } else {
+        	obj.setPremiumNet(vo.getPremium() * obj.getNumberOfPerson());
+        }
+
+        double discount = (obj.getPremiumDiscount() != null && obj.getPremiumDiscount() != 0)
+				? obj.getPremiumNet() * obj.getPremiumDiscount() / 100
+				: 0;
+		obj.setPremiumTvc(obj.getPremiumNet() - discount);
+
+		return obj;
+	}
+
+	@Override
+	public List<BenifitTravel> getBenefitByAreaId(String areaId) throws AgencyBusinessException {
+		log.debug("request to getBenefitByAreaId, areaId {}", areaId);
+		List<BenifitTravel> data = benifitTravelRepository.findByAreaId(areaId);
+		if (data != null && data.size() > 0) {
+			return data;
+		}
+		return null;
+	}
+	/*
+	 * ------------------------------------------------- ---------------- Private
+	 * method ----------------- -------------------------------------------------
+	 */
+	private void validateDataPremium(PremiumTvcVM obj) throws AgencyBusinessException {
+		log.debug("request to validateDataPremium, PremiumTvcVM {}", obj);
+		if (!DateUtils.isValidDate(obj.getNgayDi(), "dd/MM/yyyy")) {
+			throw new AgencyBusinessException("ngayDi", ErrorCode.FORMAT_DATE_INVALID);
+		}
+		if (!DateUtils.isValidDate(obj.getNgayVe(), "dd/MM/yyyy")) {
+			throw new AgencyBusinessException("ngayVe", ErrorCode.FORMAT_DATE_INVALID);
+		}
+
+		Date inceptionDate = DateUtils.str2Date(obj.getNgayDi());
+		Date expiredDate = DateUtils.str2Date(obj.getNgayVe());
+
+		if (expiredDate.before(inceptionDate)) {
+			throw new AgencyBusinessException("ngayDi", ErrorCode.INVALID,
+					"Ngày khởi hành không được lớn hơn ngày trở về");
+		}
+
+		// Tao new date + 180 ngay
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(inceptionDate);
+		cal.add(Calendar.DAY_OF_YEAR, 180);
+		Date newDate = cal.getTime();
+
+		if (expiredDate.after(newDate)) {
+			throw new AgencyBusinessException("ngayVe", ErrorCode.INVALID, "Thời gian du lịch quá 180 ngày");
+		}
+
+		int sn = DateUtils.getNumberDaysBetween2Date(inceptionDate, expiredDate);
+		int songay = sn + 1;
+		obj.setSongay(songay);
+
+		if (obj.getNumberOfPerson() < 1) {
+			throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch phải lớn hơn 1");
+		}
+
+		if (!obj.getDestination().equals("2") && !obj.getDestination().equals("3")
+				&& !obj.getDestination().equals("4")) {
+			throw new AgencyBusinessException("destination", ErrorCode.INVALID);
+
+		}
+
+		if (!obj.getPlanId().equals("2") && !obj.getPlanId().equals("3") && !obj.getPlanId().equals("4")) {
+			throw new AgencyBusinessException("planId", ErrorCode.INVALID);
+		}
+
+		if (obj.getPremiumPackage().equals("3")) {
+			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 20) {
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
+			}
+		} else if (obj.getPremiumPackage().equals("2")) {
+			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 5) {
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
+			}
+		} else if (obj.getPremiumPackage().equals("1")) {
+			if (obj.getNumberOfPerson() > 1) {
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
+			}
+		}
+	}
+
+	private void validateDataPolicy(ProductTvcVM objTravel) throws AgencyBusinessException {
+		log.debug("request to validateDataPolicy, ProductTvcVM {}", objTravel);
+		if (!DateUtils.isValidDate(objTravel.getPropserNgaysinh(), "dd/MM/yyyy")) {
+			throw new AgencyBusinessException("propserNgaysinh", ErrorCode.FORMAT_DATE_INVALID);
+		}
+
+		int utageYCBH = DateUtils.countYears(DateUtils.str2Date(objTravel.getPropserNgaysinh()),
+				DateUtils.str2Date(objTravel.getInceptionDate()));
+
+		if (utageYCBH < 18 || utageYCBH > 85) {
+			throw new AgencyBusinessException("propserNgaysinh", ErrorCode.INVALID,
+					"Người yêu cầu bảo hiểm phải từ 18 đến 85 tuổi");
+		}
+		
+		// kiem tra dinh dang so dien thoai
+		if (!ValidateUtils.isPhone(objTravel.getReceiverUser().getMobile())) {
+			throw new AgencyBusinessException("moible", ErrorCode.INVALID, "Số điện thoại người nhận không đúng định dạng");
+		}
+
+		validateInvoiceInfo(objTravel.getInvoiceInfo());
+		
+		if (!objTravel.getDestinationId().equals("1") && !objTravel.getDestinationId().equals("2")
+				&& !objTravel.getDestinationId().equals("3") && !objTravel.getDestinationId().equals("4")) {
+			throw new AgencyBusinessException("destinationId", ErrorCode.INVALID);
+		}
+		if (!objTravel.getTravelWithId().equals("1") && !objTravel.getTravelWithId().equals("2")
+				&& !objTravel.getTravelWithId().equals("3")) {
+			throw new AgencyBusinessException("travelWithId", ErrorCode.INVALID);
+		}
+		if (objTravel.getSoNguoiThamGia() <= 0) {
+			throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID, "Số người tham gia phải > 0");
+		} else {
+			// Ca nhan
+			if (objTravel.getTravelWithId().equals("1")) {
+				if (objTravel.getSoNguoiThamGia() > 1) {
+					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
+							"Số người tham gia phải = 1");
+				}
+			}
+			// Gia dinh
+			if (objTravel.getTravelWithId().equals("2")) {
+				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 5) {
+					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
+							"Số người tham gia phải từ 2 đến 5 người");
+				}
+			}
+			// Khach doan
+			if (objTravel.getTravelWithId().equals("3")) {
+				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 20) {
+					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
+							"Số người tham gia phải trong từ 2 đến 20 người");
+				}
+			}
+		}
+
+		Date dateNow = new Date();
+		Date inceptionDate = DateUtils.str2Date(objTravel.getInceptionDate());
+		Date expiredDate = DateUtils.str2Date(objTravel.getExpiredDate());
+
+		// Tao new date + 180 ngay
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(inceptionDate);
+		cal.add(Calendar.DAY_OF_YEAR, 180);
+		Date newDate = cal.getTime();
+
+		if (!DateUtils.isValidDate(DateUtils.date2Str(inceptionDate), "dd/MM/yyyy")) {
+			throw new AgencyBusinessException("inceptionDate", ErrorCode.FORMAT_DATE_INVALID);
+		} else if (inceptionDate.before(dateNow)) {
+			throw new AgencyBusinessException("inceptionDate", ErrorCode.INVALID,
+					"Ngày khởi hành phải lớn hơn ngày hiện tại tối thiểu 1 ngày");
+		}
+
+		if (!DateUtils.isValidDate(DateUtils.date2Str(expiredDate), "dd/MM/yyyy")) {
+			throw new AgencyBusinessException("expiredDate", ErrorCode.FORMAT_DATE_INVALID);
+		} else if (expiredDate.before(inceptionDate)) {
+			throw new AgencyBusinessException("expiredDate", ErrorCode.INVALID,
+					"Ngày khởi hành không được lớn hơn ngày trở về");
+		} else if (expiredDate.after(newDate)) {
+			throw new AgencyBusinessException("expiredDate", ErrorCode.INVALID, "Thời gian du lịch quá 180 ngày");
+		}
+
+		if (!objTravel.getLoaitien().equals("USD") && !objTravel.getLoaitien().equals("EUR")) {
+			throw new AgencyBusinessException("loaitien", ErrorCode.INVALID);
+		}
+		if (!objTravel.getPlanId().equals("2") && !objTravel.getPlanId().equals("3")
+				&& !objTravel.getPlanId().equals("4")) {
+			throw new AgencyBusinessException("planId", ErrorCode.INVALID);
+		}
+		
+		// thong tin travelcare add
+		if (objTravel.getListTvcAddBaseVM().size() == 0 || objTravel.getListTvcAddBaseVM() == null) {
+			throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.NULL_OR_EMPTY,
+					"Thiếu danh sách người được bảo hiểm");
+		} else {
+			// Ca nhan
+			if (objTravel.getTravelWithId().equals("1")) {
+				if (objTravel.getListTvcAddBaseVM().size() > 1) {
+					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
+							"Số người tham gia phải = 1");
+				}
+			}
+			// Gia dinh
+			if (objTravel.getTravelWithId().equals("2")) {
+				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 5) {
+					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
+							"Số người tham gia phải từ 2 đến 5 người");
+				}
+			}
+			// Khach doanh
+			if (objTravel.getTravelWithId().equals("3")) {
+				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 20) {
+					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
+							"Số người tham gia phải trong từ 2 đến 20 người");
+				}
+			}
+			int banthan = 0;
+			int vochong = 0;
+			int duoi11tuoi = 0;
+			int nguoilon = 0;
+			int tu12den16 = 0;
+			int checkbanthan = 0;
+			for (TvcAddBaseVM tvcAd : objTravel.getListTvcAddBaseVM()) {
+				if (StringUtils.isEmpty(tvcAd.getInsuredName())) {
+					throw new AgencyBusinessException("insuredName", ErrorCode.NULL_OR_EMPTY);
+				}
+				if (StringUtils.isEmpty(tvcAd.getIdPasswport())) {
+					throw new AgencyBusinessException("idPasswport", ErrorCode.NULL_OR_EMPTY);
+				}
+				if (StringUtils.isEmpty(tvcAd.getRelationship())) {
+					throw new AgencyBusinessException("relationship", ErrorCode.NULL_OR_EMPTY);
+				} else {
+					if (!tvcAd.getRelationship().equals("30") && !tvcAd.getRelationship().equals("31")
+							&& !tvcAd.getRelationship().equals("32") && !tvcAd.getRelationship().equals("33")
+							&& !tvcAd.getRelationship().equals("34") && !tvcAd.getRelationship().equals("39")) {
+						throw new AgencyBusinessException("relationship", ErrorCode.INVALID);
+					}
+
+					if (objTravel.getTravelWithId().equals("3")) {
+						if (!tvcAd.getRelationship().equals("39")) {
+							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+									"Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn");
+						}
+					} else {
+						if (tvcAd.getRelationship().equals("39")) {
+							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+									"Quan hệ là: Thành viên đoàn chỉ áp dụng cho khách du lịch theo đoàn");
+						}
+					}
+				}
+				if (StringUtils.isEmpty(tvcAd.getDob())) {
+					throw new AgencyBusinessException("dob", ErrorCode.NULL_OR_EMPTY,
+							"Thiếu ngày sinh người được bảo hiểm");
+				} else {
+					if (!DateUtils.isValidDate(tvcAd.getDob(), "dd/MM/yyyy")) {
+						throw new AgencyBusinessException("dob", ErrorCode.FORMAT_DATE_INVALID);
+					}
+
+					int utageNDBHYear = DateUtils.countYears(DateUtils.str2Date(tvcAd.getDob()),
+							DateUtils.str2Date(objTravel.getInceptionDate()));
+					int utageNDBHMonth = DateUtils.getNumberMonthsBetween2Date(DateUtils.str2Date(tvcAd.getDob()),
+							DateUtils.str2Date(objTravel.getInceptionDate()));
+
+					if (utageNDBHYear == 0 && utageNDBHMonth < 6) {
+						throw new AgencyBusinessException("dob", ErrorCode.INVALID,
+								"Người được bảo hiểm phải từ 6 tháng tuổi");
+					}
+					if (utageNDBHYear > 85) {
+						throw new AgencyBusinessException("dob", ErrorCode.INVALID,
+								"Người được bảo hiểm phải <= 85 tuổi");
+					}
+
+					// duoi12tuoi
+					if (utageNDBHYear < 12)
+						duoi11tuoi++;
+
+					// 12 den 16 tuoi
+					if (utageNDBHYear < 12 && utageNDBHYear < 17)
+						tu12den16++;
+
+					if (utageNDBHYear >= 17)
+						nguoilon++;
+
+					if (tvcAd.getRelationship().equals("30")) {
+						banthan++;
+						int checkDate = DateUtils.str2Date(objTravel.getPropserNgaysinh())
+								.compareTo(DateUtils.str2Date(tvcAd.getDob()));
+
+						if (!objTravel.getPropserName().equals(tvcAd.getInsuredName()) || checkDate != 0)
+							checkbanthan++;
+
+						if (tvcAd.getRelationship().equals("31"))
+							vochong++;
+					}
+				}
+			}
+
+			// kiem tra phi bao hiem
+			// tam thoi chua check lai phi bao hiem
+			// DALTRAVELCARE daltvc = new DALTRAVELCARE();
+			// PREMIUMTVC phitvc = daltvc.GetBENIFITTRAVELByPram(obj.NumberOfDay,
+			// obj.Package, obj.Destination, obj.PlanId);
+			// obj.PremiumTvc = vo.PREMIUM * obj.NumberOfPerSon;
+
+			// kiem tra logic nghiep vu
+			if (banthan > 1) {
+				throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+						"Danh sách NĐBH tồn tại hơn 1 người có quan hệ là Bản thân");
+			}
+			if (checkbanthan != 0) {
+				throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+						"Thông tin người được bảo hiểm khác với thông tin người yêu cầu bảo hiểm có quan hệ là bản thân");
+			}
+			if (vochong > 1) {
+				throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+						"Danh sách NĐBH tồn tại hơn 1 người có quan hệ là vợ/chồng");
+			}
+			if (objTravel.getTravelWithId().equals("1")) {
+				if (duoi11tuoi > 0) {
+					throw new AgencyBusinessException("dob", ErrorCode.INVALID,
+							"Trẻ em dưới 12 tuổi không được đi một mình");
+				}
+			} else {
+				if (duoi11tuoi > 0 && nguoilon == 0) {
+					throw new AgencyBusinessException("dob", ErrorCode.INVALID,
+							"Người được bảo hiểm dưới 12 tuổi phải có người lớn đi kèm");
+				}
+			}
+		}
+	}
+
+	private TravelcareDTO getObjectProduct(ProductTvcVM obj, Contact co, AgencyDTO currentAgency) {
+		log.debug("request to getObjectProduct, ProductTvcVM {}, Contact{} ", obj, co);
+		TravelcareDTO tvc = new TravelcareDTO();
+		if (StringUtils.isNotEmpty(obj.getGycbhId())) {
+			tvc.setTravelcareId(obj.getGycbhId());
+		} else {
+			tvc.setTravelcareId("");
+		}
+		
+		// khi update thì không update gycbhNumber
+		if (StringUtils.isEmpty(tvc.getTravelcareId())) {
+			tvc.setSoGycbh(obj.getGycbhNumber());
+			tvc.setPolicyNumber(obj.getGycbhNumber());
+		} else {
+			AgreementDTO data = agreementService.findById(obj.getAgreementId());
+			
+			if (data != null) {
+				tvc.setSoGycbh(data.getGycbhNumber());
+				tvc.setPolicyNumber(data.getGycbhNumber());
+			}
+		}
+		
+		tvc.setTravelWithId(obj.getTravelWithId());
+		tvc.setTravelWithName("");
+		if (obj.getTravelWithId().equals("1")) {
+			tvc.setTravelWithName("Cá nhân");
+		}
+
+		if (obj.getTravelWithId().equals("2")) {
+			tvc.setTravelWithName("Gia đình");
+		}
+
+		if (obj.getTravelWithId().equals("3")) {
+			tvc.setTravelWithName("Khách đoàn");
+		}
+
+		tvc.setInceptionDate(DateUtils.str2Date(obj.getInceptionDate()));
+		tvc.setExpiredDate(DateUtils.str2Date(obj.getExpiredDate()));
+		tvc.setPlanId(obj.getPlanId());
+		switch (obj.getPlanId()) {
+		case "2":
+			tvc.setPlanId("2");
+			tvc.setPlanName("Chương trình bảo hiểm Bạc");
+			break;
+		case "3":
+			tvc.setPlanId("3");
+			tvc.setPlanName("Chương trình bảo hiểm Vàng");
+			break;
+		case "4":
+			tvc.setPlanId("4");
+			tvc.setPlanName("Chương trình bảo hiểm Kim Cương");
+			break;
+		case "1":
+			tvc.setPlanId("1");
+			tvc.setPlanName("Chương trình bảo hiểm Đồng");
+			break;
+		default:
+			tvc.setPlanId("");
+			tvc.setPlanName("");
+			break;
+		}
+
+		tvc.setDestinationId(obj.getDestinationId());
+		tvc.setDestinationName("");
+		switch (obj.getDestinationId()) {
+		case "1":
+			tvc.setDestinationName("Việt Nam");
+			break;
+		case "2":
+			tvc.setDestinationName("ASEAN");
+			break;
+		case "3":
+			tvc.setDestinationName("Châu Á - Thái Bình Dương");
+			break;
+		case "4":
+			tvc.setDestinationName("Toàn cầu");
+			break;
+		default:
+			tvc.setDestinationName("");
+			break;
+		}
+
+		tvc.setPropserName(obj.getPropserName());
+		tvc.setPropserCellphone(obj.getPropserCellphone());
+		tvc.setPropserNgaysinh(DateUtils.str2Date(obj.getPropserNgaysinh()));
+
+		if (co != null) {
+			tvc.setPropserId(co.getContactId());
+			tvc.setPropserTitle(co.getContactSex() == "1" ? "Ông" : "Bà");
+			tvc.setAccountName(co.getContactSex() == "1" ? "Nam" : "Nữ");
+		}
+		tvc.setBankId(obj.getLoaitien());
+		if (co.getType().equals("ONL")) {
+			tvc.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
+			tvc.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
+		} else {
+			tvc.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+			tvc.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+		}
+		tvc.setPaymentMethod(obj.getPaymentMethod());
+		tvc.setAgentId(currentAgency.getMa());
+		tvc.setAgentName(currentAgency.getTen());
+		
+		tvc.setReceiverName(obj.getReceiverUser().getName());
+		tvc.setReceiverAddress(obj.getReceiverUser().getAddress());
+		tvc.setReceiverEmail(obj.getReceiverUser().getEmail());
+		tvc.setReceiverMoible(obj.getReceiverUser().getMobile());
+		
+		if(obj.getInvoiceInfo() != null) {
+			tvc.setInvoiceBuyer(obj.getInvoiceInfo().getName());
+			tvc.setInvoiceCompany(obj.getInvoiceInfo().getCompany());
+			tvc.setInvoiceTaxNo(obj.getInvoiceInfo().getTaxNo());
+			tvc.setInvoiceAddress(obj.getInvoiceInfo().getAccountNo());
+			tvc.setInvoiceAccountNo(obj.getInvoiceInfo().getAccountNo());	
+        }
+
+		tvc.setPremium(obj.getPremium());
+		tvc.setChangePremium(obj.getChangePremium());
+		tvc.setNetPremium(obj.getNetPremium());
+		tvc.setFeeReceive(obj.getNetPremium() - obj.getPremium());
+		tvc.setStatusId("TT");
+		tvc.setStatusName("Thanh toán trực tuyến");
+
+		tvc.setTeamId("BM");
+		tvc.setTeamName("Bản mềm");
+
+		return tvc;
+	}
+
+	private AgreementDTO getObjectAgreement(ProductTvcVM obj, Contact objContact, AgencyDTO currentAgency) throws AgencyBusinessException {
+		log.debug("request to getObjectAgreement, ProductTvcVM {}, Contact{} ", obj, objContact);
+		AgreementDTO voAg = new AgreementDTO();
+        // Insert common data
+     	insertAgreementCommonInfo("TVC", voAg, objContact, currentAgency, obj);
+     	
+        voAg.setInceptionDate(DateUtils.str2Date(obj.getInceptionDate()));
+        voAg.setExpiredDate(DateUtils.str2Date(obj.getExpiredDate()));
+
+        PremiumTvcVM premiumTVC = new PremiumTvcVM();
+        premiumTVC.setDestination(obj.getDestinationId());
+        premiumTVC.setNumberOfPerson(obj.getSoNguoiThamGia());
+        premiumTVC.setNgayDi(obj.getInceptionDate());
+        premiumTVC.setNgayVe(obj.getExpiredDate());
+        premiumTVC.setPlanId(obj.getPlanId());
+        premiumTVC.setPremiumPackage(obj.getTvcPackage());
+        calculatePremium(premiumTVC);
+        voAg.setStandardPremium(premiumTVC.getPremiumNet()); // phí gốc sản phẩm
+        double changePremium = 0.0;
+        if(premiumTVC.getPremiumDiscount() != null) {
+        	changePremium = premiumTVC.getPremiumNet() - premiumTVC.getPremiumDiscount() * premiumTVC.getPremiumNet();
+        }
+        voAg.setChangePremium(changePremium);
+        voAg.setNetPremium(premiumTVC.getPremiumTvc());
+        voAg.setTotalPremium(voAg.getNetPremium()); // Chưa thanh toán qua cổng nên phí total = phí nét
+        voAg.setTotalVat(0.0);
+        voAg.setUserAgent("");
+     	if (objContact.getContactName() != null) {
+     		voAg.setStatusRenewalsName(objContact.getContactName());	
+     	}
+     	
+        return voAg;
+    }
+
+}

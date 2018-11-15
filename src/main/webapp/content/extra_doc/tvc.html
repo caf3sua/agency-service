@@ -1,0 +1,817 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Tvc</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<a href="javascript:changeLanguage('vn')" id="link_vn" class="active-link">Tiếng Việt</a> | <a id="link_en" href="javascript:changeLanguage('en')">English</a>
+		</div>
+		
+		<div id="lang_vn">
+			<h3>Tổng quan về tài liệu: Bảo hiểm du lịch quốc tế</h3>
+			<!-- Nav tabs -->
+	  		<ul class="nav nav-tabs" role="tablist">
+	    		<li role="presentation"  class="active">
+	        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+	        	</li>
+	    		<li role="presentation">
+	        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+	    		</li>
+	    		<li role="presentation">
+	        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+	    		</li>
+	  		</ul>
+	
+	  		<!-- Tab panes -->
+	  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+							<tr> 
+								<th scope="row">2</th> 
+								<td>Lưu thông tin bảo hiểm</td> 
+								<td>Lưu thông tin vào hệ thống partner</td> 
+								<td></td> 
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>Thanh toán thành công</td>
+								<td>
+									<ul>
+										<li>3.1 Gọi service lấy thông tin CONTACT
+											<ul>
+												<li>3.1.1 Service trả về thông tin ContactDTO. Đến bước 3.3</li>
+												<li>3.1.2 Service không trả về kết quả. Đến bước 3.2</li>
+											</ul>
+										</li>
+										<li>3.2 Gọi service tạo CONTACT. Service trả vể thông tin ContactDTO</li>
+										<li>3.3 Gọi service tạo Đơn bảo hiểm
+											<ul>
+												<li>Điền thông tin vào object TvcBaseVM</li>
+												<li>Lấy thông tin ContactDTO từ bước trước</li>
+												<li>Gọi service tạo Đơn bảo hiểm với input là object TvcBaseVM</li>
+												<li>Service trả về thông tin object TvcBaseVM với thông tin đầy đủ</li>
+											</ul>
+										</li>
+									</ul> 
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th scope="row">4</th>
+								<td>Nhận đơn bảo hiểm điện tử</td>
+								<td>
+									<ul>
+										<b>Gửi hợp đồng điện tử điện tử cho khách hàng:</b>
+										<li>4.1 Gọi service lấy hợp đồng điện tử. Service trả về file hợp đồng bảo hiểm điện tử có chữ ký số</li>
+										<li>4.2 Gửi mail cho khách hàng</li>
+									</ul>
+								</td>
+								<td>Trường hợp Partner không có nhu cầu gửi hợp đồng bản mềm cho khách hàng. Bảo Việt sẽ gửi từ hệ thống của Bảo Việt</td>
+							</tr>
+							<tr>
+								<th scope="row">5</th>
+								<td>Tra cứu danh sách đơn</td>
+								<td>
+									<ul>
+										<li>5.1 Gọi service Lấy danh sách đơn bảo hiểm theo contactCode. Service trả về danh sách đơn bảo hiểm với những thông tin cơ bản nhất</li>
+										<li>5.2 Hiển thị thông tin đến khách hàng</li>
+									</ul>  
+								</td>
+								<td></td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/tvc/premium</td>
+								<td>obj PremiumTvcVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumTvcVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm Du lịch quốc tế</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/tvc/createPolicy</td>
+								<td>obj TvcBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>TvcBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin đơn bảo hiểm Du lịch quốc tế</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/tvc/updatePolicy</td>
+								<td>obj UpdateAgreementTvcVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementTvcVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật thông tin đơn bảo hiểm Du lịch quốc tế</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- String type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm lấy thông tin Khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin khách hàng</td>
+							</tr>
+							
+							<!-- <tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td>searchAgreementList</td>
+								<td></td>
+								<td>- String contactID</td>
+								<td>
+									
+								</td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng. Để lấy được biến contactID lấy thông qua hàm getContact_by_code và trả về một Array</td>
+							</tr> -->
+							
+							<tr>
+								<td>Lấy thông tin chi tiết đơn bảo hiểm</td>
+								<td>searchAgreement</td>
+								<td>POST /api/agency/product/agreement/search</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String agreementID</td>
+										</tr>
+										<tr>
+											<td>- String contactID</td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									Trả lại một Object có kiểu là TRAVELCARE_BASE
+								</td>
+								<td>Hàm trả lại đơn bảo hiểm theo mã đơn hàng và mã khách hàng và trả về một obj TRAVELCARE_BASE</td>
+							</tr>
+							
+							<!-- <tr>
+								<td>Lấy thông tin GCNBH điện tử</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr> -->
+							
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		
+ 			<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "destination": "2",
+								  "ngayDi": "18/05/2018",
+								  "ngayVe": "20/05/2018",
+								  "numberOfPerson": 1,
+								  "planId": "2",
+								  "premiumDiscount": 0,
+								  "premiumNet": 0,
+								  "premiumPackage": "1",
+								  "premiumTvc": 0,
+								  "songay": 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "premiumPackage": "1",
+								  "numberOfPerson": 1,
+								  "ngayDi": "18/05/2018",
+								  "ngayVe": "20/05/2018",
+								  "planId": "2",
+								  "destination": "2",
+								  "premiumTvc": 110000,
+								  "premiumNet": 110000,
+								  "premiumDiscount": 0,
+								  "songay": 3
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								"agreementId": "",
+								"changePremium": 0,
+								"contactCode": "DUC001",
+								"destinationId": "2",
+								"expiredDate": "28/07/2018",
+								"gycbhNumber": "AG.TVC.18.101",
+								"inceptionDate": "29/05/2018",
+								"invoiceInfo": {
+								"accountNo": "",
+								"address": "",
+								"check": "0",
+								"company": "",
+								"name": "",
+								"taxNo": ""
+								},
+								"listTvcAddBaseVM": [
+								{
+								  "dob":"01/01/1990",
+								"idPasswport":"01000000000",
+								"insuredName":"Zoro",
+								"relationship":"30"
+								}
+								],
+								"loaitien": "USD",
+								"netPremium":110000.0,
+								"paymentMethod":"paymentMethod",
+								"planId":"2",
+								"policyNumber": "AG.TVC.18.101",
+								"premium":110000.0,
+								"propserCellphone":"0902033033",
+								"propserName":"Zoro",
+								"propserNgaysinh": "01/01/1990",
+								"receiveMethod": "1",
+								"receiverUser": {
+								"address": "Hai Bà Trưng",
+								"addressDistrict": "HN",
+								"email": "hbh@gmail.com",
+								"mobile": "0987456112",
+								"name": "Tên nhận"
+								},
+								"soNguoiThamGia": 1,
+								"travelCareId": 1,
+								"travelWithId": "1",
+								"tvcPackage": "1"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "contactCode": "DUC001",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "AG.TVC.18.101",
+								  "policyNumber": "AG.TVC.18.101",
+								  "travelWithId": "1",
+								  "inceptionDate": "29/05/2018",
+								  "expiredDate": "28/07/2018",
+								  "planId": "2",
+								  "destinationId": "2",
+								  "propserName": "Zoro",
+								  "propserCellphone": "0902033033",
+								  "propserNgaysinh": "01/01/1990",
+								  "paymentMethod": "paymentMethod",
+								  "premium": 710000,
+								  "receiverUser": {
+								    "name": "Tên nhận",
+								    "address": "Hai Bà Trưng",
+								    "email": "hbh@gmail.com",
+								    "mobile": "0987456112",
+								    "addressDistrict": "HN"
+								  },
+								  "netPremium": 710000,
+								  "changePremium": 0,
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": "",
+								    "company": "",
+								    "taxNo": "",
+								    "address": "",
+								    "accountNo": ""
+								  },
+								  "loaitien": "USD",
+								  "soNguoiThamGia": 1,
+								  "tvcPackage": "1",
+								  "listTvcAddBaseVM": [
+								    {
+								      "insuredName": "Zoro",
+								      "dob": "01/01/1990",
+								      "idPasswport": "01000000000",
+								      "relationship": "30"
+								    }
+								  ],
+								  "agreementId": "72877",
+								  "travelCareId": 50772
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+		</div>
+		
+		<div id="lang_en">
+			<h3>Document overview : Tvc product</h3>
+			<!-- Nav tabs -->
+	  		<ul class="nav nav-tabs" role="tablist">
+	    		<li role="presentation"  class="active">
+	        		<a href="#guideEn" aria-controls="guideEn" role="tab" data-toggle="tab">Service guide</a>     
+	        	</li>
+	    		<li role="presentation">
+	        		<a href="#listEn" aria-controls="listEn" role="tab" data-toggle="tab">Service list</a>
+	    		</li>
+	    		<li role="presentation">
+	        		<a href="#data_sample_en" aria-controls="data_sample_en" role="tab" data-toggle="tab">Data sample</a>
+	    		</li>
+	  		</ul>
+	
+	  		<!-- Tab panes -->
+	  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guideEn">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Insurance information</td> 
+								<td>
+									<ul>
+										<li>Call service getPremium</li>
+										<li>Show product premium</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+							<tr> 
+								<th scope="row">2</th> 
+								<td>Save insurance information</td> 
+								<td>Save information to the system partner</td> 
+								<td></td> 
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>Payment success</td>
+								<td>
+									<ul>
+										<li>3.1 Call service get information CONTACT
+											<ul>
+												<li>3.1.1 Service return information ContactDTO. To step 3.3</li>
+												<li>3.1.2 Service does not return result. To step 3.2</li>
+											</ul>
+										</li>
+										<li>3.2 Call service create CONTACT. Service return information ContactDTO</li>
+										<li>3.3 Call service create policy
+											<ul>
+												<li>Fill information object TvcBaseVM</li>
+												<li>Get the ContactDTO information from the previous step</li>
+												<li>Call service create policy with input object TvcBaseVM</li>
+												<li>Service return information object TvcBaseVM with full information</li>
+											</ul>
+										</li>
+									</ul> 
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th scope="row">4</th>
+								<td>Receive e-insurance</td>
+								<td>
+									<ul>
+										<b>Sending electronic contracts to customers:</b>
+										<li>4.1 Call service electronic contract. Service return file contract of the electronic insurance with signature</li>
+										<li>4.2 Send mail to customer</li>
+									</ul>
+								</td>
+								<td>Case for partner does not such as a symbolic send request for customers. Bao Viet will send from the system of Bao Viet</td>
+							</tr>
+							<tr>
+								<th scope="row">5</th>
+								<td>Search insurance policies</td>
+								<td>
+									<ul>
+										<li>5.1 Call service Get the policy listing under contactCode. Service returns a list of insurance policies with the most basic information</li>
+										<li>5.2 Display information to the customer</li>
+									</ul>  
+								</td>
+								<td></td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="listEn">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>View the document common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Premium charge</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/tvc/premium</td>
+								<td>obj PremiumTvcVM</td>
+								<td>- <b>getPremium</b> data: Successful returns obj <b>PremiumTvcVM</b> error returns Null</td>
+								<td>International travel insurance premiums</td>
+							</tr>
+							
+							<tr>
+								<td>Create policy</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/tvc/createPolicy</td>
+								<td>obj TvcBaseVM</td>
+								<td>- <b>createPolicy</b> data: Successful returns obj <b>TvcBaseVM</b> error returns Null</td>
+								<td>Create international travel insurance claim</td>
+							</tr>
+							
+							<tr>
+								<td>Update policy</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/tvc/updatePolicy</td>
+								<td>obj UpdateAgreementTvcVM</td>
+								<td>- <b>updatePolicy</b> data: Successful returns obj <b>UpdateAgreementTvcVM</b> error returns Null</td>
+								<td>Update international travel insurance claim</td>
+							</tr>
+							
+							<tr>
+								<td>Search Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: passed by the partner</td>
+										</tr>
+										<tr>
+											<td>- String type: partner of Bao Viet( Example: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Successful returns obj <b>ContactDTO</b> error returns Null</td>
+								<td>Customer information retrieval function</td>
+							</tr>
+							
+							<tr>
+								<td>Create contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Successful returns obj <b>ContactDTO</b> error returns Null</td>
+								<td>Create customer information function</td>
+							</tr>
+							
+							<!-- <tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td>searchAgreementList</td>
+								<td></td>
+								<td>- String contactID</td>
+								<td>
+									
+								</td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng. Để lấy được biến contactID lấy thông qua hàm getContact_by_code và trả về một Array</td>
+							</tr> -->
+							
+							<tr>
+								<td>Get insured details</td>
+								<td>searchAgreement</td>
+								<td>POST /api/agency/product/agreement/search</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String agreementID</td>
+										</tr>
+										<tr>
+											<td>- String contactID</td>
+										</tr>
+									</table>
+								</td>
+								<td>
+									Return Object TRAVELCARE_BASE
+								</td>
+								<td>Return Policy under the order code and customer code and obj TRAVELCARE_BASE</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		
+ 			<!-- Tab Data -->
+ 			<div role="tabpanel" class="tab-pane" id="data_sample_en">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Data test demo</p> 
+    					<p><b>* Note</b></p>
+    					<p><b>Some day fields must be larger than the current day (Example: Start date,...)</b></p>
+    					<p><b>Change the contactCode to match the login account</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>getPremium</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "premiumPackage" : "1",
+								  "numberOfPerson" : 1,
+								  "ngayDi" : "04/10/2018",
+								  "ngayVe" : "15/10/2018",
+								  "planId" : "2",
+								  "destination" : "4",
+								  "premiumTvc" : 0,
+								  "premiumNet" : 0,
+								  "premiumDiscount" : 0,
+								  "songay" : 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "premiumPackage" : "1",
+								  "numberOfPerson" : 1,
+								  "ngayDi" : "04/10/2018",
+								  "ngayVe" : "15/10/2018",
+								  "planId" : "2",
+								  "destination" : "4",
+								  "premiumTvc" : 320000,
+								  "premiumNet" : 320000,
+								  "premiumDiscount" : 0,
+								  "songay" : 12
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>createPolicy</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Phạm Văn B",
+								    "address" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "string@gmail.com",
+								    "mobile" : "0988777666"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : null,
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000003",
+								  "contactName" : "Phạm Văn B",
+								  "contactDob" : "24/06/1988",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.TVC.18.72",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "policyNumber" : "AG.TVC.18.72",
+								  "travelWithId" : "1",
+								  "inceptionDate" : "04/10/2018",
+								  "expiredDate" : "15/10/2018",
+								  "planId" : "2",
+								  "destinationId" : "4",
+								  "propserName" : "Phạm Văn B",
+								  "propserCellphone" : "0988777666",
+								  "propserNgaysinh" : "24/06/1988",
+								  "paymentMethod" : "paymentMethod",
+								  "premium" : 320000,
+								  "netPremium" : 320000,
+								  "changePremium" : 0,
+								  "loaitien" : "USD",
+								  "soNguoiThamGia" : 1,
+								  "tvcPackage" : "1",
+								  "listTvcAddBaseVM" : [ {
+								    "insuredName" : "Phạm Văn B",
+								    "dob" : "24/06/1988",
+								    "idPasswport" : "1511141411",
+								    "relationship" : "30"
+								  } ],
+								  "travelCareId" : 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser": {
+								    "name": "Phạm Văn B",
+								    "address": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email": "string@gmail.com",
+								    "mobile": "0988777666"
+								  },
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": "",
+								    "company": "",
+								    "taxNo": "",
+								    "address": "",
+								    "accountNo": ""
+								  },
+								  "agreementId": "82966",
+								  "gycbhId": null,
+								  "contactCode": "ITL20000003",
+								  "contactName": "Phạm Văn B",
+								  "contactDob": "24/06/1988",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "AG.TVC.18.72",
+								  "oldGycbhNumber": null,
+								  "lineId": null,
+								  "policyNumber": "AG.TVC.18.72",
+								  "travelWithId": "1",
+								  "inceptionDate": "04/10/2018",
+								  "expiredDate": "15/10/2018",
+								  "planId": "2",
+								  "destinationId": "4",
+								  "propserName": "Phạm Văn B",
+								  "propserCellphone": "0988777666",
+								  "propserNgaysinh": "24/06/1988",
+								  "paymentMethod": "paymentMethod",
+								  "premium": 320000,
+								  "netPremium": 320000,
+								  "changePremium": 0,
+								  "loaitien": "USD",
+								  "soNguoiThamGia": 1,
+								  "tvcPackage": "1",
+								  "listTvcAddBaseVM": [
+								    {
+								      "insuredName": "Phạm Văn B",
+								      "dob": "24/06/1988",
+								      "idPasswport": "1511141411",
+								      "relationship": "30"
+								    }
+								  ],
+								  "travelCareId": 51028
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script>
+$(document).ready(function() {
+	changeLanguage('vn'); // default
+});
+
+function changeLanguage(lang) {
+	if (lang == 'vn') {
+		$('#lang_en').hide();
+		$('#lang_vn').show();
+		$('#link_vn').addClass('active-link');
+		$('#link_en').removeClass('active-link');
+	} else {
+		$('#lang_en').show();
+		$('#lang_vn').hide();
+		$('#link_en').addClass('active-link');
+		$('#link_vn').removeClass('active-link');
+	}
+}
+</script>

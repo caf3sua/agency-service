@@ -1,0 +1,383 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product TNC</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : TNC product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/tnc/premium</td>
+								<td>obj PremiumTncVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumTncVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm TNC</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo sản phẩm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/tnc/createPolicy</td>
+								<td>obj TncBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>HastableTNC</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo đơn bảo hiểm TNC</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật sản phẩm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/tnc/updatePolicy</td>
+								<td>obj UpdateAgreementTNCVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementTNCVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật đơn bảo hiểm TNC</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "numberperson" : 1,
+								  "numbermonth" : 12,
+								  "insurancestartdate" : "04/10/2018",
+								  "premiumPackage" : 40000000,
+								  "premiumnet" : 0,
+								  "premiumdiscount" : 0,
+								  "premiumtnc" : 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "numberperson": 1,
+								  "numbermonth": 12,
+								  "insurancestartdate": "04/10/2018",
+								  "premiumPackage": 40000000,
+								  "premiumnet": 111999.9960064888,
+								  "premiumdiscount": 0,
+								  "premiumtnc": 111999.9960064888
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{  
+								   "insuranceexpireddate":"03/10/2019",
+								   "insurancestartdate":"04/10/2018",
+								   "listTncAdd":[  
+								      {  
+								         "dob":"24/06/1988",
+								         "idPasswport":"1511141411",
+								         "insuredName":"Phạm Văn B",
+								         "title":""
+								      }
+								   ],
+								   "numbermonth":12,
+								   "numberperson":1,
+								   "premiumPackage":"40000000",
+								   "premiumPackageplanid":2,
+								   "premiumdiscount":0,
+								   "premiumnet":111999.9960064888,
+								   "premiumtnc":111999.9960064888,
+								   "receiveMethod":"1",
+								   "premiumAverage":111999.9960064888,
+								   "contactCode":"ITL20000003",
+								   "contactName":"Phạm Văn B",
+								   "contactDob":"24/06/1988",
+								   "contactPhone":"0988777666",
+								   "contactEmail":"string@gmail.com",
+								   "contactIdNumber":"1511141411",
+								   "contactAddress":"Hà nội nhé",
+								   "contactAddressDistrictData":{  
+								      "pkPostcode":"00470006",
+								      "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								      "pkProvince":"Hải Dương"
+								   },
+								   "receiverUser":{  
+								      "name":"Phạm Văn B",
+								      "address":"Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								      "addressDistrictData":{  
+								         "pkPostcode":"00470006",
+								         "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								         "pkProvince":"Hải Dương"
+								      },
+								      "mobile":"0988777666",
+								      "email":"string@gmail.com"
+								   },
+								   "gycbhNumber":"AG.TNC.18.63"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "pa": {
+								    "agentId": "ITL2",
+								    "agentName": "Lê Minh Đức",
+								    "bankId": " ",
+								    "bankName": " ",
+								    "baovietCompanyId": " ",
+								    "baovietCompanyName": " ",
+								    "baovietDepartmentId": " ",
+								    "baovietDepartmentName": " ",
+								    "baovietUserId": " ",
+								    "baovietUserName": " ",
+								    "beneficiaryAddress": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "beneficiaryIdNumber": "1511141411",
+								    "beneficiaryName": "Phạm Văn B",
+								    "beneficiaryRelationship": " ",
+								    "changePremiumContent": " ",
+								    "changePremiumPremium": 0,
+								    "changePremiumRate": 0,
+								    "changePremiumType": " ",
+								    "contactCode": "ITL20000003",
+								    "contactEmail": "string@gmail.com",
+								    "contactGoitinhId": "1",
+								    "contactId": "6526",
+								    "contactName": "Phạm Văn B",
+								    "dateOfBirth": "24/06/1988",
+								    "dateOfPayment": "03/10/2018",
+								    "dateOfRequirement": "03/10/2018",
+								    "death": 40000000,
+								    "expiredDate": "03/10/2019",
+								    "feeReceive": 0,
+								    "inceptionDate": "04/10/2018",
+								    "invoceNumber": " ",
+								    "invoiceAddress": " ",
+								    "invoiceCompany": " ",
+								    "medicalExpenses": 0,
+								    "note": " ",
+								    "occupation": " ",
+								    "pathCreated": " ",
+								    "pathOwner": " ",
+								    "permanentAddress": " ",
+								    "permanentPartDisablement": 12,
+								    "permanentTotalDisablement": 1,
+								    "plan": "2",
+								    "policyNumber": "AG.TNC.18.63",
+								    "policySendDate": "03/10/2018",
+								    "policyStatus": " ",
+								    "policyStatusName": " ",
+								    "postalAddress": " ",
+								    "receiverAddress": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "receiverMobile": "0988777666",
+								    "receiverName": "Phạm Văn B",
+								    "renewalsReason": " ",
+								    "responseDate": "03/10/2018",
+								    "sendDate": "03/10/2018",
+								    "smartappSysdate": "03/10/2018",
+								    "soGycbh": "AG.TNC.18.63",
+								    "statusId": "90",
+								    "statusName": "Chưa thanh toán",
+								    "statusRenewalsId": " ",
+								    "statusRenewalsName": " ",
+								    "taxIdNumber": " ",
+								    "teamId": " ",
+								    "teamName": " ",
+								    "totalBasicPremium": 111999.9960064888,
+								    "totalNetPremium": 111999.9960064888,
+								    "totalPremium": 111999.9960064888,
+								    "voiceCheck": 0,
+								    "weeklyBenefit": 0
+								  },
+								  "agreement": {
+								    "agentId": "ITL2",
+								    "agentName": "Lê Minh Đức",
+								    "agreementId": "82974",
+								    "agreementSysdate": "03/10/2018",
+								    "cancelPolicyCommision": 0,
+								    "cancelPolicyCommision2": 0,
+								    "cancelPolicyCommision3": 0,
+								    "cancelPolicyDate": "03/10/2018",
+								    "cancelPolicyPremium": 0,
+								    "cancelPolicyPremium2": 0,
+								    "cancelPolicyPremium3": 0,
+								    "cancelPolicySupport": 0,
+								    "cancelPolicySupport2": 0,
+								    "cancelPolicySupport3": 0,
+								    "changePremium": 0,
+								    "claimRate": 0,
+								    "claimRate1": 0,
+								    "claimRate2": 0,
+								    "commision": 0,
+								    "commisionSupport": 0,
+								    "contactAddress": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "contactAddresstt": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "contactDob": "24/06/1988",
+								    "contactId": "6526",
+								    "contactName": "Phạm Văn B",
+								    "contactPhone": "0988777666",
+								    "contactUsername": "string@gmail.com",
+								    "couponsValue": 0,
+								    "dateOfPayment": "03/10/2018",
+								    "dateOfRequirement": "03/10/2018",
+								    "expiredDate": "03/10/2019",
+								    "feeReceive": 0,
+								    "gycbhId": "721",
+								    "gycbhNumber": "AG.TNC.18.63",
+								    "inceptionDate": "04/10/2018",
+								    "isPolicy": 0,
+								    "lineId": "TNC",
+								    "lineName": "Bảo hiểm tai nạn con người",
+								    "mciAddId": "AG.PAY.18.958",
+								    "netPremium": 111999.9960064888,
+								    "policyNumber": "AG.TNC.18.63",
+								    "receiveMethod": "1",
+								    "receiverAddress": "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "receiverEmail": "string@gmail.com",
+								    "receiverMoible": "0988777666",
+								    "receiverName": "Phạm Văn B",
+								    "renewalsPremium": 0,
+								    "renewalsPremium1": 0,
+								    "renewalsPremium2": 0,
+								    "renewalsRate": 0,
+								    "renewalsRate1": 0,
+								    "renewalsRate2": 0,
+								    "renewalsSi": 0,
+								    "responseDate": "03/10/2018",
+								    "sendDate": "03/10/2018",
+								    "standardPremium": 111999.9960064888,
+								    "statusGycbhId": "90",
+								    "statusGycbhName": "Chưa xác định",
+								    "statusPolicyId": "90",
+								    "statusPolicyName": "Chưa Thanh Toán",
+								    "statusRenewalsName": "PHẠM VĂN B",
+								    "taxIdNumber": "1511141411",
+								    "teamId": "1",
+								    "totalPremium": 111999.9960064888,
+								    "totalVat": 0,
+								    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+								     (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+								    "createType": 0
+								  },
+								  "lstPaAdd": [
+								    {
+								      "dob": "24/06/1988",
+								      "idPasswport": "1511141411",
+								      "insuredName": "Phạm Văn B",
+								      "paId": "721",
+								      "premium": 313.59997763633766,
+								      "si": 111999.9960064888
+								    }
+								  ]
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{email.activation.title}">JHipster activation</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="shortcut icon" href="${baseUrl}/favicon.ico" />
+    </head>
+    <body>
+        <img src="https://ci6.googleusercontent.com/proxy/jbbDy5vkzuKblpJ7dM_wbGj9UKqA-byaMPKLJ5lQT49iLtorQV-eNZIih-RhW6RZN57twd40-0VfvfW8-9N2_2PEtNI=s0-d-e1-ft#https://baovietonline.com.vn/Images/banner.jpg"/>
+        <h3><b>Kính chào Quý khách hàng </b><span th:text="|${user.ten}|">Tên khách hàng </span></h3>
+        <p>Chúng tôi đã nhận được yêu cầu thay đổi mật khẩu tài khoản của Quý khách.</p>
+		<p>Mật khẩu tài khoản mới của Quý khách là: <b><span th:text="|${user.matkhau}|">12345678</span></b></p>
+		<p>Sau khi thực hiện đăng nhập, Quý khách hãy thay đổi mật khẩu để đảm bảo an toàn bảo mật cho tài khoản của Quý khách.</p>
+		<p>Nếu việc thay đổi mật khẩu này không phải do Quý khách yêu cầu, Quý khách vui lòng truy cập vào tài khoản của Quý khách và thay đổi mật khẩu.</p>
+        <div style="display: flex;">
+            <div style="
+                        padding: 5px;
+                        border-radius: 10px;">
+                <img style="width: 35px;" src="https://ci6.googleusercontent.com/proxy/EIZdNIY405HClf8EIVU9ZfQXKhdKE9_mupK4JBfDdOOBLvLQv_eU3Jd1x1sFH-pjIoMsIt5MCId1a6rLE02kZziT4VQUaJgO=s0-d-e1-ft#https://baovietonline.com.vn/Images/icon-phone.jpg"/>
+            </div>
+            <a href="#" style="  margin-top: 12px;
+                        margin-left: 5px;
+                        font-weight: bold;">1900558899</a>
+        </div>
+        <div style="display: flex; margin-top: 5px">
+                <div style="
+                            padding: 5px;
+                            border-radius: 10px;">
+                    <img style="width: 35px;" src="https://ci4.googleusercontent.com/proxy/826H8LiRLvQxWJViYaQgEu8Ofv4Crg7V3FvGkYtDBMTqFtKM7I31-M7VMlVXEBlOFj_TDImFZklWNc_xhSSQFyFjVKFt8ak=s0-d-e1-ft#https://baovietonline.com.vn/Images/icon-mail.jpg"/>
+                </div>
+                <a href="#" style="  margin-top: 12px;
+                            margin-left: 5px;
+                            font-weight: bold;">	
+                            baohiemtructuyen@baoviet.com.vn</a>
+            </div>
+        <p>Cám ơn sự hợp tác của Quý khách,</p>
+		<p>Trân trọng,</p>
+		<p>Tổng Công ty Bảo hiểm Bảo Việt</p>
+    </body>
+    <footer style="text-align: center">
+        <p style="margin: 0;">Tổng công ty Bảo Hiểm Bảo Việt</p>
+        <p style="margin: 0;"> Trụ sở chính: <a href="#">104 Trần Hưng Đạo, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội</a></p>
+        <p style="margin: 0;"> Tel: (84.4) 3826 2614 - Fax: (84.4) 3825 7188</p>
+        <p style="margin: 0;"> Website:<a href="#"> www.baoviet.com.vn/insurance</a> - Email:  <a href="#">bvvn@baoviet.com.vn</a></p>
+    </footer>
+</html>

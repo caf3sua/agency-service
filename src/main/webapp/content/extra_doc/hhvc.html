@@ -1,0 +1,520 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Hhvc</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Hhvc product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/hhvc/premium</td>
+								<td>obj PremiumHHVCVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumHHVCVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm HHVC</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/hhvc/createPolicy</td>
+								<td>obj GoodsBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>GoodsBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo đơn bảo hiểm sản phẩm HHVC</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/hhvc/updatePolicy</td>
+								<td>obj UpdateAgreementHHVCVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementHHVCVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật đơn bảo hiểm sản phẩm HHVC</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "cuocPhi": 0,
+								  "dieuKhoanBaoHiem": 0,
+								  "giaTriHang": 120,
+								  "hanhTrinhVanChuyen": 1,
+								  "laiUocTinh": true,
+								  "loaiHangHoa": 16,
+								  "loaiTienTe": "USD",
+								  "loaiTienTeHangHoa": "VND",
+								  "phuongThucDongGoi": 2,
+								  "phuongThucThanhToan": 1,
+								  "phuongTienVanChuyen": 1,
+								  "premiumDiscount": 10,
+								  "premiumHHVC": 0,
+								  "premiumNet": 0,
+								  "tenHangHoa": 1
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "loaiHangHoa": 16,
+								  "tenHangHoa": 1,
+								  "dieuKhoanBaoHiem": 0,
+								  "phuongThucDongGoi": 2,
+								  "hanhTrinhVanChuyen": 1,
+								  "phuongTienVanChuyen": 1,
+								  "giaTriHang": 120,
+								  "cuocPhi": 0,
+								  "phuongThucThanhToan": 1,
+								  "laiUocTinh": true,
+								  "loaiTienTe": "USD",
+								  "loaiTienTeHangHoa": "VND",
+								  "premiumNet": 8.768084173608067,
+								  "premiumDiscount": 10,
+								  "premiumHHVC": 7.89127575624726
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								"addressNYCBH": "string",
+								"agentId": "string",
+								"agentName": "string",
+								"bankId": "string",
+								"bankName": "string",
+								"baovietCompanyId": "1",
+								"baovietCompanyName": "1",
+								"baovietDepartmentId": "1",
+								"baovietDepartmentName": "1",
+								"baovietUserId": "1",
+								"baovietUserName": "1",
+								"basicRate": 0,
+								"beneficiaryAddr": "HN",
+								"beneficiaryDob": "01/01/1981",
+								"beneficiaryEmail": "string@gmail.com",
+								"beneficiaryIdentity": "string",
+								"beneficiaryMst": "string",
+								"beneficiaryName": "string",
+								"beneficiaryPhone": "0988789654",
+								"blAwbNo": "1",
+								"changePremiumContent": "string",
+								"changePremiumId": "string",
+								"changePremiumPaContent": "string",
+								"changePremiumPaId": "string",
+								"changePremiumPaPremium": 0,
+								"changePremiumPaRate": 0,
+								"changePremiumPremium": 0,
+								"changePremiumRate": 0,
+								"chkThemLaiUocTinh": true,
+								"conditionId": 0,
+								"contactAddr": "string",
+								"contactAddresstt": "string",
+								"contactCode": "DUC001",
+								"contactDob": "01/01/1982",
+								"contactEmail": "string",
+								"contactIdentity": "string",
+								"contactMst": "string",
+								"contactName": "string",
+								"contactPhone": "string",
+								"containerSerialNo": "string",
+								"contractNo": "string",
+								"convey": "string",
+								"couponsCode": "string",
+								"couponsValue": 0,
+								"currencyRate": 0,
+								"dateOfPayment": "24/04/2018",
+								"dateOfRequirement": "24/04/2018",
+								"departureDay": "24/04/2018",
+								"destination": "string",
+								"emailNguoiYCBH": "string",
+								"expectedDate": "29/04/2018",
+								"expiredDate": "30/04/2018",
+								"feeReceive": 0,
+								"field1": "Tấn",
+								"field2": "2",
+								"field3": "",
+								"field4": "",
+								"field5": "",
+								"goodsCategoryId": 2,
+								"goodsCode": "goodsCode",
+								"goodsCost": 0,
+								"goodsCurrency": "USD",
+								"goodsDesc": "string",
+								"goodsDvt": "string",
+								"goodsId": 0,
+								"goodsJourney": 0,
+								"goodsMeanOfTransportation": 0,
+								"goodsPackingMethod": 0,
+								"goodsPaymentCurrency": "USD",
+								"goodsPaymentMethod": 0,
+								"goodsPostage": 0,
+								"goodsQuantities": 0,
+								"goodsTransportationMethod": 0,
+								"goodsWeight": 0,
+								"gycbhEnVi": "11",
+								"gycbhNumber": "ITSOL.HHV.18.11",
+								"hanhTrinhVanChuyen": "1",
+								"hhId": "",
+								"inceptionDate": "29/05/2018",
+								"insuredAddr": "string",
+								"insuredDob": "01/01/1982",
+								"insuredEmail": "string",
+								"insuredIdentity": "string",
+								"insuredMst": "string",
+								"insuredName": "string",
+								"insuredPhone": "string",
+								"invoiceInfo": {
+								"accountNo": "",
+								"address": "",
+								"check": "0",
+								"company": "",
+								"name": "",
+								"taxNo": ""
+								},
+								"invoiceNumber": "0987654321",
+								"isAdding10Percent": 0,
+								"journeyNo": "string",
+								"lcNo": "string",
+								"loadingPort": "string",
+								"loadingRateJourney": 0,
+								"loadingRateTransportation": 0,
+								"loanAccount": "string",
+								"maSoThueNYCBH": "string",
+								"meanOfTransportation": "string",
+								"mobileNYCBH": "string",
+								"mucChungTu": "string",
+								"nameNYCBH": "string",
+								"netPremium": 0,
+								"note": "string",
+								"oldGycbhNumber": "",
+								"oldPolicyNumber": "",
+								"otherInsuranceAgreements": "",
+								"packagingMethod": "",
+								"passportNYCBH": "",
+								"paymentMenthod": "1",
+								"phuongThucDongGoi": "1",
+								"phuongThucThanhToan": "1",
+								"phuongTienVanChuyen": "1",
+								"placeOfPaymentIndemnity": "1",
+								"policyNumber": "string",
+								"policySendDate": "29/05/2018",
+								"policyStatus": "string",
+								"policyStatusName": "string",
+								"premiumVat": 0,
+								"productName": "string",
+								"receiveMethod": "1",
+								"receiverUser": {
+								"address": "string",
+								"addressDistrict": "string",
+								"email": "string@gmail.com",
+								"mobile": "string",
+								"name": "string"
+								},
+								"renewalsPremium": 0,
+								"renewalsRate": 0,
+								"renewalsReason": "string",
+								"requirementAddr": "string",
+								"requirementDob": "24/04/2018",
+								"requirementEmail": "string",
+								"requirementIdentity": "string",
+								"requirementMst": "string",
+								"requirementName": "string",
+								"requirementPhone": "string",
+								"responseDate": "24/04/2018",
+								"sendDate": "24/04/2018",
+								"soGycbh": "string",
+								"standardPremium": 0,
+								"startingGate": "string",
+								"statusId": "string",
+								"statusName": "string",
+								"statusRenewalsId": "string",
+								"statusRenewalsName": "string",
+								"teamId": "string",
+								"teamName": "string",
+								"totalNetPremium": 0,
+								"totalPremium": 0,
+								"totalVat": 0,
+								"totalbasicPremium": 0,
+								"unloadingPort": "string",
+								"userAgent": "string"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "contactCode": "DUC001",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "ITSOL.HHV.18.11",
+								  "agentId": "string",
+								  "agentName": "string",
+								  "bankId": "string",
+								  "bankName": "string",
+								  "baovietCompanyId": "1",
+								  "baovietCompanyName": "1",
+								  "baovietDepartmentId": "1",
+								  "baovietDepartmentName": "1",
+								  "baovietUserId": "1",
+								  "baovietUserName": "1",
+								  "basicRate": 0,
+								  "beneficiaryAddr": "HN",
+								  "beneficiaryDob": "01/01/1981",
+								  "beneficiaryEmail": "string@gmail.com",
+								  "beneficiaryIdentity": "string",
+								  "beneficiaryMst": "string",
+								  "beneficiaryName": "string",
+								  "beneficiaryPhone": "0988789654",
+								  "blAwbNo": "1",
+								  "conditionId": 0,
+								  "contactAddr": "string",
+								  "contactDob": "01/01/1982",
+								  "contactEmail": "string",
+								  "contactIdentity": "string",
+								  "contactMst": "string",
+								  "contactName": "string",
+								  "contactPhone": "string",
+								  "containerSerialNo": "string",
+								  "contractNo": "string",
+								  "convey": "string",
+								  "couponsCode": "string",
+								  "couponsValue": 0,
+								  "currencyRate": 0,
+								  "changePremiumContent": "string",
+								  "changePremiumId": "string",
+								  "changePremiumPaContent": "string",
+								  "changePremiumPaId": "string",
+								  "changePremiumPaPremium": 0,
+								  "changePremiumPaRate": 0,
+								  "changePremiumPremium": 0,
+								  "changePremiumRate": 0,
+								  "dateOfPayment": "24/04/2018",
+								  "dateOfRequirement": "24/04/2018",
+								  "departureDay": "24/04/2018",
+								  "destination": "string",
+								  "expectedDate": "29/04/2018",
+								  "expiredDate": "30/04/2018",
+								  "feeReceive": 0,
+								  "field1": "Tấn",
+								  "field2": "2",
+								  "goodsCategoryId": 2,
+								  "goodsCode": "goodsCode",
+								  "goodsCost": 0,
+								  "goodsCurrency": "USD",
+								  "goodsDesc": "string",
+								  "goodsDvt": "string",
+								  "goodsId": 0,
+								  "goodsJourney": 0,
+								  "goodsMeanOfTransportation": 0,
+								  "goodsPackingMethod": 0,
+								  "goodsPaymentCurrency": "USD",
+								  "goodsPaymentMethod": 0,
+								  "goodsPostage": 0,
+								  "goodsQuantities": 0,
+								  "goodsTransportationMethod": 0,
+								  "goodsWeight": 0,
+								  "gycbhEnVi": "11",
+								  "hanhTrinhVanChuyen": "1",
+								  "inceptionDate": "29/05/2018",
+								  "insuredAddr": "string",
+								  "insuredDob": "01/01/1982",
+								  "insuredEmail": "string",
+								  "insuredIdentity": "string",
+								  "insuredMst": "string",
+								  "insuredName": "string",
+								  "insuredPhone": "string",
+								  "invoiceNumber": "0987654321",
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": "",
+								    "company": "",
+								    "taxNo": "",
+								    "address": "",
+								    "accountNo": ""
+								  },
+								  "isAdding10Percent": 0,
+								  "journeyNo": "string",
+								  "lcNo": "string",
+								  "loadingPort": "string",
+								  "loadingRateJourney": 0,
+								  "loadingRateTransportation": 0,
+								  "loanAccount": "string",
+								  "meanOfTransportation": "string",
+								  "mucChungTu": "string",
+								  "note": "string",
+								  "placeOfPaymentIndemnity": "1",
+								  "policyNumber": "string",
+								  "policySendDate": "29/05/2018",
+								  "policyStatus": "string",
+								  "policyStatusName": "string",
+								  "premiumVat": 0,
+								  "productName": "string",
+								  "phuongTienVanChuyen": "1",
+								  "phuongThucDongGoi": "1",
+								  "phuongThucThanhToan": "1",
+								  "receiverUser": {
+								    "name": "string",
+								    "address": "string",
+								    "email": "string@gmail.com",
+								    "mobile": "string",
+								    "addressDistrict": "string"
+								  },
+								  "renewalsPremium": 0,
+								  "renewalsRate": 0,
+								  "renewalsReason": "string",
+								  "requirementAddr": "string",
+								  "requirementDob": "24/04/2018",
+								  "requirementEmail": "string",
+								  "requirementIdentity": "string",
+								  "requirementMst": "string",
+								  "requirementName": "string",
+								  "requirementPhone": "string",
+								  "responseDate": "24/04/2018",
+								  "sendDate": "24/04/2018",
+								  "soGycbh": "string",
+								  "startingGate": "string",
+								  "statusId": "string",
+								  "statusName": "string",
+								  "statusRenewalsId": "string",
+								  "statusRenewalsName": "string",
+								  "teamId": "string",
+								  "teamName": "string",
+								  "totalbasicPremium": 0,
+								  "totalNetPremium": 0,
+								  "totalPremium": 0,
+								  "unloadingPort": "string",
+								  "paymentMenthod": "1",
+								  "chkThemLaiUocTinh": true,
+								  "nameNYCBH": "string",
+								  "addressNYCBH": "string",
+								  "mobileNYCBH": "string",
+								  "emailNguoiYCBH": "string",
+								  "maSoThueNYCBH": "string",
+								  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+								   AppleWebKit/537.36 (KHTML, like Gecko) 
+								   Chrome/66.0.3359.181 Safari/537.36",
+								  "standardPremium": 0,
+								  "netPremium": 0,
+								  "totalVat": 0,
+								  "contactAddresstt": "string"
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Bvp</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Bvp product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+							<tr> 
+								<th scope="row">2</th> 
+								<td>Lưu thông tin bảo hiểm</td> 
+								<td>Lưu thông tin vào hệ thống partner</td> 
+								<td></td> 
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>Thanh toán thành công</td>
+								<td>
+									<ul>
+										<li>3.1 Gọi service lấy thông tin CONTACT
+											<ul>
+												<li>3.1.1 Service trả về thông tin ContactDTO. Đến bước 3.3</li>
+												<li>3.1.2 Service không trả về kết quả. Đến bước 3.2</li>
+											</ul>
+										</li>
+										<li>3.2 Gọi service tạo CONTACT. Service trả vể thông tin ContactDTO</li>
+										<li>3.3 Gọi service tạo Đơn bảo hiểm
+											<ul>
+												<li>Lấy thông tin ContactDTO từ bước trước</li>
+												<li>Gọi service tạo Đơn bảo hiểm với input là object SKTDBaseVM, String contactCode, String type, List&lt;SKTDAddVM&gt;, String files</li>
+												<li>Service trả về thông tin object SKTDBaseVM với thông tin đầy đủ</li>
+											</ul>
+										</li>
+									</ul> 
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th scope="row">4</th>
+								<td>Nhận đơn bảo hiểm điện tử</td>
+								<td>
+									<ul>
+										<b>Gửi hợp đồng điện tử điện tử cho khách hàng:</b>
+										<li>4.1 Gọi service lấy hợp đồng điện tử. Service trả về file hợp đồng bảo hiểm điện tử có chữ ký số</li>
+										<li>4.2 Gửi mail cho khách hàng</li>
+									</ul>
+								</td>
+								<td>Trường hợp Partner không có nhu cầu gửi hợp đồng bản mềm cho khách hàng. Bảo Việt sẽ gửi từ hệ thống của Bảo Việt</td>
+							</tr>
+							<tr>
+								<th scope="row">5</th>
+								<td>Tra cứu danh sách đơn</td>
+								<td>
+									<ul>
+										<li>5.1 Gọi service Lấy danh sách đơn bảo hiểm theo contactCode. Service trả về danh sách đơn bảo hiểm với những thông tin cơ bản nhất</li>
+										<li>5.2 Hiển thị thông tin đến khách hàng</li>
+									</ul>  
+								</td>
+								<td></td>
+							</tr>
+							<tr> 
+								<th scope="row">6</th> 
+								<td>Tra cứu thông tin chi tiết</td> 
+								<td>
+									<ul>
+										<li>6.1 Gọi service Lấy thông tin chi tiết đơn bảo hiểm. Service trả object Bvp</li>
+										<li>6.2 Hiển thị thông tin đến khách hàng</li>
+									</ul>
+								</td> 
+								<td></td> 
+							</tr> 
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/bvp/premium</td>
+								<td>PremiumBVPVM obj</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumBVPVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm BVP</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/bvp/createPolicy</td>
+								<td>SKTDBaseVM obj</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>SKTDBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin bảo hiểm Bảo Việt An Gia</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/bvp/updatePolicy</td>
+								<td>UpdateAgreementBVPVM obj</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementBVPVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật thông tin bảo hiểm Bảo Việt An Gia</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin Contact</td>
+								<td>getByCodeAndType</td>
+								<td>GET /api/agency/contact/get-by-code/{contactCode}/{type}</td>
+								<td>
+									<table>
+										<tr>
+											<td>- String contactCode: Mã khách hàng do đối tác truyền vào</td>
+										</tr>
+										<tr>
+											<td>- String type: mã đối tác của Bảo Việt( VD: VIETTELPOST)</td>
+										</tr>
+									</table>
+								</td>
+								<td>- <b>getByCodeAndType</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm lấy thông tin Khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo contact</td>
+								<td>addContact</td>
+								<td>POST /api/agency/contact/add</td>
+								<td>ContactVM obj</td>
+								<td>- <b>addContact</b> data: Thành công trả về obj <b>ContactDTO</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo thông tin khách hàng</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy danh sách đơn bảo hiểm theo contactCode</td>
+								<td></td>
+								<td></td>
+								<td>- String contactID</td>
+								<td></td>
+								<td>Hàm trả lại danh sách đơn bảo hiểm theo từng khách hàng
+									Để lấy được biến contactID lấy thông qua hàm getContact_by_code
+									và trả về một Array</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin chi tiết đơn bảo hiểm</td>
+								<td></td>
+								<td></td>
+								<td>
+									<table>
+										<tr>
+											<td>- String agreementID</td>
+										</tr>
+										<tr>
+											<td>- String contactID</td>
+										</tr>
+									</table>
+								</td>
+								<td><b>Object Bvp</b></td>
+								<td>Trả lại một Object có kiểu là Bvp</td>
+							</tr>
+							
+							<tr>
+								<td>Lấy thông tin GCNBH điện tử</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "chuongTrinh": "1",
+								  "ngaySinh": "24/12/1991",
+								  "ngoaitruChk": false,
+								  "ngoaitruPhi": 0,
+								  "nhakhoaChk": false,
+								  "nhakhoaPhi": 0,
+								  "pagencyRole": "1",
+								  "phiBH": 0,
+								  "premiumDiscount": 0,
+								  "premiumNet": 0,
+								  "qlChinhPhi": 0,
+								  "smcnChk": false,
+								  "smcnPhi": 0,
+								  "smcnSi": 0,
+								  "thaisanChk": false,
+								  "thaisanPhi": 0,
+								  "thoihanbhTu": "04/10/2018",
+								  "tncnChk": false,
+								  "tncnPhi": 0,
+								  "tncnSi": 0,
+								  "tuoi": 0
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "chuongTrinh": "1",
+								  "ngaySinh": "24/12/1991",
+								  "tuoi": 26,
+								  "ngoaitruChk": false,
+								  "ngoaitruPhi": 0,
+								  "tncnChk": false,
+								  "tncnSi": 0,
+								  "tncnPhi": 0,
+								  "smcnChk": false,
+								  "smcnSi": 0,
+								  "smcnPhi": 0,
+								  "nhakhoaChk": false,
+								  "nhakhoaPhi": 0,
+								  "thaisanChk": false,
+								  "thaisanPhi": 0,
+								  "thoihanbhTu": "04/10/2018",
+								  "qlChinhPhi": 1196000,
+								  "phiBH": 1196000,
+								  "premiumNet": 1196000,
+								  "premiumDiscount": 0,
+								  "pagencyRole": "1"
+								}
+								</pre></td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Nguyễn Văn A",
+								    "address" : "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "test@gmail.com",
+								    "mobile" : "0976075335"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : null,
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000006",
+								  "contactName" : "Phạm Văn T",
+								  "contactDob" : "24/12/1991",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.BVP.18.561",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "inceptionDate" : "04/10/2018",
+								  "expiredDate" : "03/10/2019",
+								  "nguoidbhNgaysinh" : "24/12/1991",
+								  "chuongtrinhBh" : "1",
+								  "ngoaitru" : "0",
+								  "ngoaitruPhi" : 0,
+								  "tncn" : "0",
+								  "tncnPhi" : 0,
+								  "tncnPhiSi" : 0,
+								  "tncnSotienbh" : 0,
+								  "sinhmangSotienbh" : 0,
+								  "sinhmang" : "0",
+								  "sinhmangPhi" : 0,
+								  "sinhmangPhiSi" : 0,
+								  "nhakhoa" : "0",
+								  "nhakhoaPhi" : 0,
+								  "thaisan" : "0",
+								  "thaisanPhi" : 0,
+								  "discount" : 0,
+								  "hasExtracare" : false,
+								  "nguoiycName" : "Nguyễn Văn A",
+								  "nguoiycNgaysinh" : "24/12/1991",
+								  "nguoidbhName" : "Nguyễn Văn A",
+								  "nguoidbhCmnd" : "11111111",
+								  "nguoidbhQuanhe" : "30",
+								  "q1" : "0",
+								  "q2" : "0",
+								  "q3" : "0",
+								  "hasNguoithuhuong" : false,
+								  "nguoithName" : "Phạm Văn T",
+								  "nguoithCmnd" : "32131231313",
+								  "nguoithQuanhe" : "31",
+								  "nguoithNgaysinh" : "24/12/1991",
+								  "hasNguoinhantien" : false,
+								  "nguoinhanName" : "Phạm Văn T",
+								  "nguoinhanCmnd" : "32131231313",
+								  "nguoinhanQuanhe" : "31",
+								  "nguointNgaysinh" : "24/12/1991",
+								  "policyNumber" : "AG.BVP.18.560",
+								  "policyParent" : "",
+								  "chuongtrinhPhi" : 1196000,
+								  "tanggiamPhi" : 0,
+								  "tanggiamPhiNoidung" : "",
+								  "lstAdd" : [ {
+								    "ngaydieutri" : null,
+								    "chuandoan" : "",
+								    "chitietdieutri" : "",
+								    "ketqua" : "",
+								    "benhvienorbacsy" : ""
+								  }],
+								  "files" : ""
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								 {
+								  "receiverUser": {
+								    "name": "Nguyễn Văn A",
+								    "address": "23 Phạm Hùng::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email": "test@gmail.com",
+								    "mobile": "0976075335"
+								  },
+								  "invoiceInfo": {
+								    "check": "0",
+								    "name": "",
+								    "company": "",
+								    "taxNo": "",
+								    "address": "",
+								    "accountNo": ""
+								  },
+								  "agreementId": "82955",
+								  "gycbhId": null,
+								  "contactCode": "ITL20000006",
+								  "contactName": "Phạm Văn T",
+								  "contactDob": "24/12/1991",
+								  "receiveMethod": "1",
+								  "gycbhNumber": "AG.BVP.18.561",
+								  "oldGycbhNumber": null,
+								  "lineId": null,
+								  "inceptionDate": "04/10/2018",
+								  "expiredDate": "03/10/2019",
+								  "nguoidbhNgaysinh": "24/12/1991",
+								  "chuongtrinhBh": "1",
+								  "ngoaitru": "0",
+								  "ngoaitruPhi": 0,
+								  "tncn": "0",
+								  "tncnPhi": 0,
+								  "tncnPhiSi": 0,
+								  "tncnSotienbh": 0,
+								  "sinhmangSotienbh": 0,
+								  "sinhmang": "0",
+								  "sinhmangPhi": 0,
+								  "sinhmangPhiSi": 0,
+								  "nhakhoa": "0",
+								  "nhakhoaPhi": 0,
+								  "thaisan": "0",
+								  "thaisanPhi": 0,
+								  "discount": 0,
+								  "hasExtracare": false,
+								  "nguoiycName": "Nguyễn Văn A",
+								  "nguoiycNgaysinh": "24/12/1991",
+								  "nguoidbhName": "Nguyễn Văn A",
+								  "nguoidbhCmnd": "11111111",
+								  "nguoidbhQuanhe": "30",
+								  "q1": "0",
+								  "q2": "0",
+								  "q3": "0",
+								  "hasNguoithuhuong": false,
+								  "nguoithName": "Phạm Văn T",
+								  "nguoithCmnd": "32131231313",
+								  "nguoithQuanhe": "31",
+								  "nguoithNgaysinh": "24/12/1991",
+								  "hasNguoinhantien": false,
+								  "nguoinhanName": "Phạm Văn T",
+								  "nguoinhanCmnd": "32131231313",
+								  "nguoinhanQuanhe": "31",
+								  "nguointNgaysinh": "24/12/1991",
+								  "policyNumber": "AG.BVP.18.561",
+								  "policyParent": "",
+								  "chuongtrinhPhi": 1196000,
+								  "tanggiamPhi": 0,
+								  "tanggiamPhiNoidung": "",
+								  "lstAdd": [
+								    {
+								      "ngaydieutri": null,
+								      "chuandoan": "",
+								      "chitietdieutri": "",
+								      "ketqua": "",
+								      "benhvienorbacsy": ""
+								    }
+								  ],
+								  "files": ""
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 </div>
+
+	</div>
+</body>
+</html>

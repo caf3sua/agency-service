@@ -1,0 +1,139 @@
+<!doctype html>
+<html class="no-js">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Step common</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet"
+	href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet"
+	href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+<link rel="stylesheet" href="./../../content/css/main.css">
+<link rel="shortcut icon"
+	href="./../../content/images/logo-itsol-symbol.png" />
+<script src="./../../bower_components/jquery/dist/jquery.js"></script>
+<script
+	src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="./../../content/css/extra_doc.css">
+<script src="./../../content/js/pretty.json.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div id="lang_vn">
+			<h3>Cập nhật API ngày 07/11/2018</h3>
+
+			<div role="tabpanel" class="tab-pane active" id="guide">
+				<div class="panel panel-default">
+					<div class="panel-heading">Nội dung cập nhật</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>API</th>
+								<th>Mô tả</th>
+								<th>Ghi chú</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">1</th>
+								<td>/api/account</td>
+								<td>Cập nhật trong account-resource</td>
+								<td>Bổ xung danh sách phòng ban của User/Admin</td>
+							</tr>
+							<tr>
+								<th scope="row">2</th>
+								<td>/product/*/createPolicy</td>
+								<td>Thêm param departmentId (bắt buộc) trong product-*-resource</td>
+								<td>Khi tạo đơn hàng, bắt buộc phải truyền theo phòng ban (departmentId)</td>
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>/product/*/api/agency/account/login</td>
+								<td>Change name param email -> username</td>
+								<td>Thay đổi tên parameter</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container">
+		<div id="lang_vn">
+			<h3>Cập nhật API ngày 01/11/2018</h3>
+
+			<div role="tabpanel" class="tab-pane active" id="guide">
+				<div class="panel panel-default">
+					<div class="panel-heading">Nội dung cập nhật</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>API</th>
+								<th>Mô tả</th>
+								<th>Ghi chú</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">1</th>
+								<td>search-cart</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Hàm tra cứu danh sách hợp đồng trong giỏ hàng</td>
+							</tr>
+							<tr>
+								<th scope="row">2</th>
+								<td>search-order-other</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Hàm tra cứu danh sách đơn hàng bảo hiểm khác</td>
+							</tr>
+							<tr>
+								<th scope="row">3</th>
+								<td>search-order-agency</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Hàm tra cứu danh sách đơn hàng chờ đại lý giải quyết</td>
+							</tr>
+							<tr>
+								<th scope="row">4</th>
+								<td>search-order-wait</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Hàm tra cứu danh sách đơn hàng chờ Bảo Việt giải quyết</td>
+							</tr>
+							<tr>
+								<th scope="row">5</th>
+								<td>check-OTP</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Kiểm tra OTP và cập nhật trạng thái đơn hàng</td>
+							</tr>
+							<tr>
+								<th scope="row">6</th>
+								<td>resend-confirm-otp</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Gửi lại otp xác nhận đơn hàng.</td>
+							</tr>
+							<tr>
+								<th scope="row">7</th>
+								<td>get-orderHis-by-gycbhNumber</td>
+								<td>Thêm mới trong agreement-resource</td>
+								<td>Hàm lấy lịch sử đơn hàng</td>
+							</tr>
+							<tr>
+								<th scope="row">8</th>
+								<td>createCommunication</td>
+								<td>Thêm mới trong common-resource</td>
+								<td>Tạo hội thoại trao đổi thông tin</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+</body>
+</html>

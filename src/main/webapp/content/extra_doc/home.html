@@ -1,0 +1,313 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Home</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : Home product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/home/premium</td>
+								<td>obj PremiumHomeVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumHomeVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm Home</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/home/createPolicy</td>
+								<td>obj HomeBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>HomeBaseVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo đơn bảo hiểm sản phẩm Home</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn bảo hiểm</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/home/updatePolicy</td>
+								<td>obj UpdateAgreementHomeVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementHomeVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật đơn bảo hiểm sản phẩm Home</td>
+							</tr>
+							
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "premiumDiscount": 0,
+								  "premiumHome": 0,
+								  "premiumNet": 0,
+								  "premiumSi": 0,
+								  "premiumSiin": 0,
+								  "si": "300000000",
+								  "siin": "500000000",
+								  "yearBuildCode": "1"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "yearBuildCode": "1",
+								  "si": "300000000",
+								  "siin": "500000000",
+								  "premiumSi": 270000,
+								  "premiumSiin": 800000,
+								  "premiumHome": 1070000,
+								  "premiumNet": 1070000,
+								  "premiumDiscount": 0
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{  
+								   "bankId":"0",
+								   "baovietCompanyId":"",
+								   "baovietCompanyName":" ",
+								   "bars":"0",
+								   "byNight":"0981818981",
+								   "expiredDate":"03/10/2019",
+								   "gycbhNumber":"AG.HOM.18.30",
+								   "inceptionDate":"04/10/2018",
+								   "insuranceAddress":"14 Đỗ Đức Dục::Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội::07050002",
+								   "insuranceName":"Phạm Văn A",
+								   "insuredLocation":"14 Đỗ Đức Dục::Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội::07050002",
+								   "invoceNumber":"14151114141",
+								   "loaiHinh":"0",
+								   "policyNumber":"",
+								   "premiumDiscount":0,
+								   "premiumHome":1070000,
+								   "premiumNet":1070000,
+								   "premiumsi":270000,
+								   "premiumsiin":800000,
+								   "receiveMethod":"1",
+								   "si":"300000000",
+								   "siPremium":0,
+								   "siin":"500000000",
+								   "siinPremium":0,
+								   "totalUsedArea":22,
+								   "userAgent":"",
+								   "windowLocks":"0",
+								   "yearBuildCode":"1",
+								   "invoiceInfo":{  
+								      "accountNo":"",
+								      "address":"",
+								      "check":"0",
+								      "company":"",
+								      "name":"",
+								      "taxNo":""
+								   },
+								   "contactCode":"ITL20000003",
+								   "contactName":"Phạm Văn B",
+								   "contactDob":"24/06/1988",
+								   "contactPhone":"0988777666",
+								   "contactEmail":"string@gmail.com",
+								   "contactIdNumber":"1511141411",
+								   "contactAddress":"Hà nội nhé",
+								   "contactAddressDistrictData":{  
+								      "pkPostcode":"00470006",
+								      "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								      "pkProvince":"Hải Dương"
+								   },
+								   "insuranceAddressDistrict":{  
+								      "pkPostcode":"07050002",
+								      "pkDistrict":"Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội",
+								      "pkProvince":"Hà Nội"
+								   },
+								   "insuredLocationDistrict":{  
+								      "pkPostcode":"07050002",
+								      "pkDistrict":"Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội",
+								      "pkProvince":"Hà Nội"
+								   },
+								   "receiverUser":{  
+								      "name":"Phạm Văn B",
+								      "address":"Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								      "addressDistrictData":{  
+								         "pkPostcode":"00470006",
+								         "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								         "pkProvince":"Hải Dương"
+								      },
+								      "mobile":"0988777666",
+								      "email":"string@gmail.com"
+								   }
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "receiverUser" : {
+								    "name" : "Phạm Văn B",
+								    "address" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "email" : "string@gmail.com",
+								    "mobile" : "0988777666"
+								  },
+								  "invoiceInfo" : {
+								    "check" : "0",
+								    "name" : "",
+								    "company" : "",
+								    "taxNo" : "",
+								    "address" : "",
+								    "accountNo" : ""
+								  },
+								  "agreementId" : "82977",
+								  "gycbhId" : null,
+								  "contactCode" : "ITL20000003",
+								  "contactName" : "Phạm Văn B",
+								  "contactDob" : "24/06/1988",
+								  "receiveMethod" : "1",
+								  "gycbhNumber" : "AG.HOM.18.30",
+								  "oldGycbhNumber" : null,
+								  "lineId" : null,
+								  "yearBuildCode" : "1",
+								  "si" : "300000000",
+								  "siPremium" : 270000,
+								  "siin" : "500000000",
+								  "siinPremium" : 800000,
+								  "premiumsi" : 270000,
+								  "premiumsiin" : 800000,
+								  "premiumHome" : 1070000,
+								  "premiumNet" : 1070000,
+								  "premiumDiscount" : 0,
+								  "insuranceName" : "Phạm Văn A",
+								  "invoceNumber" : "14151114141",
+								  "insuranceAddress" : "14 Đỗ Đức Dục::Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội::07050002",
+								  "byNight" : "0981818981",
+								  "insuredLocation" : "14 Đỗ Đức Dục::Phường Mễ Trì, Quận Nam Từ Liêm, Hà Nội::07050002",
+								  "bankId" : "0",
+								  "totalUsedArea" : "22",
+								  "loaiHinh" : "0",
+								  "inceptionDate" : "04/10/2018",
+								  "expiredDate" : "03/10/2019",
+								  "windowLocks" : "0",
+								  "bars" : "0",
+								  "baovietCompanyId" : "",
+								  "baovietCompanyName" : " ",
+								  "policyNumber" : "",
+								  "userAgent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+								  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>

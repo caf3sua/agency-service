@@ -1,0 +1,214 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Step common</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./../../content/css/extra_doc.css">
+    <script src="./../../content/js/pretty.json.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<a href="javascript:changeLanguage('vn')" id="link_vn" class="active-link">Tiếng Việt</a> | <a id="link_en" href="javascript:changeLanguage('en')">English</a>
+		</div>
+		
+		<div id="lang_vn">
+			<h3>Giới thiệu chung : Common</h3>
+				<!-- Nav tabs -->
+		  		<ul class="nav nav-tabs" role="tablist">
+		    		<li role="presentation"  class="active">
+		        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Các bước xác thực</a>     
+		        	</li>
+		    		<li role="presentation">
+		        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Danh sách Services không cần xác thực</a>
+		    		</li>
+		  		</ul>
+		
+		  		<!-- Tab panes -->
+		  		<div class="tab-content">
+		  			<!-- Tab guide -->
+		    		<div role="tabpanel" class="tab-pane active" id="guide">
+		    			<div class="panel panel-default"> 
+		    				<div class="panel-heading">Mô tả</div> 
+		    				<div class="panel-body"> 
+		    					<p>Trước khi gọi các service tính phí, tạo hợp đồng luôn cần thực hiện Authentication để lấy token</p> 
+		   					</div> 
+		   					<table class="table"> 
+		   						<thead> 
+		   							<tr> 
+		   								<th>#</th> 
+		   								<th>Bước thực hiện</th> 
+		   								<th>Mô tả</th> 
+		   								<th>Ghi chú</th> 
+									</tr> 
+								</thead> 
+								<tbody> 
+									<tr> 
+										<th scope="row">1</th> 
+										<td>Login</td> 
+										<td>Gọi API : POST /api/agency/account/login, với các thông tin truyền vào email/password đê đăng nhập</td> 
+										<td>Nếu thành công sẽ trả về data như sau: <pre>{ "id_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkMDAwMDYxNT..."}</pre></td> 
+									</tr> 
+									<tr> 
+										<th scope="row">2</th> 
+										<td>Lấy token</td> 
+										<td>Lấy giá trị của id_token và set header của request theo format sau: <br> Authorization: Bearer <strong>id_token</strong></td> 
+										<td>id_token là giá trị được lấy từ json trả về sau login</td> 
+									</tr> 
+									<tr> 
+										<th scope="row">3</th> 
+										<td>Gọi API khác</td> 
+										<td>Sau khi set id_token vào header thì sẽ call được các API khác cần authentication</td> 
+										<td></td> 
+									</tr> 
+								</tbody> 
+							</table> 
+		   				</div>
+					</div>
+					<!-- Tab list -->
+			    	<div role="tabpanel" class="tab-pane" id="list">
+			    		<table class="table"> 
+							<thead> 
+								<tr> 
+									<th>#</th> 
+									<th>Tên</th> 
+									<th>Mô tả</th> 
+								</tr> 
+							</thead> 
+							<tbody> 
+								<tr> 
+									<th scope="row">1</th> 
+									<td>Login</td> 
+									<td>POST /api/agency/account/login</td> 
+								</tr> 
+								<tr> 
+									<th scope="row">2</th> 
+									<td>forgotPassword</td> 
+									<td>POST /api/agency/account/forgotPassword</td> 
+								</tr>
+								<tr> 
+									<th scope="row">3</th> 
+									<td>Register</td> 
+									<td>POST /api/agency/account/register</td> 
+								</tr>
+							</tbody> 
+						</table> 
+			    	</div>
+		 		 </div>
+		</div>
+		<div id="lang_en">
+			<h3>Document overview : Common</h3>
+			<!-- Nav tabs -->
+	  		<ul class="nav nav-tabs" role="tablistEn">
+	    		<li role="presentation"  class="active">
+	        		<a href="#guideEn" aria-controls="guideEn" role="tab" data-toggle="tab">Authentication step</a>     
+	        	</li>
+	    		<li role="presentation">
+	        		<a href="#listEn" aria-controls="listEn" role="tab" data-toggle="tab">Service list without authentication</a>
+	    		</li>
+	  		</ul>
+	
+	  		<!-- Tab panes -->
+	  		<div class="tab-content">
+	  			<!-- Tab guide -->
+	    		<div role="tabpanel" class="tab-pane active" id="guideEn">
+	    			<div class="panel panel-default"> 
+	    				<div class="panel-heading">Description</div> 
+	    				<div class="panel-body"> 
+	    					<p>Before calling the service charges, create a contract always need to perform Authentication to get token</p> 
+	   					</div> 
+	   					<table class="table"> 
+	   						<thead> 
+	   							<tr> 
+	   								<th>#</th> 
+	   								<th>Step</th> 
+	   								<th>Description</th> 
+	   								<th>Note</th> 
+								</tr> 
+							</thead> 
+							<tbody> 
+								<tr> 
+									<th scope="row">1</th> 
+									<td>Login</td> 
+									<td>Call API : POST /api/agency/account/login, input login param email/password</td> 
+									<td>Success will return the data as follows: <pre>{ "id_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkMDAwMDYxNT..."}</pre></td> 
+								</tr> 
+								<tr> 
+									<th scope="row">2</th> 
+									<td>Get token</td> 
+									<td>Set value id_token and set header of request follow format: <br> Authorization: Bearer <strong>id_token</strong></td> 
+									<td>value id_token get from json after login</td> 
+								</tr> 
+								<tr> 
+									<th scope="row">3</th> 
+									<td>Call API other</td> 
+									<td>After set id_token into the header will call API other need authentication</td> 
+									<td></td> 
+								</tr> 
+							</tbody> 
+						</table> 
+	   				</div>
+				</div>
+				<!-- Tab list -->
+		    	<div role="tabpanel" class="tab-pane" id="listEn">
+		    		<table class="table"> 
+						<thead> 
+							<tr> 
+								<th>#</th> 
+								<th>Name</th> 
+								<th>Description</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Login</td> 
+								<td>POST /api/agency/account/login</td> 
+							</tr> 
+							<tr> 
+								<th scope="row">2</th> 
+								<td>forgotPassword</td> 
+								<td>POST /api/agency/account/forgotPassword</td> 
+							</tr>
+							<tr> 
+								<th scope="row">3</th> 
+								<td>Register</td> 
+								<td>POST /api/agency/account/register</td> 
+							</tr>
+						</tbody> 
+					</table> 
+		    	</div>
+	 		 </div>
+		</div>
+	</div>
+</body>
+</html>
+
+<script>
+$(document).ready(function() {
+	changeLanguage('vn'); // default
+});
+
+function changeLanguage(lang) {
+	if (lang == 'vn') {
+		$('#lang_en').hide();
+		$('#lang_vn').show();
+		$('#link_vn').addClass('active-link');
+		$('#link_en').removeClass('active-link');
+	} else {
+		$('#lang_en').show();
+		$('#lang_vn').hide();
+		$('#link_en').addClass('active-link');
+		$('#link_vn').removeClass('active-link');
+	}
+}
+</script>

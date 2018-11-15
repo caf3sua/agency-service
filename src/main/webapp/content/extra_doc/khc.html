@@ -1,0 +1,447 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product KHC</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="./../../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../bower_components/angular-loading-bar/build/loading-bar.css">
+    <link rel="stylesheet" href="./../../content/css/main.css">
+    <link rel="shortcut icon" href="./../../content/images/logo-itsol-symbol.png" />
+    <script src="./../../bower_components/jquery/dist/jquery.js"></script>
+    <script src="./../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h3>Document overview : KHC product</h3>
+		<!-- Nav tabs -->
+  		<ul class="nav nav-tabs" role="tablist">
+    		<li role="presentation"  class="active">
+        		<a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Service guide</a>     
+        	</li>
+    		<li role="presentation">
+        		<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Service list</a>
+    		</li>
+    		<li role="presentation">
+        		<a href="#data_sample" aria-controls="data_sample" role="tab" data-toggle="tab">Data sample</a>
+    		</li>
+  		</ul>
+
+  		<!-- Tab panes -->
+  		<div class="tab-content">
+  			<!-- Tab guide -->
+    		<div role="tabpanel" class="tab-pane active" id="guide">
+    			<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Description</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="3%">Step</th> 
+   								<th width="17%">Customer</th> 
+   								<th width="55%">Partner</th> 
+   								<th width="25%">Note</th> 
+							</tr> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<th scope="row">1</th> 
+								<td>Nhập thông tin bảo hiểm</td> 
+								<td>
+									<ul>
+										<li>Gọi service tính phí sản phẩm</li>
+										<li>Hiển thị phí sản phẩm</li>
+									</ul>
+								</td>
+								<td></td> 
+							</tr> 
+						</tbody> 
+					</table> 
+   				</div>
+			</div>
+			<!-- Tab list -->
+	    	<div role="tabpanel" class="tab-pane" id="list">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Summary</div> 
+    				<div class="panel-body"> 
+    					<p>Xem tài liệu common</p> 
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">Name</th> 
+   								<th width="15%">Function</th>
+   								<th width="15%">API</th>
+   								<th width="20%">Input</th> 
+   								<th width="25%">Output</th> 
+   								<th width="10%">Description</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>Tính phí sản phẩm</td>
+								<td>getPremium</td>
+								<td>POST /api/agency/product/khc/premium</td>
+								<td>obj PremiumKhcVM</td>
+								<td>- <b>getPremium</b> data: Thành công trả về obj <b>PremiumKhcVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tính phí sản phẩm Khc</td>
+							</tr>
+							
+							<tr>
+								<td>Tạo đơn KHC</td>
+								<td>createPolicy</td>
+								<td>POST /api/agency/product/khc/createPolicy</td>
+								<td>obj KhcBaseVM</td>
+								<td>- <b>createPolicy</b> data: Thành công trả về obj <b>KhcResultVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm tạo đơn bảo hiểm kết hợp con người</td>
+							</tr>
+							
+							<tr>
+								<td>Cập nhật đơn KHC</td>
+								<td>updatePolicy</td>
+								<td>POST /api/agency/product/khc/updatePolicy</td>
+								<td>obj UpdateAgreementKhcVM</td>
+								<td>- <b>updatePolicy</b> data: Thành công trả về obj <b>UpdateAgreementKhcVM</b> nếu có lỗi trả về giá trị Null</td>
+								<td>Hàm cập nhật đơn bảo hiểm kết hợp con người</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 	<div role="tabpanel" class="tab-pane" id="data_sample">
+	    		<div class="panel panel-default"> 
+    				<div class="panel-heading">Data sample</div> 
+    				<div class="panel-body"> 
+    					<p>Dữ liệu test demo</p>
+    					<p><b>* Chú ý</b></p>
+    					<p><b>Một số trường ngày phải lớn hơn ngày hiện tại (Ví dụ: Ngày bắt đầu tham gia bảo hiểm,...)</b></p>
+    					<p><b>Cần thay đổi contactCode để phù hợp với tài khoản đăng nhập</b></p>
+   					</div> 
+   					<table class="table"> 
+   						<thead> 
+   							<tr> 
+   								<th width="15%">#</th> 
+   								<th width="15%">API</th>
+   								<th width="">Input data sample</th>
+   								<th width="">Output</th> 
+							</tr> 
+						</thead> 
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>Tính phí sản phẩm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "insuranceStartDate" : "04/10/2018",
+								  "numberMonth": 12,
+								  "numberPerson": 1,
+								  "premiumDiscount": 0,
+								  "premiumKhc": 0,
+								  "premiumKhcList": [
+								    {
+								      "dob" : "24/06/1989",
+								      "personName": "",
+								      "premiumPerson": 0
+								    }
+								  ],
+								  "premiumNet": 0,
+								  "premiumPackage": 30000000
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "insuranceStartDate": "04/10/2018",
+								  "numberPerson": 1,
+								  "numberMonth": 12,
+								  "premiumKhcList": [
+								    {
+								      "dob": "24/06/1989",
+								      "insuredName": null,
+								      "premium": 87000
+								    }
+								  ],
+								  "premiumPackage": 30000000,
+								  "premiumNet": 87000,
+								  "premiumDiscount": 0,
+								  "premiumKhc": 87000
+								}
+								</pre>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>2</td>
+								<td>Tạo đơn bảo hiểm</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{  
+								   "insuranceStartDate":"04/10/2018",
+								   "numberMonth":0,
+								   "numberPerson":1,
+								   "premiumDiscount":0,
+								   "premiumKhc":87000,
+								   "premiumKhcList":[  
+								      {  
+								         "dob":"24/06/1988",
+								         "insuredName":"Phạm Văn B",
+								         "premium":87000,
+								         "yearOld":29,
+								         "idPasswport":"1511141411"
+								      }
+								   ],
+								   "premiumNet":87000,
+								   "premiumPackage":"30000000",
+								   "inceptionDate":"04/10/2018",
+								   "permanentTotalDisablement":1,
+								   "plan":3,
+								   "receiveMethod":"1",
+								   "tlAddcollections":[  
+								      {  
+								         "dob":"24/06/1988",
+								         "insuredName":"Phạm Văn B",
+								         "premium":87000,
+								         "yearOld":29,
+								         "idPasswport":"1511141411"
+								      }
+								   ],
+								   "userAgent":"",
+								   "invoiceInfo":{  
+								      "accountNo":"",
+								      "address":"",
+								      "check":"0",
+								      "company":"",
+								      "name":"",
+								      "taxNo":""
+								   },
+								   "insuranceEndDate":"03/10/2019",
+								   "contactCode":"ITL20000003",
+								   "contactName":"Phạm Văn B",
+								   "contactDob":"24/06/1988",
+								   "contactPhone":"0988777666",
+								   "contactEmail":"string@gmail.com",
+								   "contactIdNumber":"1511141411",
+								   "contactAddress":"Hà nội nhé",
+								   "contactAddressDistrictData":{  
+								      "pkPostcode":"00470006",
+								      "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								      "pkProvince":"Hải Dương"
+								   },
+								   "receiverUser":{  
+								      "name":"Phạm Văn B",
+								      "address":"Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								      "addressDistrictData":{  
+								         "pkPostcode":"00470006",
+								         "pkDistrict":"Xã Tiền Tiến, Huyện Thanh Hà",
+								         "pkProvince":"Hải Dương"
+								      },
+								      "mobile":"0988777666",
+								      "email":"string@gmail.com"
+								   },
+								   "gycbhNumber":"AG.KHC.18.22"
+								}
+								</pre>
+								</td>
+								<td>
+								<pre style="text-align: left;white-space: pre-line">
+								{
+								  "tlDTO" : {
+								    "agentId" : "ITL2",
+								    "agentName" : "Lê Minh Đức",
+								    "bankId" : " ",
+								    "bankName" : " ",
+								    "baovietCompanyId" : " ",
+								    "baovietCompanyName" : " ",
+								    "baovietDepartmentId" : " ",
+								    "baovietDepartmentName" : " ",
+								    "baovietUserId" : " ",
+								    "baovietUserName" : " ",
+								    "beneficiaryAddress" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "beneficiaryIdNumber" : "1511141411",
+								    "beneficiaryName" : "Phạm Văn B",
+								    "beneficiaryRelationship" : " ",
+								    "changePremiumContent" : " ",
+								    "changePremiumPremium" : 0.0,
+								    "changePremiumRate" : 0.0,
+								    "changePremiumType" : " ",
+								    "contactCode" : "ITL20000003",
+								    "contactEmail" : "string@gmail.com",
+								    "contactGoitinhId" : "1",
+								    "contactId" : "6526",
+								    "contactName" : "Phạm Văn B",
+								    "contactPhone" : "0988777666",
+								    "dateOfBirth" : "24/06/1988",
+								    "dateOfPayment" : "03/10/2018",
+								    "dateOfRequirement" : "03/10/2018",
+								    "death" : 3.0E7,
+								    "expiredDate" : "03/10/2019",
+								    "feeReceive" : 0.0,
+								    "inceptionDate" : "04/10/2018",
+								    "medicalExpenses" : 0.0,
+								    "note" : " ",
+								    "occupation" : " ",
+								    "pathCreated" : " ",
+								    "pathOwner" : " ",
+								    "permanentAddress" : " ",
+								    "permanentPartDisablement" : 0.0,
+								    "permanentTotalDisablement" : 1,
+								    "plan" : "30000000",
+								    "policyNumber" : "AG.KHC.18.22",
+								    "policySendDate" : "03/10/2018",
+								    "policyStatus" : " ",
+								    "policyStatusName" : " ",
+								    "postalAddress" : " ",
+								    "receiverAddress" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "receiverMobile" : "0988777666",
+								    "receiverName" : "Phạm Văn B",
+								    "renewalsReason" : " ",
+								    "responseDate" : "03/10/2018",
+								    "sendDate" : "03/10/2018",
+								    "smartappSysdate" : "03/10/2018",
+								    "soGycbh" : "AG.KHC.18.22",
+								    "statusId" : "90",
+								    "statusName" : "Chưa thanh toán",
+								    "statusRenewalsId" : " ",
+								    "statusRenewalsName" : " ",
+								    "taxIdNumber" : " ",
+								    "teamId" : " ",
+								    "teamName" : " ",
+								    "totalBasicPremium" : 87000.0,
+								    "totalNetPremium" : 87000.0,
+								    "totalPremium" : 87000.0,
+								    "voiceCheck" : 1,
+								    "weeklyBenefit" : 0.0
+								  },
+								  "tlAddDTO" : [ {
+								    "dob" : "24/06/1988",
+								    "idPasswport" : "1511141411",
+								    "insuredName" : "Phạm Văn B",
+								    "premium" : 87000.0,
+								    "tlId" : "491"
+								  } ],
+								  "agreementDTO" : {
+								    "agentId" : "ITL2",
+								    "agentName" : "Lê Minh Đức",
+								    "agreementId" : "82975",
+								    "agreementSysdate" : "03/10/2018",
+								    "cancelPolicyCommision" : 0.0,
+								    "cancelPolicyCommision2" : 0.0,
+								    "cancelPolicyCommision3" : 0.0,
+								    "cancelPolicyDate" : "03/10/2018",
+								    "cancelPolicyPremium" : 0.0,
+								    "cancelPolicyPremium2" : 0.0,
+								    "cancelPolicyPremium3" : 0.0,
+								    "cancelPolicySupport" : 0.0,
+								    "cancelPolicySupport2" : 0.0,
+								    "cancelPolicySupport3" : 0.0,
+								    "changePremium" : 0.0,
+								    "claimRate" : 0.0,
+								    "claimRate1" : 0.0,
+								    "claimRate2" : 0.0,
+								    "commision" : 0.0,
+								    "commisionSupport" : 0.0,
+								    "contactAddress" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "contactAddresstt" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::Hải Dương::00470006",
+								    "contactDob" : "24/06/1988",
+								    "contactId" : "6526",
+								    "contactName" : "Phạm Văn B",
+								    "contactPhone" : "0988777666",
+								    "contactUsername" : "string@gmail.com",
+								    "couponsValue" : 0.0,
+								    "dateOfPayment" : "03/10/2018",
+								    "dateOfRequirement" : "03/10/2018",
+								    "expiredDate" : "03/10/2019",
+								    "feeReceive" : 0.0,
+								    "gycbhId" : "491",
+								    "gycbhNumber" : "AG.KHC.18.22",
+								    "inceptionDate" : "04/10/2018",
+								    "isPolicy" : 0,
+								    "lineId" : "KHC",
+								    "lineName" : "Bảo hiểm kết hợp con người",
+								    "mciAddId" : "AG.PAY.18.959",
+								    "netPremium" : 87000.0,
+								    "policyNumber" : "AG.KHC.18.22",
+								    "receiveMethod" : "1",
+								    "receiverAddress" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								    "receiverEmail" : "string@gmail.com",
+								    "receiverMoible" : "0988777666",
+								    "receiverName" : "Phạm Văn B",
+								    "renewalsPremium" : 0.0,
+								    "renewalsPremium1" : 0.0,
+								    "renewalsPremium2" : 0.0,
+								    "renewalsRate" : 0.0,
+								    "renewalsRate1" : 0.0,
+								    "renewalsRate2" : 0.0,
+								    "renewalsSi" : 0.0,
+								    "responseDate" : "03/10/2018",
+								    "sendDate" : "03/10/2018",
+								    "standardPremium" : 87000.0,
+								    "statusGycbhId" : "90",
+								    "statusGycbhName" : "Chưa xác định",
+								    "statusPolicyId" : "90",
+								    "statusPolicyName" : "Chưa Thanh Toán",
+								    "taxIdNumber" : "1511141411",
+								    "teamId" : "1",
+								    "totalPremium" : 87000.0,
+								    "totalVat" : 0.0,
+								    "userAgent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+								    AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+								    "createType" : 0
+								  },
+								  "khcBaseVM" : {
+								    "receiverUser" : {
+								      "name" : "Phạm Văn B",
+								      "address" : "Hà nội nhé::Xã Tiền Tiến, Huyện Thanh Hà::00470006",
+								      "email" : "string@gmail.com",
+								      "mobile" : "0988777666"
+								    },
+								    "invoiceInfo" : {
+								      "check" : "0",
+								      "name" : "",
+								      "company" : "",
+								      "taxNo" : "",
+								      "address" : "",
+								      "accountNo" : ""
+								    },
+								    "agreementId" : null,
+								    "gycbhId" : null,
+								    "contactCode" : "ITL20000003",
+								    "contactName" : "Phạm Văn B",
+								    "contactDob" : "24/06/1988",
+								    "receiveMethod" : "1",
+								    "gycbhNumber" : "AG.KHC.18.22",
+								    "oldGycbhNumber" : null,
+								    "lineId" : null,
+								    "permanentTotalDisablement" : 1,
+								    "plan" : 3,
+								    "inceptionDate" : "04/10/2018",
+								    "tlAddcollections" : [ {
+								      "dob" : "24/06/1988",
+								      "idPasswport" : "1511141411",
+								      "insuredName" : "Phạm Văn B",
+								      "premium" : 87000.0
+								    } ],
+								    "userAgent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+								    AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+								  }
+								}
+								</pre>
+								</td>
+							</tr>
+						</tbody> 
+					</table> 
+   				</div>
+	    	</div>
+ 		 
+ 		 </div>
+
+	</div>
+</body>
+</html>
