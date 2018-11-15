@@ -440,7 +440,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         Query query = entityManager.createNativeQuery(buildSearchCart(expression, obj, type), Agreement.class);
 
         // set parameter 
- 		setQueryParameterAgreementWait(query, obj, type);
+        setQuerySearchCart(query, obj, type);
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -791,13 +791,13 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
         
         if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND CONTACT_USERNAME = :pEmail";
+        	expression = expression +  " AND CONTACT_USERNAME LIKE '%" + obj.getEmail() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	expression = expression +  " AND UPPER(GYCBH_NUMBER) = UPPER(:pGycbhNumber)";
+        	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND CONTACT_PHONE = :pPhone";
+        	expression = expression +  " AND CONTACT_PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	expression = expression +  " AND LINE_ID = :pLineId";
@@ -1112,6 +1112,26 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		return pageable;
 	}
 	
+	private void setQuerySearchCart(Query query, SearchAgreementWaitVM obj, String type) {
+		query.setParameter("pType", type);
+        if (!StringUtils.isEmpty(obj.getProductCode())) {
+        	query.setParameter("pLineId", obj.getProductCode());
+        } 
+        // Date
+        if (obj.getFromDate() != null) {
+        	query.setParameter("pFromDate", obj.getFromDate());
+        } 
+        if (obj.getToDate() != null) {
+        	query.setParameter("pToDate", obj.getToDate());
+        }
+        if (!StringUtils.isEmpty(obj.getCreateType())) {
+        	query.setParameter("pCreateType", obj.getCreateType());
+        }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	query.setParameter("pDepartment", obj.getDepartmentId());
+        }
+	}
+	
 	private void setQueryParameterAgreementWait(Query query, SearchAgreementWaitVM obj, String type) {
 		query.setParameter("pType", type);
         if (!StringUtils.isEmpty(obj.getEmail())) {
@@ -1198,7 +1218,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		Query query = entityManager.createNativeQuery(buildSearchCart(expression, obj, type));
 
 		// set parameter 
-		setQueryParameterAgreementWait(query, obj, type);
+		setQuerySearchCart(query, obj, type);
 		
         Object[] data = (Object[]) query.getSingleResult();
         
