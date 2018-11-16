@@ -45,4 +45,6 @@ public class AgentReminderDTO implements Serializable {
 	// More properties (no need when create)
 	private String contactName; 
 	
+	private String productName;
+	
 }

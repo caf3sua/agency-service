@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.domain.AgentReminder;
+import com.baoviet.agency.domain.CategoryReminder;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgentReminderDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AgentReminderRepository;
+import com.baoviet.agency.repository.CategoryReminderRepository;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.service.AgentReminderService;
 import com.baoviet.agency.service.mapper.AgentReminderMapper;
@@ -45,6 +47,9 @@ public class AgentReminderServiceImpl implements AgentReminderService {
     @Autowired
     private ContactRepository contactRepository;
     
+    @Autowired
+    private CategoryReminderRepository categoryReminderRepository;
+    
 	@Override
 	public List<AgentReminderDTO> getAll(String type) {
 		log.debug("Request to getAll AgentReminderDTO : type{} ", type);
@@ -55,6 +60,13 @@ public class AgentReminderServiceImpl implements AgentReminderService {
 				if (co != null) {
 					if (co.getContactName() != null) {
 						item.setContactName(co.getContactName());
+					}
+				}
+				
+				List<CategoryReminder> lstCategoryReminder = categoryReminderRepository.findByCode(item.getProductCode());
+				if (lstCategoryReminder != null && lstCategoryReminder.size() > 0) {
+					if (lstCategoryReminder.get(0).getName() != null) {
+						item.setProductName(lstCategoryReminder.get(0).getName());
 					}
 				}
 			}
@@ -86,6 +98,13 @@ public class AgentReminderServiceImpl implements AgentReminderService {
 						item.setContactName(co.getContactName());
 					}
 				}
+				List<CategoryReminder> lstCategoryReminder = categoryReminderRepository.findByCode(item.getProductCode());
+				if (lstCategoryReminder != null && lstCategoryReminder.size() > 0) {
+					if (lstCategoryReminder.get(0).getName() != null) {
+						item.setProductName(lstCategoryReminder.get(0).getName());
+					}
+				}
+				
 			}
 			return data;
 		}
