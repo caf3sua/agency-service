@@ -432,7 +432,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public Page<Agreement> searchCart(SearchAgreementWaitVM obj, String type) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT * FROM AGREEMENT WHERE STATUS_POLICY_ID ='90' AND CREATE_TYPE IN ('0','2') AND AGENT_ID = :pType";
+		String expression = "SELECT * FROM AGREEMENT WHERE STATUS_POLICY_ID ='90' AND AGENT_ID = :pType";
         
         Query query = entityManager.createNativeQuery(buildSearchCart(expression, obj, type), Agreement.class);
 
