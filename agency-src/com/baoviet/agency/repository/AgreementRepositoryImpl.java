@@ -31,12 +31,9 @@ import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Conversation;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.utils.DateUtils;
-import com.baoviet.agency.web.rest.vm.OrderInfoVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementWaitVM;
 import com.baoviet.agency.web.rest.vm.common.PageableVM;
-
-import sun.misc.BASE64Encoder;
 
 /**
  * Spring Data JPA repository for the GnocCR module.

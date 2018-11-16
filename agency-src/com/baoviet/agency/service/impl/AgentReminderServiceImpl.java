@@ -48,7 +48,7 @@ public class AgentReminderServiceImpl implements AgentReminderService {
 	@Override
 	public List<AgentReminderDTO> getAll(String type) {
 		log.debug("Request to getAll AgentReminderDTO : type{} ", type);
-		List<AgentReminderDTO> data = agentReminderMapper.toDto(agentReminderRepository.findByActiveAndType("1", type));
+		List<AgentReminderDTO> data = agentReminderMapper.toDto(agentReminderRepository.findByType(type));
 		if (data != null && data.size() > 0) {
 			for (AgentReminderDTO item : data) {
 				Contact co = contactRepository.findOne(item.getContactId());
