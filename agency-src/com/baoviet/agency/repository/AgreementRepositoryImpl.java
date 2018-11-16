@@ -704,14 +704,14 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	// caseWait:  0: chờ bảo việt, 1: chờ đại lý, 2: Khác; 5 quá hạn
 	private String buildSearchExpressionAgreementWait(String expression, SearchAgreementWaitVM obj, String caseWait) {
 		if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
         }
         
         if (!StringUtils.isEmpty(obj.getEmail())) {
         	expression = expression +  " AND CONTACT_USERNAME = :pEmail";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	expression = expression +  " AND GYCBH_NUMBER = :pGycbhNumber";
+        	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
         	expression = expression +  " AND CONTACT_PHONE = :pPhone";
@@ -1056,9 +1056,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		query.setParameter("pDepartmentId", departmentId);
         if (!StringUtils.isEmpty(obj.getEmail())) {
         	query.setParameter("pEmail", obj.getEmail());
-        }
-        if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	query.setParameter("pGycbhNumber", obj.getGycbhNumber());
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
         	query.setParameter("pPhone", obj.getPhone());

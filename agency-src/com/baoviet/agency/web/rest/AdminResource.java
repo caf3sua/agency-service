@@ -24,19 +24,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.AdminUserBu;
+import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
+import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.MvAgentAgreement;
 import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.ContactDTO;
 import com.baoviet.agency.dto.ConversationDTO;
 import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AdminUserBuRepository;
-import com.baoviet.agency.repository.AdminUserRepository;
 import com.baoviet.agency.repository.AgreementHisRepository;
+import com.baoviet.agency.repository.AgreementRepository;
+import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.security.SecurityUtils;
@@ -44,11 +48,15 @@ import com.baoviet.agency.service.AdminUserService;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.ConversationService;
 import com.baoviet.agency.service.MailService;
+import com.baoviet.agency.service.mapper.AgreementMapper;
+import com.baoviet.agency.service.mapper.ContactMapper;
 import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.web.rest.util.PaginationUtil;
 import com.baoviet.agency.web.rest.vm.AdminSearchAgencyVM;
 import com.baoviet.agency.web.rest.vm.AgencyChangePasswordVM;
+import com.baoviet.agency.web.rest.vm.AgreementYcbhOfflineVM;
+import com.baoviet.agency.web.rest.vm.ContactCodeSearchVM;
 import com.baoviet.agency.web.rest.vm.ConversationVM;
 import com.baoviet.agency.web.rest.vm.ForgotPasswordVM;
 import com.baoviet.agency.web.rest.vm.OrderAdminVM;
@@ -78,9 +86,6 @@ public class AdminResource extends AbstractAgencyResource {
     private AdminUserService adminUserService;
 	
 	@Autowired
-    private AdminUserRepository adminUserRepository;
-	
-	@Autowired
 	private MailService mailService;
 	
 	@Autowired
@@ -97,6 +102,18 @@ public class AdminResource extends AbstractAgencyResource {
 	
 	@Autowired
 	private AgreementHisRepository agreementHisRepository;
+	
+	@Autowired
+	private AgreementRepository agreementRepository;
+	
+	@Autowired
+	private AgreementMapper agreementMapper;
+	
+	@Autowired
+	private ContactMapper contactMapper;
+
+	@Autowired
+	private ContactRepository contactRepository;
 	
 	@PostMapping("/search-admin-cart")
 	@Timed
@@ -429,6 +446,41 @@ public class AdminResource extends AbstractAgencyResource {
 		// Return data
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
+	
+	@PostMapping("/adm-getYcbhOffline-by-gycbhNumber")
+    @Timed
+    public ResponseEntity<AgreementYcbhOfflineVM> getYcbhOfflineByGycbhNumber(@RequestBody OrderCancelVM param) throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to getYcbhOfflineByGycbhNumber");
+	
+		// get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+		Agreement data = agreementRepository.findByGycbhNumber(param.getGycbhNumber());
+		
+		if (data == null) {
+			throw new AgencyBusinessException(param.getGycbhNumber(), ErrorCode.INVALID, "Không tồn tại đơn hàng với mã " + param.getGycbhNumber());
+		}
+		
+		AgreementYcbhOfflineVM offline = agreementService.getYcbhOfflineByGycbhNumber(agreementMapper.toDto(data), currentAgency);
+		
+		// Return data
+        return new ResponseEntity<>(offline, HttpStatus.OK);
+    }
+	
+	@PostMapping("/adm-get-contact-by-code")
+    @Timed
+    public ResponseEntity<ContactDTO> getByContactCode(@Valid @RequestBody ContactCodeSearchVM param) throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to getByContactCode");
+	
+		// Call service to get menu
+		Contact contact = contactRepository.findOneByContactCode(param.getContactCode());
+		
+		if (contact == null) {
+			throw new AgencyBusinessException("contactCode", ErrorCode.INVALID, "Không tồn tại khách hàng với mã " + param.getContactCode());
+		}
+		
+		// Return data
+        return new ResponseEntity<>(contactMapper.toDto(contact), HttpStatus.OK);
+    }
 	
 	private boolean checkOldLength(String userLogin, String oldPassword) {
 		AgencyDTO account = adminUserService.findByEmail(userLogin);
