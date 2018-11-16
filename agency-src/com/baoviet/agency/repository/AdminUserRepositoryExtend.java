@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.web.rest.vm.AdminSearchAgencyVM;
 
 /**
@@ -15,4 +16,5 @@ public interface AdminUserRepositoryExtend {
 
 	List<AgencyDTO> searchAgency(AdminSearchAgencyVM param, String adminId);
 	
+	List<DepartmentDTO> searchDepartment (String agentId);
 }

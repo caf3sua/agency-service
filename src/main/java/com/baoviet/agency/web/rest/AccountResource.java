@@ -188,7 +188,7 @@ public class AccountResource {
     			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     		}
     		// Load department
-    		List<DepartmentDTO> lstDepartment = loadDepartment(existingUser.getMa());
+    		List<DepartmentDTO> lstDepartment = adminUserService.searchDepartment(existingUser.getMa());
     		if (lstDepartment != null && lstDepartment.size() > 0) {
     			existingUser.setLstDepartment(lstDepartment);
     		}

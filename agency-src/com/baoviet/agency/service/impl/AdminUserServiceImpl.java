@@ -16,6 +16,7 @@ import com.baoviet.agency.domain.AdminPermission;
 import com.baoviet.agency.domain.AdminRole;
 import com.baoviet.agency.domain.AdminUser;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.repository.AdminUserRepository;
 import com.baoviet.agency.service.AdminUserService;
 import com.baoviet.agency.web.rest.vm.AdminSearchAgencyVM;
@@ -101,6 +102,11 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Override
 	public List<AgencyDTO> searchAgency(AdminSearchAgencyVM param, String adminId) {
 		return adminUserRepository.searchAgency(param, adminId);
+	}
+	
+	@Override
+	public List<DepartmentDTO> searchDepartment (String agentId) {
+		return adminUserRepository.searchDepartment(agentId);
 	}
 
     /*

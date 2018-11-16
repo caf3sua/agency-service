@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.AgentReminder;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.service.impl.AgentReminderServiceImpl;
 import com.baoviet.agency.service.mapper.AgencyMapper;
 import com.baoviet.agency.web.rest.vm.AdminSearchAgencyVM;
@@ -60,6 +61,36 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
         	return convertToDTO(data, param);
         }
         return null;
+	}
+	
+	@Override
+	public List<DepartmentDTO> searchDepartment(String agentId) {
+		String expression1 = "SELECT OL.PR_OUTLET_AMS_ID departmentId, OL.PR_OUTLET_NAME departmentName FROM MV_CLA_OUTLET_LOCATION OL WHERE OL.OUTLET_AMS_ID = '"+ agentId +"' AND OL.PR_OUTLET_AMS_ID IS NOT NULL";
+		
+		String expression2 = "SELECT AA.DEPARTMENT_CODE departmentId, AA.DEPARTMENT_NAME departmentName FROM MV_AGENT_AGREEMENT AA WHERE AA.AGENT_CODE  = '"+ agentId +"' AND AA.DEPARTMENT_CODE IS NOT NULL";
+		
+        String expression = expression1 + " UNION " + expression2;
+		
+        Query query = entityManager.createNativeQuery(expression);
+        
+        List<Object[]> data = query.getResultList();
+        log.debug("Request to searchAgency : data {} ", data.size());
+        if (data != null && data.size() > 0) {
+        	return convertDepartmentToDTO(data);
+        }
+        return null;
+	}
+	
+	private List<DepartmentDTO> convertDepartmentToDTO(List<Object[]> data) {
+		List<DepartmentDTO> lstResult = new ArrayList<>();
+		for (Object[] item : data) {
+			DepartmentDTO department = new DepartmentDTO();
+			department.setDepartmentId(item[0].toString());
+			department.setDepartmentName(item[1].toString());
+			lstResult.add(department);
+		}
+		
+		return lstResult;
 	}
 
 	private List<AgencyDTO> convertToDTO(List<Object[]> data, AdminSearchAgencyVM param) {
