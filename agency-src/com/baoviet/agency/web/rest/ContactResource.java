@@ -288,8 +288,10 @@ public class ContactResource extends AbstractAgencyResource {
 		// Get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 				
-		// Get all contact
-		List<AgentReminderDTO> data = agentReminderService.getAll(currentAgency.getMa());
+		// Get all reminder by active
+		ReminderSearchVM param = new ReminderSearchVM();
+		param.setActive("1");
+		List<AgentReminderDTO> data = agentReminderService.searchReminder(param, currentAgency.getMa());
 		int numberRemiber = 0;
 		if (data != null && data.size() > 0) {
 			numberRemiber = data.size();

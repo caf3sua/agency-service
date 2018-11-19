@@ -46,6 +46,9 @@ public class AgentReminderRepositoryImpl implements AgentReminderRepositoryExten
         if (param.getToDate() != null) {
         	expression = expression +  " AND REMINDE_DATE <= :pToDate";
         }
+        if (!StringUtils.isEmpty(param.getActive())) {
+        	expression = expression +  " AND ACTIVE = :pActive";
+        }
 		
         Query query = entityManager.createNativeQuery(expression, AgentReminder.class);
         query.setParameter("pType", type);
@@ -61,6 +64,9 @@ public class AgentReminderRepositoryImpl implements AgentReminderRepositoryExten
         }
         if (param.getToDate() != null) {
         	query.setParameter("pToDate", param.getToDate());
+        }
+        if (!StringUtils.isEmpty(param.getActive())) {
+        	query.setParameter("pActive", param.getActive());
         }
         
         List<AgentReminder> data = query.getResultList();
