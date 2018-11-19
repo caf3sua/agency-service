@@ -420,6 +420,7 @@ public class ContactServiceImpl implements ContactService {
 		ContactUpdateVM contact = new ContactUpdateVM();
 
 		contact.setContactId(co.getContactId());
+		contact.setContactCode(co.getContactCode());
 		if (!StringUtils.isEmpty(co.getContactName())) {
 			contact.setContactName(co.getContactName());
 		}

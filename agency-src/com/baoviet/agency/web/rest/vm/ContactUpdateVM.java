@@ -19,4 +19,5 @@ public class ContactUpdateVM extends ContactCreateVM {
 	@ApiModelProperty(value = "ID khách hàng/Contact id", required = true)
 	private String contactId;
 
+	private String contactCode;
 }
