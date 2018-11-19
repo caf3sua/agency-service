@@ -52,4 +52,10 @@ public class AgreementYcbhOfflineVM {
 	
 	@ApiModelProperty(value = "Id phòng ban")
 	private String departmentId;
+	
+	@ApiModelProperty(value = "Ngày hiệu lực từ", allowableValues = "dd/MM/yyyy")
+    private String ngayHieulucTu;
+	
+	@ApiModelProperty(value = "Ngày hiệu lực đến", allowableValues = "dd/MM/yyyy")
+    private String ngayHieulucDen;
 }

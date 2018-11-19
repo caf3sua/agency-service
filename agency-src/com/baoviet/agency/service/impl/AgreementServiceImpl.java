@@ -1037,6 +1037,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		if (!StringUtils.isEmpty(obj.getMaSanPham())) {
 			agreement.setLineId(obj.getMaSanPham());
 		}
+		if (!StringUtils.isEmpty(obj.getNgayHieulucTu())) {
+			agreement.setInceptionDate(DateUtils.str2Date(obj.getNgayHieulucTu()));
+		}
+		if (!StringUtils.isEmpty(obj.getNgayHieulucDen())) {
+			agreement.setExpiredDate(DateUtils.str2Date(obj.getNgayHieulucDen()));
+		}
 		
 		// phong ban
 		if (StringUtils.isEmpty(obj.getDepartmentId())) {
@@ -1198,6 +1204,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		offline.setGycbhNumber(obj.getGycbhNumber());
 		offline.setTotalPremium(obj.getTotalPremium().longValue());
 		offline.setDepartmentId(obj.getBaovietDepartmentId());
+		if (obj.getInceptionDate() != null) {
+			offline.setNgayHieulucTu(DateUtils.date2Str(obj.getInceptionDate()));	
+		}
+		if (obj.getExpiredDate() != null) {
+			offline.setNgayHieulucDen(DateUtils.date2Str(obj.getExpiredDate()));	
+		}
 		
 		List<ConversationDTO> lstconversation = conversationService.getByParrentId(obj.getAgreementId());
 		if (lstconversation != null && lstconversation.size() > 0) {
