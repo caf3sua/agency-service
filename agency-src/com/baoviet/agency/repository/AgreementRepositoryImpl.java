@@ -657,17 +657,17 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private String buildSearchExpression(String expression, SearchAgreementVM obj, String type) {
 		if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
         }
         
         if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND CONTACT_USERNAME = :pEmail";
+        	expression = expression +  " AND UPPER(CONTACT_USERNAME) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	expression = expression +  " AND GYCBH_NUMBER = :pGycbhNumber";
+        	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND CONTACT_PHONE = :pPhone";
+        	expression = expression +  " AND CONTACT_PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	expression = expression +  " AND LINE_ID = :pLineId";
@@ -680,12 +680,11 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','100')";//  đơn hàng đại ly
         	}
         }
-        // SEND_DATE
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE >= :pFromDate";
+        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE <= :pToDate";
+        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
@@ -706,15 +705,14 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		if (!StringUtils.isEmpty(obj.getContactName())) {
         	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
         }
-        
         if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND CONTACT_USERNAME = :pEmail";
+        	expression = expression +  " AND UPPER(CONTACT_USERNAME) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
         	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND CONTACT_PHONE = :pPhone";
+        	expression = expression +  " AND CONTACT_PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	expression = expression +  " AND LINE_ID = :pLineId";
@@ -764,13 +762,11 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         } else {
         	
         }
-        
-        // SEND_DATE
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE >= :pFromDate";
+        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE <= :pToDate";
+        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
@@ -784,11 +780,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private String buildSearchCart(String expression, SearchAgreementWaitVM obj, String type) {
 		if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
         }
-        
         if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND CONTACT_USERNAME LIKE '%" + obj.getEmail() + "%'";
+        	expression = expression +  " AND UPPER(CONTACT_USERNAME) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
         	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
@@ -799,18 +794,11 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	expression = expression +  " AND LINE_ID = :pLineId";
         }
-//        if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
-//        	expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";
-//    	} else {
-//    		expression = expression +  " AND STATUS_POLICY_ID IN ('90','100')";
-//    	}
-        
-        // SEND_DATE
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE >= :pFromDate";
+        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE <= :pToDate";
+        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
@@ -841,17 +829,16 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private String buildSearchNophiExpression(String expression, SearchAgreementVM obj, String type) {
 		if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND a.CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
+        	expression = expression +  " AND UPPER(a.CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
         }
-        
         if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND a.CONTACT_USERNAME = :pEmail";
+        	expression = expression +  " AND UPPER(CONTACT_USERNAME) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	expression = expression +  " AND a.GYCBH_NUMBER = :pGycbhNumber";
+        	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
         }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND a.CONTACT_PHONE = :pPhone";
+        	expression = expression +  " AND a.CONTACT_PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	expression = expression +  " AND a.LINE_ID = :pLineId";
@@ -862,12 +849,11 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
             	expression = expression +  " AND a.STATUS_POLICY_ID IN (" + tempId + ")";//  :pStatusPolicy)";
         	}
         }
-        // SEND_DATE
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND a.AGREEMENT_SYSDATE >= :pFromDate";
+        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND a.AGREEMENT_SYSDATE <= :pToDate";
+        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
         }
         
         // ORDER
@@ -1025,15 +1011,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private void setQueryParameter(Query query, SearchAgreementVM obj, String type) {
 		query.setParameter("pType", type);
-        if (!StringUtils.isEmpty(obj.getEmail())) {
-        	query.setParameter("pEmail", obj.getEmail());
-        }
-        if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	query.setParameter("pGycbhNumber", obj.getGycbhNumber());
-        }
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	query.setParameter("pPhone", obj.getPhone());
-        } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	query.setParameter("pLineId", obj.getProductCode());
         } 
@@ -1054,12 +1031,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private void setQueryParameterAdmin(Query query, SearchAgreementWaitVM obj, String departmentId) {
 		query.setParameter("pDepartmentId", departmentId);
-        if (!StringUtils.isEmpty(obj.getEmail())) {
-        	query.setParameter("pEmail", obj.getEmail());
-        }
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	query.setParameter("pPhone", obj.getPhone());
-        } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	query.setParameter("pLineId", obj.getProductCode());
         } 
@@ -1128,15 +1099,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	private void setQueryParameterAgreementWait(Query query, SearchAgreementWaitVM obj, String type) {
 		query.setParameter("pType", type);
-        if (!StringUtils.isEmpty(obj.getEmail())) {
-        	query.setParameter("pEmail", obj.getEmail());
-        }
-        if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
-        	query.setParameter("pGycbhNumber", obj.getGycbhNumber());
-        }
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	query.setParameter("pPhone", obj.getPhone());
-        } 
         if (!StringUtils.isEmpty(obj.getProductCode())) {
         	query.setParameter("pLineId", obj.getProductCode());
         } 
