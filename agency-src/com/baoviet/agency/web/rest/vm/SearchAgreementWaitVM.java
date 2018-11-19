@@ -52,4 +52,9 @@ public class SearchAgreementWaitVM {
 	
 	@ApiModelProperty(value = "Id phòng ban")
 	private String departmentId;
+	
+	@JsonSerialize(using = DateSerializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@ApiModelProperty(value = "Ngày nhập", allowableValues = "dd/MM/yyyy")
+    private Date createDate;
 }

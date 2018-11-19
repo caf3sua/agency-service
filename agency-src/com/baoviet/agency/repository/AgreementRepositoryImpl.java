@@ -806,6 +806,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartment";
         }
+        if (obj.getCreateDate() != null) {
+        	expression = expression +  " AND AGREEMENT_SYSDATE = :pCreateDate";
+        }
         
         // ORDER
         expression = expression +  " ORDER BY AGREEMENT_ID DESC";
@@ -1094,6 +1097,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	query.setParameter("pDepartment", obj.getDepartmentId());
+        }
+        if (obj.getCreateDate() != null) {
+        	query.setParameter("pCreateDate", obj.getCreateDate());
         }
 	}
 	
