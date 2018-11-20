@@ -61,6 +61,7 @@ public class AgentReminderServiceImpl implements AgentReminderService {
 					if (co.getContactName() != null) {
 						item.setContactName(co.getContactName());
 					}
+					item.setGroupType(co.getGroupType());
 				}
 				
 				List<CategoryReminder> lstCategoryReminder = categoryReminderRepository.findByCode(item.getProductCode());

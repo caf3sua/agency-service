@@ -47,4 +47,6 @@ public class AgentReminderDTO implements Serializable {
 	
 	private String productName;
 	
+	private String groupType;
+	
 }

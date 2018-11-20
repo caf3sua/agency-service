@@ -17,8 +17,6 @@ public interface AgentReminderRepository extends JpaRepository<AgentReminder, St
 	
 	List<AgentReminder> findByActiveAndType(String active, String type);
 	
-	List<AgentReminder> findByType(String type);
-	
 	List<AgentReminder> findByContactIdAndType(String contactId, String type);
 	
 	AgentReminder findByIdAndType(String reminderId, String type);

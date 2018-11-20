@@ -17,4 +17,5 @@ public interface AgentReminderRepositoryExtend {
 	
 	List<AgentReminder> getCountReminder(String type, Integer numberDay);
 	
+	List<AgentReminder> findByType(String type);
 }

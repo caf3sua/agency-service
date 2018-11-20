@@ -33,21 +33,23 @@ public class AgentReminderRepositoryImpl implements AgentReminderRepositoryExten
 	public List<AgentReminder> searchReminder(ReminderSearchVM param, String type) {
 		log.debug("Request to searchReminder : ReminderSearchVM {}, type {} ", param, type);
 
-		String expression = "SELECT * FROM AGENT_REMINDER WHERE type = :pType";
+		String expression = "SELECT * FROM AGENT_REMINDER a "
+				+ " INNER JOIN CONTACT c ON a.CONTACT_ID = c.CONTACT_ID "
+				+ " WHERE c.type = :pType AND a.type = :pType";
         if (!StringUtils.isEmpty(param.getContactId())) {
-        	expression = expression +  " AND CONTACT_ID = :pContactId";
+        	expression = expression +  " AND a.CONTACT_ID = :pContactId";
         } 
         if (!StringUtils.isEmpty(param.getProductCode())) {
-        	expression = expression +  " AND PRODUCT_CODE = :pProductCode";
+        	expression = expression +  " AND a.PRODUCT_CODE = :pProductCode";
         } 
         if (param.getFromDate() != null) {
-        	expression = expression +  " AND REMINDE_DATE >= :pFromDate";
+        	expression = expression +  " AND a.REMINDE_DATE >= :pFromDate";
         } 
         if (param.getToDate() != null) {
-        	expression = expression +  " AND REMINDE_DATE <= :pToDate";
+        	expression = expression +  " AND a.REMINDE_DATE <= :pToDate";
         }
         if (!StringUtils.isEmpty(param.getActive())) {
-        	expression = expression +  " AND ACTIVE = :pActive";
+        	expression = expression +  " AND a.ACTIVE = :pActive";
         }
 		
         Query query = entityManager.createNativeQuery(expression, AgentReminder.class);
@@ -86,6 +88,22 @@ public class AgentReminderRepositoryImpl implements AgentReminderRepositoryExten
         
         List<AgentReminder> data = query.getResultList();
         log.debug("Request to getCountReminder : data {} ", data.size());
+        return data;
+	}
+
+	@Override
+	public List<AgentReminder> findByType(String type) {
+		log.debug("Request to findByType : ReminderSearchVM {}, type {} ", type);
+
+		String expression = "SELECT * FROM AGENT_REMINDER a"
+				+ " INNER JOIN CONTACT c on a.CONTACT_ID = c.CONTACT_ID "
+				+ " WHERE c.type = :pType AND a.type = :pType";
+		
+        Query query = entityManager.createNativeQuery(expression, AgentReminder.class);
+        query.setParameter("pType", type);
+        
+        List<AgentReminder> data = query.getResultList();
+        log.debug("Request to findByType : data {} ", data.size());
         return data;
 	}
 }
