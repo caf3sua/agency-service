@@ -138,7 +138,7 @@ public class PaymentServiceImpl implements PaymentService {
 			pay.setPremium(agreement.getTotalPremium());
 
 			agreement.setPaymentTransactionId(param.getTransactionId());
-			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON); // Đã thanh toán
+			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON); 
 			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
 			agreementRepository.save(agreement);
 
@@ -193,7 +193,7 @@ public class PaymentServiceImpl implements PaymentService {
 			if (agreement.getOtp() != null && agreement.getOtp().equals(param.getOtp())) {
 				if (agreement.getOtpStatus().equals("2")) {
 				} else {
-					updatePaymentStatus(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON, "Đã thanh toán", "VTP", param.getGycbhNumber(), "1", param.getGycbhNumber());
+					updatePaymentStatus(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON, AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON, "VTP", param.getGycbhNumber(), "1", param.getGycbhNumber());
 					Date dateNow = new Date();
 					// update Agreement
 					agreementRepository.UpdateOTP(agreement.getGycbhNumber(), param.getOtp(), "2", DateUtils.date2Str(dateNow)); // status = 2 thanh toan thanh cong

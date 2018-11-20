@@ -299,12 +299,12 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 			if (!StringUtils.isEmpty(order_id)) {
 				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, "MOMO");
 				if (agreement != null) {
-					agreement.setStatusPolicyId("91");
+					agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 					agreement.setCancelPolicySupport3(1d);	 // gửi mail
 					agreement.setCancelPolicyCommision3(1d); // gửi sms
-					agreement.setStatusPolicyName("Đã thanh toán");
-					agreement.setStatusGycbhId("91");
-					agreement.setStatusGycbhName("Đã thanh toán");
+					agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+					agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+					agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
 					if(StringUtils.isNotEmpty(transaction_id)) {
 						agreement.setPaymentTransactionId(transaction_id);
 					}
