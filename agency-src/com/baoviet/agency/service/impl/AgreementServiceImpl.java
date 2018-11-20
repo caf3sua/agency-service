@@ -1036,6 +1036,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		}
 		if (!StringUtils.isEmpty(obj.getMaSanPham())) {
 			agreement.setLineId(obj.getMaSanPham());
+			setPolicyStatus(obj.getMaSanPham(), agreement);
 		}
 		if (!StringUtils.isEmpty(obj.getNgayHieulucTu())) {
 			agreement.setInceptionDate(DateUtils.str2Date(obj.getNgayHieulucTu()));
