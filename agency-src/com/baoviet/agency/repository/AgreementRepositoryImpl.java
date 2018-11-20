@@ -197,7 +197,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE AGENT_ID = :pType";
 
-		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, type));
+		Query query = entityManager.createNativeQuery(buildSearchReport(expression, obj, type));
 
 		// set parameter 
 		setQueryParameter(query, obj, type);
@@ -223,7 +223,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		
 		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pType ) ";
 
-		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, adminId));
+		Query query = entityManager.createNativeQuery(buildSearchReport(expression, obj, adminId));
 
 		// set parameter 
 		setQueryParameter(query, obj, adminId);
@@ -653,6 +653,31 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  	        return dataPage;
  		}
  		return null;
+	}
+	
+	private String buildSearchReport(String expression, SearchAgreementVM obj, String type) {
+        if (obj.getLstStatusPolicy() != null && obj.getLstStatusPolicy().size() > 0) {
+        	if (!StringUtils.isEmpty(StringUtils.join(obj.getLstStatusPolicy(), "','"))) {
+        		String tempId = "'" + StringUtils.join(obj.getLstStatusPolicy(), "','") + "'";
+            	expression = expression +  " AND STATUS_POLICY_ID IN (" + tempId + ")";//  :pStatusPolicy)";
+        	} else {
+        		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','100')";//  đơn hàng đại ly
+        	}
+        }
+        if (obj.getFromDate() != null) {
+        	expression = expression +  " AND AGREEMENT_SYSDATE >= :pFromDate";
+        } 
+        if (obj.getToDate() != null) {
+        	expression = expression +  " AND AGREEMENT_SYSDATE <= :pToDate";
+        }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartmentId";
+        }
+        
+        // ORDER
+        expression = expression +  " ORDER BY AGREEMENT_ID DESC";
+        
+        return expression;
 	}
 	
 	private String buildSearchExpression(String expression, SearchAgreementVM obj, String type) {

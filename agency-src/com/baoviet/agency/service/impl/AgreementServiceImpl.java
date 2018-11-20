@@ -802,6 +802,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// Total policyStatus = 91
 		List<String> lstStatus = new ArrayList<>();
 		lstStatus.add("91");
+		lstStatus.add("100");
 
 		param.setLstStatusPolicy(lstStatus);
 		QueryResultDTO payment = count(param, type);
@@ -843,6 +844,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// Total policyStatus = 91
 		List<String> lstStatus = new ArrayList<>();
 		lstStatus.add("91");
+		lstStatus.add("100");
 
 		param.setLstStatusPolicy(lstStatus);
 		QueryResultDTO payment = countAdmin(param, adminId);
