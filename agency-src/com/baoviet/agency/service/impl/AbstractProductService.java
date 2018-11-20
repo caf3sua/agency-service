@@ -208,10 +208,10 @@ public class AbstractProductService {
 		voAg.setContactName(contact.getContactName());
 		voAg.setTaxIdNumber(contact.getIdNumber());
 		voAg.setContactAddress(contact.getHomeAddress());
-		if (!StringUtils.isEmpty(contact.getHandPhone())) {
-			voAg.setContactPhone(contact.getHandPhone());	
+		if (!StringUtils.isEmpty(contact.getPhone())) {
+			voAg.setContactPhone(contact.getPhone());	
 		} else {
-			voAg.setContactPhone(contact.getPhone());
+			voAg.setContactPhone(contact.getHandPhone());
 		}
 		
 		if (contact.getDateOfBirth() != null) {
