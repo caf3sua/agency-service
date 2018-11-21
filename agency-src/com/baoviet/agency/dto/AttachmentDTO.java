@@ -34,4 +34,6 @@ public class AttachmentDTO implements Serializable {
 	private Date tradeolSysdate;
 
 	private Integer istransferred;
+	
+	private String attachmentType;
 }

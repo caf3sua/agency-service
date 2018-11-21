@@ -491,6 +491,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		if (StringUtils.isNotEmpty(StringUtils.trim(bvpObj.getQ1Id()))) {
 			FilesDTO f = filesService.findById(bvpObj.getQ1Id());
 			bvp.setFiles(f.getContentFile());
+			bvp.setFileId(bvpObj.getQ1Id());
 		}
 		
 		// Tái tục thì insert

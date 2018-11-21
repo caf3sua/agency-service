@@ -198,4 +198,7 @@ public class ProductBvpVM extends ProductBaseVM {
     
     // byte[] -> String encode base64 image
     private String files;
+    
+    @ApiModelProperty(value = "Lưu Id file - chỉ dùng cho TH download")
+    private String fileId;
 }

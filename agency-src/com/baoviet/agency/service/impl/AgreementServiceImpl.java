@@ -993,11 +993,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			throw new AgencyBusinessException("contactCode", ErrorCode.INVALID, "Mã khách hàng không tồn tại");
 		}
 
-//		AgencyRelation agencyRelation = agencyRelationService.getById(currentAgency.getMaDonVi());
-//		if (agencyRelation == null) {
-//			throw new AgencyBusinessException(currentAgency.getMaDonVi(), ErrorCode.INVALID, "Mã đơn vị không tồn tại");
-//		}
-
 		AgreementDTO agreement = new AgreementDTO();
 		if (co.getContactName() != null) {
 			agreement.setContactName(co.getContactName().toUpperCase());
@@ -1005,15 +1000,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		agreement.setContactId(co.getContactId());
 		agreement.setContactPhone(co.getPhone());
 
-		// TODO: không có gycbhNumber sẽ upload từ file cần hỏi lại
-		// call service
-		// CodeManagementDTO codeManagementDTO =
-		// codeManagementService.getCodeManagement(obj.getMaSanPham());
-		// if (null == codeManagementDTO) {
-		// throw new AgencyBusinessException(obj.getMaSanPham(),
-		// ErrorCode.GET_GYCBH_NUMBER_ERROR , "Hệ thống chưa cấp được mã sản phẩm mới.
-		// Vui lòng thử lại sau.");
-		// }
 		agreement.setTotalPremium((double)obj.getTotalPremium());
 		// update thì ko cập nhật gycbhNumber
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
@@ -1067,18 +1053,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			}
 		}
 		
-//		if (!StringUtils.isEmpty(agencyRelation.getFs4())) {
-//			agreement.setBaovietCompanyId(agencyRelation.getFs4());
-//		}
-//		if (!StringUtils.isEmpty(agencyRelation.getFs5())) {
-//			agreement.setBaovietCompanyName(agencyRelation.getFs5()); // luau cong ty cua bao viet
-//		}
-//		if (!StringUtils.isEmpty(agencyRelation.getId())) {
-//			agreement.setBankId(agencyRelation.getId());
-//		}
-//		if (!StringUtils.isEmpty(agencyRelation.getName())) {
-//			agreement.setBankName(agencyRelation.getName());
-//		}
 		agreement.setAgentId(currentAgency.getMa());
 		agreement.setAgentName(currentAgency.getTen());
 
@@ -1088,14 +1062,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		agreement.setAgreementSysdate(dateNow);
 		agreement.setDateOfRequirement(dateNow);
 		agreement.setCreateType(1);
-
-		// Luu phong ban cua cua sale
-//		if (!StringUtils.isEmpty(agencyRelation.getId())) {
-//			agreement.setAgencyP1Id(agencyRelation.getId());
-//		}
-//		if (!StringUtils.isEmpty(agencyRelation.getName())) {
-//			agreement.setAgencyP1Name(agencyRelation.getName());
-//		}
 		agreement.setAgencyP6Id("agency");
 		
 		// Kiểm tra xem lưu tạm hay gửi BV giám định
@@ -1105,41 +1071,11 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_DANGSOAN);
 			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_DANGSOAN);	
 		} else {
-//			agreement.setStatusGycbhId("50");	// 16.10.2018 THEO code .Net thì là 2 dòng dưới
-//			agreement.setStatusGycbhName("Đã gửi GYCBH");
 			agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_GIAMDINH);	// 16.10.2018 THEO tài liệu BA thì
 			agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_GIAMDINH);
 			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_GIAMDINH);
 			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_GIAMDINH);	
 		}
-
-		// Luu chi nhanh cua sale
-//		if (agencyRelation.getParrenetId() != null) {
-//			AgencyRelation archinhanh = agencyRelationService.getById(agencyRelation.getParrenetId());
-//
-//			if (archinhanh == null) {
-//				throw new AgencyBusinessException(agencyRelation.getParrenetId(), ErrorCode.INVALID,
-//						"ParrenetId chi nhánh không tồn tại");
-//			}
-//			if (!StringUtils.isEmpty(archinhanh.getId())) {
-//				agreement.setAgencyP2Id(archinhanh.getId());
-//			}
-//			if (!StringUtils.isEmpty(archinhanh.getName())) {
-//				agreement.setAgencyP2Name(archinhanh.getName());
-//			}
-//
-//			AgencyRelation arhoiso = agencyRelationService.getById(archinhanh.getParrenetId());
-//			if (arhoiso == null) {
-//				throw new AgencyBusinessException(agencyRelation.getParrenetId(), ErrorCode.INVALID,
-//						"ParrenetId hội sở không tồn tại");
-//			}
-//			if (!StringUtils.isEmpty(arhoiso.getId())) {
-//				agreement.setAgencyP3Id(arhoiso.getId());
-//			}
-//			if (!StringUtils.isEmpty(arhoiso.getName())) {
-//				agreement.setAgencyP3Name(arhoiso.getName());
-//			}
-//		}
 
 		// Lưu Agrement
 		Agreement result = agreementRepository.save(agreementMapper.toEntity(agreement));
@@ -1340,9 +1276,16 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	private void saveFileContent(List<FileContentDTO> data, AgencyDTO currentAgency, String parrentId, String type) {
 		for (FileContentDTO item : data) {
 			AttachmentDTO attachmenInfo = new AttachmentDTO();
-			attachmenInfo.setAttachmentName(type);
+			if (!StringUtils.isEmpty(item.getFilename())) {
+				attachmenInfo.setAttachmentName(item.getFilename());
+			} else {
+				attachmenInfo.setAttachmentName(type);
+			}
 			if (!StringUtils.isEmpty(item.getContent())) {
 				attachmenInfo.setContentFile(item.getContent());
+			}
+			if (!StringUtils.isEmpty(item.getFileType())) {
+				attachmenInfo.setAttachmentType(item.getFileType());
 			}
 			attachmenInfo.setModifyDate(new Date());
 			attachmenInfo.setTradeolSysdate(new Date());

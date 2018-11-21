@@ -62,4 +62,7 @@ public class Attachment implements Serializable {
 	
 	@Column
 	private Integer istransferred;
+	
+	@Column
+	private String attachmentType;
 }
