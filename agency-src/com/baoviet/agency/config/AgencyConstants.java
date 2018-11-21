@@ -20,6 +20,15 @@ public final class AgencyConstants {
 //    
 //    public static final String SUCCESS = "Success";
     
+	public class ATTACHMENT_GROUP_TYPE {
+		public static final String OFFLINE_GYCBH = "OFFLINE_GYCBH";
+		public static final String OFFLINE_GIAY_KHAI_SINH = "OFFLINE_GIAY_KHAI_SINH";
+		public static final String OFFLINE_TAI_LIEU_KHAC = "OFFLINE_TAI_LIEU_KHAC";
+		
+		public static final String ANCHI_GCN = "ANCHI_GCN";
+		public static final String ANCHI_TAI_LIEU_KHAC = "ANCHI_TAI_LIEU_KHAC";
+	}
+	
 	public class OrderHistory {
 		public static final String VIEW_HISTORY = "0";
 		public static final String VIEW_CONVERSATION = "1";

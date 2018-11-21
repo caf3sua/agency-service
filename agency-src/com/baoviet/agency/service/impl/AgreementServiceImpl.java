@@ -18,6 +18,7 @@ import com.baoviet.agency.bean.AgreementNophiDTO;
 import com.baoviet.agency.bean.DashboardDTO;
 import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.QueryResultDTO;
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.AdminUserBu;
 import com.baoviet.agency.domain.AgencyRelation;
 import com.baoviet.agency.domain.Agreement;
@@ -774,11 +775,11 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			attachmentRepository.deleteByParrentId(anchiId);
 		}
 		if (obj.getImgGcns() != null && obj.getImgGcns().size() > 0) {
-			saveFileContent(obj.getImgGcns(), currentAgency, anchiId, "ACGCN");
+			saveFileContent(obj.getImgGcns(), currentAgency, anchiId, AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_GCN);
 		}
 		
 		if (obj.getImgGycbhs() != null && obj.getImgGycbhs().size() > 0) {
-			saveFileContent(obj.getImgGycbhs(), currentAgency, anchiId, "ACDOC");
+			saveFileContent(obj.getImgGycbhs(), currentAgency, anchiId, AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_TAI_LIEU_KHAC);
 		}
 
 		// pay_action
@@ -964,14 +965,18 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 				
 				for (Attachment item : att) {
 					FileContentDTO file = new FileContentDTO();
-					if (StringUtils.equals(item.getAttachmentName(), "ACGCN")) {
+					if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_GCN)) {
 						String imageString = encoder.encode(item.getContent());
 						file.setContent(imageString);
+						file.setFilename(item.getAttachmentName());
+						file.setFileType(item.getAttachmentType());
 						imgGcns.add(file);
 					}
-					if (StringUtils.equals(item.getAttachmentName(), "ACDOC")) {
+					if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_TAI_LIEU_KHAC)) {
 						String imageString = encoder.encode(item.getContent());
 						file.setContent(imageString);
+						file.setFilename(item.getAttachmentName());
+						file.setFileType(item.getAttachmentType());
 						imgGycbhs.add(file);
 					}
 				}
@@ -1110,15 +1115,15 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// Lưu file
 		// data content của gycbh
 		if (obj.getImgGycbhContents() != null && obj.getImgGycbhContents().size() > 0) {
-			saveFileContent(obj.getImgGycbhContents(), currentAgency, conversationId, "GYCBH");
+			saveFileContent(obj.getImgGycbhContents(), currentAgency, conversationId, AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_GYCBH);
 		}
 		// data content của giấy khai sinh
 		if (obj.getImgKhaisinhContents() != null && obj.getImgKhaisinhContents().size() > 0) {
-			saveFileContent(obj.getImgKhaisinhContents(), currentAgency, conversationId, "GKS");
+			saveFileContent(obj.getImgKhaisinhContents(), currentAgency, conversationId, AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_GIAY_KHAI_SINH);
 		}
 		// data content của tài liệu khác
 		if (obj.getImgDocumentContents() != null && obj.getImgDocumentContents().size() > 0) {
-			saveFileContent(obj.getImgDocumentContents(), currentAgency, conversationId, "DOC");
+			saveFileContent(obj.getImgDocumentContents(), currentAgency, conversationId, AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_TAI_LIEU_KHAC);
 		}
 		
 		obj.setAgreementId(result.getAgreementId());
@@ -1161,19 +1166,25 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			
 			for (Attachment item : att) {
 				FileContentDTO file = new FileContentDTO();
-				if (StringUtils.equals(item.getAttachmentName(), "GYCBH")) {
+				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_GYCBH)) {
 					String imageString = encoder.encode(item.getContent());
 					file.setContent(imageString);
+					file.setFilename(item.getAttachmentName());
+					file.setFileType(item.getAttachmentType());
 					gycbhContents.add(file);
 				}
-				if (StringUtils.equals(item.getAttachmentName(), "GKS")) {
+				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_GIAY_KHAI_SINH)) {
 					String imageString = encoder.encode(item.getContent());
 					file.setContent(imageString);
+					file.setFilename(item.getAttachmentName());
+					file.setFileType(item.getAttachmentType());
 					imgKhaisinhContents.add(file);
 				}
-				if (StringUtils.equals(item.getAttachmentName(), "DOC")) {
+				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_TAI_LIEU_KHAC)) {
 					String imageString = encoder.encode(item.getContent());
 					file.setContent(imageString);
+					file.setFilename(item.getAttachmentName());
+					file.setFileType(item.getAttachmentType());
 					documentContents.add(file);
 				}
 			}
@@ -1278,8 +1289,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			AttachmentDTO attachmenInfo = new AttachmentDTO();
 			if (!StringUtils.isEmpty(item.getFilename())) {
 				attachmenInfo.setAttachmentName(item.getFilename());
-			} else {
-				attachmenInfo.setAttachmentName(type);
 			}
 			if (!StringUtils.isEmpty(item.getContent())) {
 				attachmenInfo.setContentFile(item.getContent());
@@ -1287,6 +1296,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			if (!StringUtils.isEmpty(item.getFileType())) {
 				attachmenInfo.setAttachmentType(item.getFileType());
 			}
+			attachmenInfo.setGroupType(type);
 			attachmenInfo.setModifyDate(new Date());
 			attachmenInfo.setTradeolSysdate(new Date());
 			attachmenInfo.setUserId(currentAgency.getId());

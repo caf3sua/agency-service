@@ -3,6 +3,8 @@ package com.baoviet.agency.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,4 +38,6 @@ public class AttachmentDTO implements Serializable {
 	private Integer istransferred;
 	
 	private String attachmentType;
+	
+	private String groupType;
 }

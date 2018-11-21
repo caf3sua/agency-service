@@ -65,4 +65,7 @@ public class Attachment implements Serializable {
 	
 	@Column
 	private String attachmentType;
+	
+	@Column
+	private String groupType;
 }
