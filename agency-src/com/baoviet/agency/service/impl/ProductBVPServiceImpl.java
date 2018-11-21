@@ -1,6 +1,5 @@
 package com.baoviet.agency.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.transaction.Transactional;
@@ -12,19 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.InvoiceInfoDTO;
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.SktdRate;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.AttachmentDTO;
 import com.baoviet.agency.dto.BvpDTO;
-import com.baoviet.agency.dto.FilesDTO;
 import com.baoviet.agency.dto.TinhtrangSkDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.SktdRateRepository;
 import com.baoviet.agency.repository.TinhtrangSkRepository;
+import com.baoviet.agency.service.AttachmentService;
 import com.baoviet.agency.service.BVPService;
 import com.baoviet.agency.service.FilesService;
 import com.baoviet.agency.service.ProductBVPService;
@@ -66,6 +68,9 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 
 	@Autowired
 	private TinhtrangSkRepository tinhtrangSkRepository;
+	
+	@Autowired
+	private AttachmentService attachmentService;
 
 	@Override
 	public ProductBvpVM createOrUpdatePolicy(ProductBvpVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
@@ -87,31 +92,39 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 
 		AgreementDTO agreement = getObjectAgreement(obj, co, bvp, currentAgency);
 
-		if (!currentAgency.getMa().equals("NCB")) {
-			Integer tuoi = DateUtils.countYears(obj.getNguoidbhNgaysinh(), obj.getInceptionDate());
-			if (tuoi < 18) {
-				FilesDTO fileInfo = new FilesDTO();
-				SimpleDateFormat sdfr = new SimpleDateFormat("ddMMyyyHHmmss");
-				String fileName = "IMG_" + sdfr.format(new Date());
-				fileInfo.setName(fileName);
-				fileInfo.setType(".jpg");
-				fileInfo.setLength(obj.getFiles().length() * 1.0);
-				fileInfo.setLineId("BVP");
-				fileInfo.setLineName("SKTD");
-				fileInfo.setGycbhId("");
-				fileInfo.setTypeOfDocument(fileName);
-				fileInfo.setContentFile(obj.getFiles());
-				String fileId = filesService.save(fileInfo);
-				if (fileId != null) {
-					bvp.setQ1Id(fileId);
-				}
-			}
+		// comment 21/11/2018: lưu file vào attachment
+//		if (!currentAgency.getMa().equals("NCB")) {
+//			Integer tuoi = DateUtils.countYears(obj.getNguoidbhNgaysinh(), obj.getInceptionDate());
+//			if (tuoi < 18) {
+//				FilesDTO fileInfo = new FilesDTO();
+//				SimpleDateFormat sdfr = new SimpleDateFormat("ddMMyyyHHmmss");
+//				String fileName = "IMG_" + sdfr.format(new Date());
+//				fileInfo.setName(fileName);
+//				fileInfo.setType(".jpg");
+//				fileInfo.setLength(obj.getFiles().length() * 1.0);
+//				fileInfo.setLineId("BVP");
+//				fileInfo.setLineName("SKTD");
+//				fileInfo.setGycbhId("");
+//				fileInfo.setTypeOfDocument(fileName);
+//				fileInfo.setContentFile(obj.getFiles());
+//				String fileId = filesService.save(fileInfo);
+//				if (fileId != null) {
+//					bvp.setQ1Id(fileId);
+//				}
+//			}
+//		}
+		
+		// 21/11/2018: lưu file
+		if (obj.getImgGks() != null && !StringUtils.isEmpty(obj.getImgGks().getContent())) {
+			String fileId = saveFileContent(obj.getImgGks(), currentAgency, AgencyConstants.ATTACHMENT_GROUP_TYPE.ONLLINE_BVP);
+			bvp.setQ1Id(fileId);
 		}
-
+		
 		String bvpId = bVPService.Insert(bvp);
 		if (bvpId != null) {
 			Integer id = Integer.parseInt(bvpId);
 			if (id > 0) {
+				
 				agreement.setGycbhId(bvpId);
 				agreement = agreementService.save(agreement);
 				obj.setAgreementId(agreement.getAgreementId());
@@ -364,6 +377,28 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 	 * ------------------------------------------------- ---------------- Private
 	 * method ----------------- -------------------------------------------------
 	 */
+	private String saveFileContent(FileContentDTO item, AgencyDTO currentAgency, String type) {
+		AttachmentDTO attachmenInfo = new AttachmentDTO();
+		if (!StringUtils.isEmpty(item.getFilename())) {
+			attachmenInfo.setAttachmentName(item.getFilename());
+		}
+		if (!StringUtils.isEmpty(item.getContent())) {
+			attachmenInfo.setContentFile(item.getContent());
+		}
+		if (!StringUtils.isEmpty(item.getFileType())) {
+			attachmenInfo.setAttachmentType(item.getFileType());
+		}
+		attachmenInfo.setGroupType(type);
+		attachmenInfo.setModifyDate(new Date());
+		attachmenInfo.setTradeolSysdate(new Date());
+		attachmenInfo.setUserId(currentAgency.getId());
+		attachmenInfo.setIstransferred(0);
+		String attachmentId = attachmentService.save(attachmenInfo);
+		log.debug("Request to save Attachment, attachmentId{}", attachmentId);
+
+		return attachmentId;
+	}
+	
 	private AgreementDTO getObjectAgreement(ProductBvpVM obj, Contact co, BvpDTO bvp, AgencyDTO currentAgency) throws AgencyBusinessException{
 		log.debug("Request to getObjectAgreement, ProductBvpVM{}, Contact{}, BvpDTO{}, AgencyDTO{} :", obj, co, bvp,
 				currentAgency);
@@ -767,7 +802,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			}
 
 			// tam thoi chua kiem tra viec gui file
-			if (StringUtils.isEmpty(obj.getFiles()))
+			if (StringUtils.isEmpty(obj.getImgGks().getContent()))
 				throw new AgencyBusinessException("files", ErrorCode.NULL_OR_EMPTY, "Thiếu file đính kèm ");
 		}
 

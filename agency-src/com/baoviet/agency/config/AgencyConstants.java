@@ -27,6 +27,8 @@ public final class AgencyConstants {
 		
 		public static final String ANCHI_GCN = "ANCHI_GCN";
 		public static final String ANCHI_TAI_LIEU_KHAC = "ANCHI_TAI_LIEU_KHAC";
+		
+		public static final String ONLLINE_BVP = "ONLLINE_BVP";
 	}
 	
 	public class OrderHistory {

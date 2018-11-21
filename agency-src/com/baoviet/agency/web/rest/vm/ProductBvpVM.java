@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.utils.DateSerializer;
 import com.baoviet.agency.utils.DoubleSerializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -199,6 +200,6 @@ public class ProductBvpVM extends ProductBaseVM {
     // byte[] -> String encode base64 image
     private String files;
     
-    @ApiModelProperty(value = "Lưu Id file - chỉ dùng cho TH download")
-    private String fileId;
+    @ApiModelProperty(value = "data content của Giấy khai sinh")
+    private FileContentDTO imgGks;
 }

@@ -150,7 +150,7 @@ payment:
         did: "D04"
         client-ip: "10.36.20.47"
     momo:
-        service-url: "https://test-payment.momo.vn/gw_payment/transactionProcessor"
+        service-url: "https://payment.momo.vn:18081/gw_payment/transactionProcessor"
         return-url-android: "https://appuat.baoviet.com.vn:7778/api/agency/payment/DeeplinkMoMo?device=1"
         return-url-ios: "https://appuat.baoviet.com.vn:7778/api/agency/payment/DeeplinkMoMo?device=0"
         return-url: "https://appuat.baoviet.com.vn:7778/api/agency/payment/returnMomo"

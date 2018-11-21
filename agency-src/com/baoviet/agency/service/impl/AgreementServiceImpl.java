@@ -970,6 +970,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 						file.setContent(imageString);
 						file.setFilename(item.getAttachmentName());
 						file.setFileType(item.getAttachmentType());
+						file.setAttachmentId(item.getAttachmentId());
 						imgGcns.add(file);
 					}
 					if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_TAI_LIEU_KHAC)) {
@@ -977,6 +978,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 						file.setContent(imageString);
 						file.setFilename(item.getAttachmentName());
 						file.setFileType(item.getAttachmentType());
+						file.setAttachmentId(item.getAttachmentId());
 						imgGycbhs.add(file);
 					}
 				}
@@ -1171,6 +1173,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 					file.setContent(imageString);
 					file.setFilename(item.getAttachmentName());
 					file.setFileType(item.getAttachmentType());
+					file.setAttachmentId(item.getAttachmentId());
 					gycbhContents.add(file);
 				}
 				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_GIAY_KHAI_SINH)) {
@@ -1178,6 +1181,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 					file.setContent(imageString);
 					file.setFilename(item.getAttachmentName());
 					file.setFileType(item.getAttachmentType());
+					file.setAttachmentId(item.getAttachmentId());
 					imgKhaisinhContents.add(file);
 				}
 				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.OFFLINE_TAI_LIEU_KHAC)) {
@@ -1185,6 +1189,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 					file.setContent(imageString);
 					file.setFilename(item.getAttachmentName());
 					file.setFileType(item.getAttachmentType());
+					file.setAttachmentId(item.getAttachmentId());
 					documentContents.add(file);
 				}
 			}

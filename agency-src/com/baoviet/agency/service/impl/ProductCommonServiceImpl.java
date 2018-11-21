@@ -15,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.InvoiceInfoDTO;
 import com.baoviet.agency.bean.ReceiverUserInfoDTO;
 import com.baoviet.agency.bean.TncAddDTO;
+import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Car;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.TvcPlane;
@@ -27,7 +30,6 @@ import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AgreementSearchDTO;
 import com.baoviet.agency.dto.BvpDTO;
 import com.baoviet.agency.dto.CodeManagementDTO;
-import com.baoviet.agency.dto.FilesDTO;
 import com.baoviet.agency.dto.GoodsDTO;
 import com.baoviet.agency.dto.HomeDTO;
 import com.baoviet.agency.dto.KcareDTO;
@@ -42,13 +44,13 @@ import com.baoviet.agency.dto.TravelcareDTO;
 import com.baoviet.agency.dto.TviCareAddDTO;
 import com.baoviet.agency.dto.TvicareDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.repository.AttachmentRepository;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.TvcPlaneAddRepository;
 import com.baoviet.agency.repository.TvcPlaneRepository;
 import com.baoviet.agency.service.BVPService;
 import com.baoviet.agency.service.CarService;
 import com.baoviet.agency.service.CodeManagementService;
-import com.baoviet.agency.service.FilesService;
 import com.baoviet.agency.service.GoodsService;
 import com.baoviet.agency.service.HomeService;
 import com.baoviet.agency.service.KcareService;
@@ -89,6 +91,8 @@ import com.baoviet.agency.web.rest.vm.ProductTvcVM;
 import com.baoviet.agency.web.rest.vm.ProductTviVM;
 import com.baoviet.agency.web.rest.vm.SKTDAddVM;
 import com.baoviet.agency.web.rest.vm.TvcAddBaseVM;
+
+import sun.misc.BASE64Encoder;
 
 /**
  * Service Implementation for managing TVI.
@@ -150,7 +154,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 	private ContactRepository contactRepository;
 	
 	@Autowired
-	private FilesService filesService;
+	private AttachmentRepository attachmentRepository;
 	
 	@Autowired
 	private CodeManagementService codeManagementService;
@@ -489,9 +493,19 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		
 		// Check q1Id if not null -> get file
 		if (StringUtils.isNotEmpty(StringUtils.trim(bvpObj.getQ1Id()))) {
-			FilesDTO f = filesService.findById(bvpObj.getQ1Id());
-			bvp.setFiles(f.getContentFile());
-			bvp.setFileId(bvpObj.getQ1Id());
+			BASE64Encoder encoder = new BASE64Encoder();
+			Attachment item = attachmentRepository.findOne(bvpObj.getQ1Id());
+			if (item != null) {
+				FileContentDTO file = new FileContentDTO();
+				if (StringUtils.equals(item.getGroupType(), AgencyConstants.ATTACHMENT_GROUP_TYPE.ONLLINE_BVP)) {
+					String imageString = encoder.encode(item.getContent());
+					file.setContent(imageString);
+					file.setFilename(item.getAttachmentName());
+					file.setFileType(item.getAttachmentType());
+					file.setAttachmentId(item.getAttachmentId());
+					bvp.setImgGks(file);
+				}
+			}
 		}
 		
 		// Tái tục thì insert
