@@ -614,7 +614,7 @@ public class AgreementResource extends AbstractAgencyResource {
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
 	@PostMapping("/search-order-expire")
 	@Timed
-	@ApiOperation(value = "searchOrderExpire", notes = "Hàm tra cứu danh sách đơn hàng bảo hiểm khác")
+	@ApiOperation(value = "searchOrderExpire", notes = "Hàm tra cứu danh sách đơn hàng quá hạn")
 	public ResponseEntity<List<AgreementDTO>> searchOrderExpire(@Valid @RequestBody SearchAgreementWaitVM param)
 			throws URISyntaxException, AgencyBusinessException {
 		log.debug("REST request to searchOrderExpire : {}", param);

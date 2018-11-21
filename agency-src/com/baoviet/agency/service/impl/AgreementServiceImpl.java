@@ -1085,6 +1085,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		Date dateNow = new Date();
 		agreement.setSendDate(dateNow);
 		agreement.setResponseDate(dateNow);
+		agreement.setAgreementSysdate(dateNow);
 		agreement.setDateOfRequirement(dateNow);
 		agreement.setCreateType(1);
 

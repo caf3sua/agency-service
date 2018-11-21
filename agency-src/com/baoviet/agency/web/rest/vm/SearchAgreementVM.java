@@ -50,4 +50,7 @@ public class SearchAgreementVM {
 	
 	@ApiModelProperty(value = "Id phòng ban")
 	private String departmentId;
+	
+	@ApiModelProperty(value = "Ngày nhập", allowableValues = "dd/MM/yyyy")
+    private String createDate;
 }

@@ -665,10 +665,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	}
         }
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE >= :pFromDate";
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) >= TRUNC(:pFromDate)";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE <= :pToDate";
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) <= TRUNC(:pToDate)";
         }
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartmentId";
@@ -706,10 +706,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	}
         }
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
+        	expression = expression +  " AND TRUNC(INCEPTION_DATE) >= TRUNC(:pFromDate)";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
+        	expression = expression +  " AND TRUNC(EXPIRED_DATE) <= TRUNC(:pToDate)";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
@@ -717,7 +717,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartmentId";
         }
-        
+        if (!StringUtils.isEmpty(obj.getCreateDate())) {
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) = TRUNC(To_date('"+obj.getCreateDate()+"', 'dd/mm/yyyy'))";
+        }
         
         // ORDER
         expression = expression +  " ORDER BY AGREEMENT_ID DESC";
@@ -788,13 +790,16 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	
         }
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
+        	expression = expression +  " AND TRUNC(INCEPTION_DATE) >= TRUNC(:pFromDate)";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
+        	expression = expression +  " AND TRUNC(EXPIRED_DATE) <= TRUNC(:pToDate)";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
+        }
+        if (!StringUtils.isEmpty(obj.getCreateDate())) {
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) = TRUNC(To_date('"+obj.getCreateDate()+"', 'dd/mm/yyyy'))";
         }
         
         // ORDER
@@ -820,10 +825,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	expression = expression +  " AND LINE_ID = :pLineId";
         }
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
+        	expression = expression +  " AND TRUNC(INCEPTION_DATE) >= TRUNC(:pFromDate)";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
+        	expression = expression +  " AND TRUNC(EXPIRED_DATE) <= TRUNC(:pToDate)";
         }
         if (!StringUtils.isEmpty(obj.getCreateType())) {
         	expression = expression +  " AND CREATE_TYPE = :pCreateType";
@@ -831,8 +836,8 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartment";
         }
-        if (obj.getCreateDate() != null) {
-        	expression = expression +  " AND AGREEMENT_SYSDATE = :pCreateDate";
+        if (!StringUtils.isEmpty(obj.getCreateDate())) {
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) = TRUNC(To_date('"+obj.getCreateDate()+"', 'dd/mm/yyyy'))";
         }
         
         // ORDER
@@ -878,10 +883,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	}
         }
         if (obj.getFromDate() != null) {
-        	expression = expression +  " AND INCEPTION_DATE >= :pFromDate";
+        	expression = expression +  " AND TRUNC(INCEPTION_DATE) >= TRUNC(:pFromDate)";
         } 
         if (obj.getToDate() != null) {
-        	expression = expression +  " AND EXPIRED_DATE <= :pToDate";
+        	expression = expression +  " AND TRUNC(EXPIRED_DATE) <= TRUNC(:pToDate)";
         }
         
         // ORDER
@@ -1123,9 +1128,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	query.setParameter("pDepartment", obj.getDepartmentId());
         }
-        if (obj.getCreateDate() != null) {
-        	query.setParameter("pCreateDate", obj.getCreateDate());
-        }
+//        if (obj.getCreateDate() != null) {
+//        	query.setParameter("pCreateDate", obj.getCreateDate());
+//        }
 	}
 	
 	private void setQueryParameterAgreementWait(Query query, SearchAgreementWaitVM obj, String type) {
