@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +22,6 @@ import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.QueryResultDTO;
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.AdminUserBu;
-import com.baoviet.agency.domain.AgencyRelation;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
 import com.baoviet.agency.domain.Anchi;
@@ -73,7 +74,6 @@ import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.repository.TlAddRepository;
 import com.baoviet.agency.repository.TravelCareAddRepository;
-import com.baoviet.agency.service.AgencyRelationService;
 import com.baoviet.agency.service.AgreementNoPhiService;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.AnchiService;
@@ -98,6 +98,7 @@ import com.baoviet.agency.service.mapper.TlAddMapper;
 import com.baoviet.agency.service.mapper.TravelCareAddMapper;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
+import com.baoviet.agency.utils.DbUtil;
 import com.baoviet.agency.web.rest.vm.AgreementAnchiVM;
 import com.baoviet.agency.web.rest.vm.AgreementNoPhiVM;
 import com.baoviet.agency.web.rest.vm.AgreementYcbhOfflineVM;
@@ -173,8 +174,8 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	@Autowired
 	private TravelCareAddMapper travelCareAddMapper;
 
-	@Autowired
-	private AgencyRelationService agencyRelationService;
+	@PersistenceContext
+	private EntityManager em;
 
 	@Autowired
 	private ContactRepository contactRepository;
@@ -1095,23 +1096,28 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			attachmentRepository.deleteByParrentId(conversationId);
 			conversationRepository.deleteByParrentId(obj.getAgreementId());
 		}
+		
 		ConversationDTO conversation = new ConversationDTO();
-		conversation.setUserId(currentAgency.getId());
+		conversation.setParrentId(result.getAgreementId());
+		conversation.setSendEmail(co.getEmail());
+		if (!StringUtils.isEmpty(co.getContactName())) {
+			conversation.setConversationContent("Đại lý - Yêu cầu cấp đơn Bảo hiểm cho khách hàng " + co.getContactName());
+		} else {
+			conversation.setConversationContent("Đại lý - Yêu cầu cấp đơn Bảo hiểm cho khách hàng ");
+		}
+		conversation.setTitle(conversation.getConversationContent());
+		if (!StringUtils.isEmpty(result.getLineId())) {
+			conversation.setLineId(result.getLineId());
+		}
 		if (!StringUtils.isEmpty(currentAgency.getEmail())) {
 			conversation.setUserName(currentAgency.getEmail());
 		}
-		conversation.setParrentId(result.getAgreementId());
+		conversation.setUserId(currentAgency.getId());
 		conversation.setSendDate(dateNow);
 		conversation.setResponseDate(dateNow);
-		if (!StringUtils.isEmpty(co.getContactName())) {
-			conversation.setConversationContent("Yêu cầu cấp đơn Bảo hiểm cho khách hàng " + co.getContactName());
-		} else {
-			conversation.setConversationContent("Yêu cầu cấp đơn Bảo hiểm cho khách hàng ");
-		}
-		if (!StringUtils.isEmpty(obj.getMaSanPham())) {
-			conversation.setLineId(obj.getMaSanPham().toUpperCase());
-		}
-		conversation.setRole("agency");
+		conversation.setCreateDate(DbUtil.getSysDate(em));
+		conversation.setRole("agency"); 
+		
 		String conversationId = conversationService.insertConversation(conversation);
 
 		// Lưu file

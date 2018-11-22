@@ -85,11 +85,21 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 							orderHisCoversation.setFilesContent(lstFiles);	
 						}
 					}
-					orderHisCoversation.setCreateDateDisplay(DateUtils.date2Str(conver.getCreateDate(), "HH:mm:ss dd/MM/yyyy"));
+					if (conver.getCreateDate() != null) {
+						orderHisCoversation.setCreateDateDisplay(DateUtils.date2Str(conver.getCreateDate(), "HH:mm:ss dd/MM/yyyy"));	
+					} else {
+						// TH k có thì hiển thị tạm ngày tạo đơn hàng
+						orderHisCoversation.setCreateDateDisplay(DateUtils.date2Str(agHis.getCreateDate(), "HH:mm:ss dd/MM/yyyy"));	
+					}
 					orderHisCoversation.setType(AgencyConstants.OrderHistory.VIEW_CONVERSATION);
 					orderHisCoversation.setTitle(conver.getTitle());
 					orderHisCoversation.setContent(conver.getConversationContent());
-					orderHisCoversation.setHisDate(conver.getCreateDate());
+					if (conver.getCreateDate() != null) {
+						orderHisCoversation.setHisDate(conver.getCreateDate());	
+					} else {
+						// TH k có thì hiển thị tạm ngày tạo đơn hàng
+						orderHisCoversation.setHisDate(agHis.getCreateDate());
+					}
 					
 					order++;
 					orderHisCoversation.setOrder(order);

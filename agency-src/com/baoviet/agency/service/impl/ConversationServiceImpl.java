@@ -27,7 +27,6 @@ import com.baoviet.agency.service.ConversationService;
 import com.baoviet.agency.service.mapper.AgreementMapper;
 import com.baoviet.agency.service.mapper.ConversationMapper;
 import com.baoviet.agency.utils.AppConstants;
-import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.DbUtil;
 import com.baoviet.agency.web.rest.vm.ConversationVM;
 
