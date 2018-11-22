@@ -35,6 +35,8 @@ public interface AgreementRepositoryExtend {
 	
 	QueryResultDTO count(SearchAgreementVM param, String type);
 	
+	QueryResultDTO countOrder(SearchAgreementVM param, String type);
+	
 	QueryResultDTO countAdmin(SearchAgreementVM param, String type);
 	
 	QueryResultDTO countNophi(SearchAgreementVM param, String type);

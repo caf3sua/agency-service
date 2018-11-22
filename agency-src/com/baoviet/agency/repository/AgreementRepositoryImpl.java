@@ -191,6 +191,30 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	}
 	
 	@Override
+	public QueryResultDTO countOrder(SearchAgreementVM obj, String type) {
+		QueryResultDTO result = new QueryResultDTO();
+		// create the command for the stored procedure
+        // Presuming the DataTable has a column named .  
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE AGENT_ID = :pType";
+
+		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, type));
+
+		// set parameter 
+		setQueryParameter(query, obj, type);
+		
+        Object[] data = (Object[]) query.getSingleResult();
+        
+        if (data != null) {
+        	BigDecimal tempCount = (BigDecimal) data[0];
+        	BigDecimal tempPremium = (BigDecimal) data[1];
+        	result.setCount(tempCount.longValue());
+        	result.setPremium(tempPremium.longValue());
+        }
+        
+        return result;
+	}
+	
+	@Override
 	public QueryResultDTO count(SearchAgreementVM obj, String type) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
@@ -283,7 +307,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = count(obj, type);
+        QueryResultDTO count = countOrder(obj, type);
         
         // Build pageable
         Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
@@ -1205,7 +1229,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID ='90' AND CREATE_TYPE IN ('0','2') AND AGENT_ID = :pType";
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID ='90' AND AGENT_ID = :pType";
 
 		Query query = entityManager.createNativeQuery(buildSearchCart(expression, obj, type));
 
