@@ -15,6 +15,8 @@ import com.baoviet.agency.repository.RePostcodeVnRepository;
 import com.baoviet.agency.service.RePostcodeVnService;
 import com.baoviet.agency.service.mapper.RePostcodeVnMapper;
 
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
+
 
 /**
  * Service Implementation for managing RePostcodeVn.
@@ -44,6 +46,10 @@ public class RePostcodeVnServiceImpl implements RePostcodeVnService {
 	@Override
 	public RePostcodeVnDTO getAddressByCode(String code) {
 		log.debug("REST request to getAddressByCode, code{} :", code);
-		return rePostcodeVnMapper.toDto(rePostcodeVnRepository.findByPkPostcode(code));
+		RePostcodeVnDTO data = rePostcodeVnMapper.toDto(rePostcodeVnRepository.findByPkPostcode(code));
+		if (data != null && StringUtils.isNotEmpty(data.getPkProvince()) ) {
+			data.setPkDistrict(data.getPkDistrict() + ", " + data.getPkProvince());
+		}
+		return data;
 	}
 }
