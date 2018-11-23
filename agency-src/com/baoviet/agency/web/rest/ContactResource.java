@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +41,7 @@ import com.baoviet.agency.service.ContactService;
 import com.baoviet.agency.service.mapper.AgentReminderMapper;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
+import com.baoviet.agency.web.rest.util.PaginationUtil;
 import com.baoviet.agency.web.rest.vm.ContactCodeSearchVM;
 import com.baoviet.agency.web.rest.vm.ContactCreateVM;
 import com.baoviet.agency.web.rest.vm.ContactSearchVM;
@@ -391,10 +393,11 @@ public class ContactResource extends AbstractAgencyResource {
 		AgencyDTO currentAgency = getCurrentAccount();
 				
 		// Call service
-		List<ContactDTO> data = contactService.searchContact(param, currentAgency.getMa());
+		Page<ContactDTO> page = contactService.searchContact(param, currentAgency.getMa());
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/agency/contact/search");
 		
 		// Return data
-        return new ResponseEntity<>(data, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), HttpStatus.OK);
     }
     
     @PostMapping("/get-by-code")

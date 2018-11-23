@@ -7,11 +7,19 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Repository;
 
+import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.web.rest.vm.ContactSearchVM;
+import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 
 /**
  * Spring Data JPA repository for the GnocCR module.
@@ -24,7 +32,7 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
 	private EntityManager entityManager;
 
 	@Override
-	public List<Contact> search(ContactSearchVM obj, String type) {
+	public Page<Contact> search(ContactSearchVM obj, String type) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT * FROM CONTACT WHERE type = :pType";
@@ -62,7 +70,29 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         
         List<Contact> data = query.getResultList();
         
-        return data;
+        // Paging
+		Pageable pageable = buildPageable(obj);
+		if (pageable != null) {
+			query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()); 
+			query.setMaxResults(pageable.getPageSize());
+		}
+		
+		// Build pageable
+        Page<Contact> dataPage = new PageImpl<>(data, pageable, data.size());
+        
+        return dataPage;
+	}
+	
+	private Pageable buildPageable(ContactSearchVM obj) {
+		Pageable pageable = null;
+		if (obj.getPageable() == null) {
+			return pageable;
+		}
+		
+		String[] sorts = obj.getPageable().getSort().split(",");
+		Sort sort = new Sort(Direction.fromString(sorts[1]), sorts[0]);
+		pageable = new PageRequest(obj.getPageable().getPage(), obj.getPageable().getSize(), sort);
+		return pageable;
 	}
 
 }

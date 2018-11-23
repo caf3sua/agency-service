@@ -1,7 +1,6 @@
 package com.baoviet.agency.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import com.baoviet.agency.domain.Contact;
@@ -14,5 +13,5 @@ import com.baoviet.agency.web.rest.vm.ContactSearchVM;
 @Repository
 public interface ContactRepositoryExtend {
 	
-	List<Contact> search(ContactSearchVM obj, String type);
+	Page<Contact> search(ContactSearchVM obj, String type);
 }

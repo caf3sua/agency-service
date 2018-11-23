@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -182,13 +183,13 @@ public class ContactServiceImpl implements ContactService {
 	}
 
 	@Override
-	public List<ContactDTO> searchContact(ContactSearchVM contact, String type) {
+	public Page<ContactDTO> searchContact(ContactSearchVM contact, String type) {
 		log.debug("Request to searchContact: ContactSearchVM{}, type {} : ", contact, type);
-		List<ContactDTO> result = contactMapper.toDto(contactRepository.search(contact, type));
+		Page<ContactDTO> result = contactRepository.search(contact, type).map(contactMapper::toDto);
 
 		// Lopp via result to append listRelationship, listContactProduct
-		if (result != null && result.size() > 0) {
-			for (ContactDTO item : result) {
+		if (result != null && result.getContent().size() > 0) {
+			for (ContactDTO item : result.getContent()) {
 				// Get listRelationship by contactId
 				List<ContactRelationship> listRelationship = contactRelationshipRepository
 						.findByContactId(item.getContactId());

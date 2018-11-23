@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baoviet.agency.utils.DateSerializer;
+import com.baoviet.agency.web.rest.vm.common.PageableVM;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -36,4 +37,6 @@ public class ContactSearchVM implements Serializable {
 	
 	@ApiModelProperty(value = "Loại khách hàng", required = false, allowableValues = "POTENTIAL,FAMILIAR,VIP")
 	private String groupType;
+	
+	private PageableVM pageable;
 }

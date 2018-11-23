@@ -2,6 +2,8 @@ package com.baoviet.agency.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.baoviet.agency.dto.ContactDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.web.rest.vm.ContactCreateVM;
@@ -35,7 +37,9 @@ public interface ContactService {
 	
 	ContactDTO findOneByContactUsername(String email);
 	
-	List<ContactDTO> searchContact(ContactSearchVM contact, String type);
+//	List<ContactDTO> searchContact(ContactSearchVM contact, String type);
+	
+	Page<ContactDTO> searchContact(ContactSearchVM contact, String type);
 	
 	List<ContactDTO> findAllByType(String type);
 	
