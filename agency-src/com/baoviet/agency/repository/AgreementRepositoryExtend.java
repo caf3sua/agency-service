@@ -10,8 +10,8 @@ import com.baoviet.agency.bean.AgreementNophiDTO;
 import com.baoviet.agency.bean.QueryResultDTO;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
-import com.baoviet.agency.web.rest.vm.OrderInfoVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementWaitVM;
 
@@ -62,4 +62,6 @@ public interface AgreementRepositoryExtend {
 	Page<Agreement> getWaitAgreementAdmin(String adminId, Pageable pageable);
 	
 	Page<Agreement> getWaitAgencyAdmin(String type, Pageable pageable);
+	
+	CountOrderDTO getCountAllOrder(String agentId);
 }

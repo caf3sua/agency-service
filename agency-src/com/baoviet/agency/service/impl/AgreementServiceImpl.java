@@ -44,6 +44,7 @@ import com.baoviet.agency.dto.AttachmentDTO;
 import com.baoviet.agency.dto.BvpDTO;
 import com.baoviet.agency.dto.CarDTO;
 import com.baoviet.agency.dto.ConversationDTO;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.GoodsDTO;
 import com.baoviet.agency.dto.HomeDTO;
 import com.baoviet.agency.dto.KcareDTO;
@@ -669,6 +670,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// Calulate isCanTaituc
 		calculateIsCanTaituc(page.getContent());
 		return page;
+	}
+	
+	@Override
+	public CountOrderDTO getCountAllOrder(String agentId) {
+		 CountOrderDTO data = agreementRepository.getCountAllOrder(agentId);
+		 return data;
 	}
 	
 	@Override

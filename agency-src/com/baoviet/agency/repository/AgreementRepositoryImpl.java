@@ -29,6 +29,7 @@ import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
 import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Conversation;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
@@ -249,6 +250,31 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	}
 	
 	@Override
+	public CountOrderDTO getCountAllOrder(String agentId) {
+		CountOrderDTO data = new CountOrderDTO();
+		SearchAgreementVM obj = new SearchAgreementVM();
+		SearchAgreementWaitVM obj1 = new SearchAgreementWaitVM();
+		
+		QueryResultDTO countOrder = countOrder(agentId);
+		QueryResultDTO countCart = countSearchCart(obj1, agentId);
+		QueryResultDTO countOrderDebit = countNophi(obj, agentId);
+		
+		QueryResultDTO countBvWaiting = countAgreementWait(obj1, agentId, "0");
+		QueryResultDTO countAgencyWaiting = countAgreementWait(obj1, agentId, "1");
+		QueryResultDTO countOther = countAgreementWait(obj1, agentId, "2");
+		QueryResultDTO countOrderExpire = countAgreementWait(obj1, agentId, "5");
+		
+		data.setCountOrderMe(countOrder.getCount());
+		data.setCountCart(countCart.getCount());
+		data.setCountOrderOther(countOther.getCount());
+		data.setCountAgencyWaiting(countAgencyWaiting.getCount());
+		data.setCountBvWaiting(countBvWaiting.getCount());
+		data.setCountOrderExpire(countOrderExpire.getCount());
+		data.setCountOrderDebit(countOrderDebit.getCount());
+		return data;
+	}
+	
+	@Override
 	public QueryResultDTO countAdmin(SearchAgreementVM obj, String adminId) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
@@ -325,6 +351,27 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         return dataPage;
 	}
 	
+	private QueryResultDTO countOrder(String type) {
+		QueryResultDTO result = new QueryResultDTO();
+		// create the command for the stored procedure
+        // Presuming the DataTable has a column named .  
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID IN ('91','92','100') AND AGENT_ID = :pType";
+
+		Query query = entityManager.createNativeQuery(expression);
+
+		// set parameter 
+		query.setParameter("pType", type);		
+        Object[] data = (Object[]) query.getSingleResult();
+        
+        if (data != null) {
+        	BigDecimal tempCount = (BigDecimal) data[0];
+        	BigDecimal tempPremium = (BigDecimal) data[1];
+        	result.setCount(tempCount.longValue());
+        	result.setPremium(tempPremium.longValue());
+        }
+        
+        return result;
+	}
 	
 	@Override
 	public Page<Agreement> searchAdmin(SearchAgreementWaitVM obj, String departmentId) {
@@ -526,7 +573,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public Page<Agreement> getWaitAgency(String type, Pageable pageableIn) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT * FROM AGREEMENT WHERE CREATE_TYPE = '0' AND STATUS_POLICY_ID IN ('80','81','83') AND AGENT_ID = :pType ORDER BY AGREEMENT_ID DESC";
+		String expression = "SELECT * FROM AGREEMENT WHERE STATUS_POLICY_ID IN ('80','81','83') AND AGENT_ID = :pType ORDER BY AGREEMENT_ID DESC";
         
         Query query = entityManager.createNativeQuery(expression, Agreement.class);
 
@@ -559,7 +606,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public Page<Agreement> getWaitAgencyAdmin(String type, Pageable pageableIn) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT * FROM AGREEMENT WHERE CREATE_TYPE = '0' AND STATUS_POLICY_ID IN ('80','81','83') AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pType) ";
+		String expression = "SELECT * FROM AGREEMENT WHERE STATUS_POLICY_ID IN ('80','81','83') AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pType) ";
         
 		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pType ) ORDER BY AGREEMENT_ID DESC";
 		
@@ -984,7 +1031,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE CREATE_TYPE = '0' AND STATUS_POLICY_ID IN ('80','81','83') AND AGENT_ID = :pType";
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID IN ('80','81','83') AND AGENT_ID = :pType";
 
 		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, type));
 
@@ -1257,4 +1304,5 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         
         return result;
 	}
+	
 }

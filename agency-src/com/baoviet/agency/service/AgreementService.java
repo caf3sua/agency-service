@@ -15,6 +15,7 @@ import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AgreementStatusDTO;
 import com.baoviet.agency.dto.BvpDTO;
 import com.baoviet.agency.dto.CarDTO;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.GoodsDTO;
 import com.baoviet.agency.dto.HomeDTO;
 import com.baoviet.agency.dto.KcareDTO;
@@ -131,6 +132,8 @@ public interface AgreementService {
 	
 	AgreementDTO findByGycbhNumberAndDepartmentId(String gycbhNumber, String departmentId);
 	
+	
+	CountOrderDTO getCountAllOrder(String agentId);
 	
 	DashboardDTO getDashboardInfoAdmin(SearchAgreementVM param, String adminId);
 	

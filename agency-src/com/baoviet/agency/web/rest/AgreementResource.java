@@ -34,6 +34,7 @@ import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AgreementSearchDTO;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
@@ -105,6 +106,21 @@ public class AgreementResource extends AbstractAgencyResource {
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/agreement/search-order");
 		// Return data
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+	}
+	
+	@GetMapping("/get-count-all-order")
+	@Timed
+	@ApiOperation(value = "getCountAllOrder", notes = "Hàm lấy tất cả số lượng các loại đơn hàng")
+	public ResponseEntity<CountOrderDTO> getCountAllOrder() throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to getAll");
+
+		// get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+
+		CountOrderDTO data = agreementService.getCountAllOrder(currentAgency.getMa());
+
+		// Return data
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
