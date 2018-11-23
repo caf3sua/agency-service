@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baoviet.agency.bean.DashboardDTO;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.PayActionDTO;
 import com.baoviet.agency.dto.eclaim.EclaimDTO;
 import com.baoviet.agency.dto.report.ReportDataDTO;
@@ -230,6 +231,22 @@ public class ReportResource extends AbstractAgencyResource{
 		// Return data
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
+	
+	@GetMapping("/get-count-all-order")
+	@Timed
+	@ApiOperation(value = "getCountAllOrder", notes = "Hàm lấy tất cả số lượng các loại đơn hàng")
+	public ResponseEntity<CountOrderDTO> getCountAllOrder() throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to getAll");
+
+		// get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+
+		CountOrderDTO data = agreementService.getCountAllOrder(currentAgency.getMa());
+
+		// Return data
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+	
 	/*********************************
 	 *     Private method 
 	 *********************************/

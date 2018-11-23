@@ -108,21 +108,6 @@ public class AgreementResource extends AbstractAgencyResource {
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
 	
-	@GetMapping("/get-count-all-order")
-	@Timed
-	@ApiOperation(value = "getCountAllOrder", notes = "Hàm lấy tất cả số lượng các loại đơn hàng")
-	public ResponseEntity<CountOrderDTO> getCountAllOrder() throws URISyntaxException, AgencyBusinessException {
-		log.debug("REST request to getAll");
-
-		// get current agency
-		AgencyDTO currentAgency = getCurrentAccount();
-
-		CountOrderDTO data = agreementService.getCountAllOrder(currentAgency.getMa());
-
-		// Return data
-		return new ResponseEntity<>(data, HttpStatus.OK);
-	}
-	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
 	@GetMapping("/get-all-order")
 	@Timed
