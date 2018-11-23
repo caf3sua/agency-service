@@ -620,7 +620,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         page.setPage(pageableIn.getPageNumber());
         page.setSize(pageableIn.getPageSize());
         obj.setPageable(page);
-        
+         
  		// Paging
  		Pageable pageable = buildPageable(obj);
  		if (pageable != null) {
