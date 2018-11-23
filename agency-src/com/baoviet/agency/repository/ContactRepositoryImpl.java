@@ -1,5 +1,6 @@
 package com.baoviet.agency.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Repository;
 
+import com.baoviet.agency.bean.QueryResultDTO;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.utils.DateUtils;
@@ -68,19 +70,60 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         	query.setParameter("pGroup", obj.getGroupType());
         }
         
-        List<Contact> data = query.getResultList();
-        
         // Paging
-		Pageable pageable = buildPageable(obj);
-		if (pageable != null) {
-			query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()); 
-			query.setMaxResults(pageable.getPageSize());
-		}
+ 		Pageable pageable = buildPageable(obj);
+ 		if (pageable != null) {
+ 			query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()); 
+ 			query.setMaxResults(pageable.getPageSize());
+ 		}
+ 		
+        List<Contact> data = query.getResultList();
+        long count = countSearchContact(obj, type);
 		
 		// Build pageable
-        Page<Contact> dataPage = new PageImpl<>(data, pageable, data.size());
+        Page<Contact> dataPage = new PageImpl<>(data, pageable, count);
         
         return dataPage;
+	}
+	
+	private long countSearchContact(ContactSearchVM obj, String type) {
+		// create the command for the stored procedure
+        // Presuming the DataTable has a column named .  
+		String expression = "SELECT count(*) FROM CONTACT WHERE type = :pType";
+        if (!StringUtils.isEmpty(obj.getContactName())) {
+        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
+        } 
+        if (!StringUtils.isEmpty(obj.getPhone())) {
+        	expression = expression +  " AND PHONE = :pPhone";
+        } 
+        if (!StringUtils.isEmpty(obj.getIdNumber())) {
+        	expression = expression +  " AND ID_NUMBER = :pIdNumber";
+        } 
+        if (obj.getDateOfBirth() != null) {
+        	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
+        }
+        if (!StringUtils.isEmpty(obj.getGroupType())) {
+        	expression = expression +  " AND GROUP_TYPE = :pGroup";
+        }
+        
+        
+        Query query = entityManager.createNativeQuery(expression);
+        query.setParameter("pType", type);
+        if (!StringUtils.isEmpty(obj.getPhone())) {
+        	query.setParameter("pPhone", obj.getPhone());
+        } 
+        if (!StringUtils.isEmpty(obj.getIdNumber())) {
+        	query.setParameter("pIdNumber", obj.getIdNumber());
+        } 
+        if (obj.getDateOfBirth() != null) {
+        	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
+        }
+        if (!StringUtils.isEmpty(obj.getGroupType())) {
+        	query.setParameter("pGroup", obj.getGroupType());
+        }
+        
+        BigDecimal data = (BigDecimal) query.getSingleResult();
+        return data.longValue();
 	}
 	
 	private Pageable buildPageable(ContactSearchVM obj) {

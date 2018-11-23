@@ -397,7 +397,7 @@ public class ContactResource extends AbstractAgencyResource {
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/agency/contact/search");
 		
 		// Return data
-        return new ResponseEntity<>(page.getContent(), HttpStatus.OK);
+		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
     
     @PostMapping("/get-by-code")
