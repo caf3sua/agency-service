@@ -278,4 +278,6 @@ public class AgencyDTO implements Serializable {
 	private Integer sendOtp;
 	
 	private List<DepartmentDTO> lstDepartment;
+	
+	private Integer paymentMethod;
 }

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -51,6 +52,7 @@ import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.PaymentService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.web.rest.vm.NotifyPaymentVM;
+import com.baoviet.agency.web.rest.vm.OrderCancelVM;
 import com.baoviet.agency.web.rest.vm.PaymentATCSVM;
 import com.baoviet.agency.web.rest.vm.PaymentBanksReponseVM;
 import com.baoviet.agency.web.rest.vm.PaymentGiftCodeRequestVM;
@@ -433,5 +435,38 @@ public class PaymentResource extends AbstractAgencyResource {
 
 		// Return data
 		return new ResponseEntity<>(updateOrderStatusResponse, HttpStatus.OK);
+	}
+	
+	
+	@PostMapping("/notify-payment-later")
+	@Timed
+	@ApiOperation(value = "notifyPaymentLater", notes = "Xử lý đơn hàng thanh toán sau")
+	public ResponseEntity<AgreementDTO> notifyPaymentLater(@Valid @RequestBody OrderCancelVM param)
+			throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to notifyPaymentLater, {}", param);
+
+		// Get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+
+		if (!StringUtils.isEmpty(param.getGycbhNumber())) {
+			AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(param.getGycbhNumber(),
+					currentAgency.getMa());
+			if (agreement == null) {
+				throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID,
+						"Không tồn tại dữ liệu với gycbhNumber " + param.getGycbhNumber());
+			}
+			agreement.setPaymentMethod(AgencyConstants.PAYMENT_METHOD);
+			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+			agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+			agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+			
+			AgreementDTO agreementUpdate = agreementService.save(agreement);
+			// Return data
+			return new ResponseEntity<>(agreementUpdate, HttpStatus.OK);
+		}
+
+		// Return data
+		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 }

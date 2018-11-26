@@ -368,4 +368,7 @@ public class Agency implements Serializable {
 	
 	@Column(name="SEND_OTP")
 	private Integer sendOtp;
+	
+	@Column
+	private Integer paymentMethod;
 }
