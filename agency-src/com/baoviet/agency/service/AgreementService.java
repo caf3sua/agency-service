@@ -135,6 +135,8 @@ public interface AgreementService {
 	
 	CountOrderDTO getCountAllOrder(String agentId);
 	
+	CountOrderDTO getAdmCountAllOrder(String departmentId);
+	
 	DashboardDTO getDashboardInfoAdmin(SearchAgreementVM param, String adminId);
 	
 	QueryResultDTO countAdmin(SearchAgreementVM obj, String adminId);

@@ -64,4 +64,6 @@ public interface AgreementRepositoryExtend {
 	Page<Agreement> getWaitAgencyAdmin(String type, Pageable pageable);
 	
 	CountOrderDTO getCountAllOrder(String agentId);
+	
+	CountOrderDTO getAdmCountAllOrder(String departmentId);
 }

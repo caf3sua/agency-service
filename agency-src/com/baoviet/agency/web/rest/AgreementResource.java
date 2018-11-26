@@ -34,7 +34,6 @@ import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AgreementSearchDTO;
-import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
@@ -406,7 +405,7 @@ public class AgreementResource extends AbstractAgencyResource {
 		}
 
 		// chỉ cho gửi lại email với các TH đã thanh toán : 91
-		if (agreement.getStatusPolicyId().equals("91")) {
+		if (agreement.getStatusPolicyId().equals("91") || agreement.getStatusPolicyId().equals("92") || agreement.getStatusPolicyId().equals("100")) {
 			agreement.setCancelPolicySupport3(1d);	// = 1 để gửi email. sau khi gửi xong sẽ = 0
 			AgreementDTO agreementSave = agreementService.save(agreement);
 			// Return data

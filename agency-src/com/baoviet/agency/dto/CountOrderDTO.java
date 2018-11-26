@@ -31,4 +31,6 @@ public class CountOrderDTO implements Serializable {
 	private Long countOrderExpire;
 	
 	private Long countOrderOther;
+	
+	private Long countOrderTrans;
 }

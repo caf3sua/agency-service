@@ -247,6 +247,21 @@ public class ReportResource extends AbstractAgencyResource{
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
+	@GetMapping("/adm-get-count-all-order")
+	@Timed
+	@ApiOperation(value = "getAdmCountAllOrder", notes = "Hàm lấy tất cả số lượng các loại đơn hàng cho admin")
+	public ResponseEntity<CountOrderDTO> getAdmCountAllOrder() throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to getAdmCountAllOrder");
+
+		// get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+
+		CountOrderDTO data = agreementService.getAdmCountAllOrder(currentAgency.getMa());
+
+		// Return data
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+	
 	/*********************************
 	 *     Private method 
 	 *********************************/

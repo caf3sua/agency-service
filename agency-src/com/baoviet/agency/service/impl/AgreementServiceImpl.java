@@ -679,6 +679,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	}
 	
 	@Override
+	public CountOrderDTO getAdmCountAllOrder(String departmentId) {
+		 CountOrderDTO data = agreementRepository.getAdmCountAllOrder(departmentId);
+		 return data;
+	}
+	
+	@Override
 	public Page<AgreementDTO> searchAdmin(SearchAgreementWaitVM obj, String departmentId) {
 		Page<AgreementDTO> page = agreementRepository.searchAdmin(obj, departmentId).map(agreementMapper::toDto);
 		return page;

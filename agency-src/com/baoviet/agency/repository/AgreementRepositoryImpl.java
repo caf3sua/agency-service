@@ -275,6 +275,21 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	}
 	
 	@Override
+	public CountOrderDTO getAdmCountAllOrder(String departmentId) {
+		CountOrderDTO data = new CountOrderDTO();
+		SearchAgreementWaitVM obj = new SearchAgreementWaitVM();
+
+		QueryResultDTO countBvWaiting = countAdminAgreement(obj, departmentId, "0");
+		QueryResultDTO countCart = countAdminAgreement(obj, departmentId, "3");
+		QueryResultDTO countTrans = countAdminAgreement(obj, departmentId, "4");
+		
+		data.setCountBvWaiting(countBvWaiting.getCount());
+		data.setCountCart(countCart.getCount());
+		data.setCountOrderDebit(countTrans.getCount());
+		return data;
+	}
+	
+	@Override
 	public QueryResultDTO countAdmin(SearchAgreementVM obj, String adminId) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
