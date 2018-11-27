@@ -58,6 +58,9 @@ public class ContactCreateVM implements Serializable {
 	@ApiModelProperty(value = "Loại khách hàng", allowableValues = "POTENTIAL, FAMILIAR, VIP", required = true)
 	private String groupType;
 	
+	@ApiModelProperty(value = "Nhóm khách hàng", allowableValues = "ORGANIZATION, PERSON")
+	private String categoryType;
+	
 	@ApiModelProperty(value = "Danh sách mối quan hệ")
 	private List<ContactRelationshipVM> listRelationship;
 	

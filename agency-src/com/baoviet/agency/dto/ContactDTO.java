@@ -113,6 +113,8 @@ public class ContactDTO implements Serializable {
 	
 	private String groupType;
 	
+	private String categoryType;
+	
 	@ApiModelProperty(value = "Danh sách mối quan hệ")
 	private List<ContactRelationship> listRelationship;
 	

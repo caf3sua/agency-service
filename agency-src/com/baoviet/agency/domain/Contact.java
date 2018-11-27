@@ -155,4 +155,7 @@ public class Contact implements Serializable {
 	
 	@Column(name="FACEBOOK_ID")
 	private String facebookId;
+	
+	@Column(name="CATEGORY_TYPE")
+	private String categoryType;
 }

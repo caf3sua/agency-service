@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.AgentReminder;
 import com.baoviet.agency.domain.CategoryReminder;
 import com.baoviet.agency.domain.Contact;
@@ -200,10 +201,17 @@ public class ContactResource extends AbstractAgencyResource {
 		pa.setType(currentAgency.getMa());
 		pa.setOccupation(param.getOccupation());
 		// khi thêm mới mặc định là KH tiềm năng không cho truyền loại khách hàng vào
-		pa.setGroupType("POTENTIAL");
+		pa.setGroupType(AgencyConstants.CONTACT_GROUP_TYPE.POTENTIAL);
 		if(!StringUtils.isEmpty(param.getFacebookId())) {
 			pa.setFacebookId(param.getFacebookId());
 		}
+		// Category : PERSON/ORGANIZATION
+		if(!StringUtils.isEmpty(param.getCategoryType())) {
+			pa.setCategoryType(param.getCategoryType());
+		} else {
+			pa.setCategoryType(AgencyConstants.CONTACT_CATEGORY_TYPE.PERSON);
+		}
+		
 		return pa;
     }
     
