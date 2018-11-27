@@ -1034,6 +1034,11 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		} else {
 			agreement.setContactDob(DateUtils.str2Date("01/01/0001"));
 		}
+		
+		agreement.setReceiverName(co.getContactName().toUpperCase());
+		agreement.setReceiverAddress(co.getHomeAddress());
+		agreement.setReceiverEmail(co.getEmail());
+		agreement.setReceiverMoible(co.getPhone());
 
 		agreement.setTotalPremium((double)obj.getTotalPremium());
 		agreement.setNetPremium((double)obj.getTotalPremium());
@@ -1069,6 +1074,63 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			agreement.setExpiredDate(DateUtils.str2Date(obj.getNgayHieulucDen()));
 		}
 		
+		String mciAddId = codeManagementService.getIssueNumber("PAY", "PAY");
+		agreement.setMciAddId(mciAddId);
+		
+		agreement.setCommision(0.0);
+		agreement.setCommisionSupport(0.0);
+		agreement.setCancelPolicyPremium(0.0);
+		agreement.setCancelPolicyCommision(0.0);
+		agreement.setCancelPolicySupport(0.0);
+		agreement.setCancelPolicyPremium2(0.0);
+		agreement.setCancelPolicyCommision2(0.0);
+		agreement.setCancelPolicySupport2(0.0);
+		agreement.setCancelPolicyPremium3(0.0);
+		agreement.setCancelPolicyCommision3(0.0);
+		agreement.setCancelPolicySupport3(0.0);
+		agreement.setCouponsCode("");
+		agreement.setCouponsValue(0.0);
+		agreement.setFeeReceive(0.0);
+		agreement.setRenewalsReason("");
+        agreement.setRenewalsRate(0.0);
+        agreement.setRenewalsPremium(0.0);
+        agreement.setRenewalsChoice("");
+        agreement.setRenewalsSi(0.0);
+        agreement.setRenewalsRate1(0.0);
+        agreement.setRenewalsRate2(0.0);
+        agreement.setRenewalsPremium1(0.0);
+        agreement.setRenewalsPremium2(0.0);
+        agreement.setRenewalsDes2("");
+        agreement.setRenewalsDes1("");
+        agreement.setClaimRate(0.0);
+		agreement.setClaimRate1(0.0);
+		agreement.setClaimRate2(0.0);
+		agreement.setStatusRenewalsId("");
+        agreement.setStatusRenewalsName("");
+        agreement.setStatusRenewalsId1("");
+        agreement.setStatusRenewalsName1("");
+        agreement.setStatusRenewalsId2("");
+        agreement.setStatusRenewalsName2("");
+		agreement.setOldPolicyStatusId("");
+		agreement.setOldPolicyStatusName("");
+		agreement.setTeamId("");
+		agreement.setTeamName("");
+		agreement.setBankId("");
+		agreement.setBankName("");
+		agreement.setUserId("");
+		agreement.setUserName("");
+		agreement.setOldGycbhId("");
+		agreement.setIsPolicy(0);
+		agreement.setReasonCancel("");
+		Date dateNow = new Date();
+		agreement.setSendDate(dateNow);
+		agreement.setResponseDate(dateNow);
+		agreement.setAgreementSysdate(dateNow);
+		agreement.setCancelPolicyDate(dateNow);
+		agreement.setDateOfRequirement(dateNow);
+		agreement.setDateOfPayment(dateNow);
+		agreement.setTypeOfPrint("");
+		
 		// phong ban
 		if (StringUtils.isEmpty(obj.getDepartmentId())) {
 			throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Cần lựa chọn phòng ban");
@@ -1091,12 +1153,6 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		
 		agreement.setAgentId(currentAgency.getMa());
 		agreement.setAgentName(currentAgency.getTen());
-
-		Date dateNow = new Date();
-		agreement.setSendDate(dateNow);
-		agreement.setResponseDate(dateNow);
-		agreement.setAgreementSysdate(dateNow);
-		agreement.setDateOfRequirement(dateNow);
 		agreement.setCreateType(1);
 		agreement.setAgencyP6Id("agency");
 		
