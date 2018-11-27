@@ -1020,6 +1020,15 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		}
 		agreement.setContactId(co.getContactId());
 		agreement.setContactPhone(co.getPhone());
+		agreement.setContactUsername(co.getEmail());
+		agreement.setContactAddresstt(co.getHomeAddress());
+		agreement.setTaxIdNumber(co.getIdNumber());
+		agreement.setContactAddress(co.getHomeAddress());
+		if (co.getDateOfBirth() != null) {
+			agreement.setContactDob(co.getDateOfBirth());	
+		} else {
+			agreement.setContactDob(DateUtils.str2Date("01/01/0001"));
+		}
 
 		agreement.setTotalPremium((double)obj.getTotalPremium());
 		agreement.setNetPremium((double)obj.getTotalPremium());

@@ -28,7 +28,6 @@ import com.baoviet.agency.repository.SktdRateRepository;
 import com.baoviet.agency.repository.TinhtrangSkRepository;
 import com.baoviet.agency.service.AttachmentService;
 import com.baoviet.agency.service.BVPService;
-import com.baoviet.agency.service.FilesService;
 import com.baoviet.agency.service.ProductBVPService;
 import com.baoviet.agency.service.TinhtrangSkService;
 import com.baoviet.agency.utils.AppConstants;
@@ -53,9 +52,6 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 
 	@Autowired
 	private SktdRateRepository sktdRateRepository;
-
-	@Autowired
-	private FilesService filesService;
 
 	@Autowired
 	private BVPService bVPService;
