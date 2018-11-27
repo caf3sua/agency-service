@@ -1,5 +1,6 @@
 package com.baoviet.agency.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.transaction.Transactional;
@@ -393,7 +394,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 			pMOTO.setTypeOfMotoName("Xe Mô tô 2 bánh dung tích trên 50cc");
 		}
 		pMOTO.setInceptionDate(DateUtils.str2Date(obj.getThoihantu()));// Thời hạn bảo hiểm: tu
-		pMOTO.setExpiredDate(DateUtils.getCurrentYearPrevious(DateUtils.str2Date(obj.getThoihantu()), 1)); // Thời hạn bảo hiểm: den
+		pMOTO.setExpiredDate(DateUtils.getCurrentYearPrevious(DateUtils.str2Date(obj.getThoihantu()), -1)); // Thời hạn bảo hiểm: den
 		obj.setThoihanden(DateUtils.date2Str(pMOTO.getExpiredDate()));
 		pMOTO.setTndsBbPhi(obj.getTndsbbPhi()); // Phí bảo hiểm trách nhiệm dân sự bắt
 
