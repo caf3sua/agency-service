@@ -1022,6 +1022,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		agreement.setContactPhone(co.getPhone());
 
 		agreement.setTotalPremium((double)obj.getTotalPremium());
+		agreement.setNetPremium((double)obj.getTotalPremium());
 		// update thì ko cập nhật gycbhNumber
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
 			agreement.setGycbhNumber(obj.getGycbhNumber());

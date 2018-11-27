@@ -447,20 +447,24 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 		Double totalPremium = 0d;
 		if (agreement.getLineId().equals(ProductType.CAR.name())) {
 			// Trừ phí TNDSBB xe ô tô
-			Car car = carRepository.findOne(agreement.getGycbhId());
-			if (car != null) {
-				totalPremium = agreement.getNetPremium() - car.getPhysicalDamagePremium()
-						* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100);	
+			if (agreement.getGycbhId() != null) {
+				Car car = carRepository.findOne(agreement.getGycbhId());
+				if (car != null) {
+					totalPremium = agreement.getNetPremium() - car.getPhysicalDamagePremium()
+							* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100);	
+				}
 			} else {
 				totalPremium = agreement.getNetPremium() - (agreement.getNetPremium()
 						* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100));
 			}
 		} else if (agreement.getLineId().equals(ProductType.MOT.name())) {
 			// Trừ phí TNDSBB xe máy
-			Moto moto = motoRepository.findOne(agreement.getGycbhId());
-			if (moto != null) {
-				totalPremium = agreement.getNetPremium() - (agreement.getNetPremium() - moto.getTndsBbPhi())
-						* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100);	
+			if (agreement.getGycbhId() != null) {
+				Moto moto = motoRepository.findOne(agreement.getGycbhId());
+				if (moto != null) {
+					totalPremium = agreement.getNetPremium() - (agreement.getNetPremium() - moto.getTndsBbPhi())
+							* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100);	
+				}
 			} else {
 				totalPremium = agreement.getNetPremium() - (agreement.getNetPremium()
 						* (checkGiftCodePercent(promotionBanks, config, agreement.getLineId(), bankCode) / 100));
