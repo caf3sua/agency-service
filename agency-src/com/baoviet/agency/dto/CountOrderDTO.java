@@ -26,6 +26,8 @@ public class CountOrderDTO implements Serializable {
 	
 	private Long countOrderMe;
 	
+	private Long countOrderLater;
+	
 	private Long countOrderDebit;
 	
 	private Long countOrderExpire;

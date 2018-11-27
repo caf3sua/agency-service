@@ -232,17 +232,17 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		SearchAgreementWaitVM obj1 = new SearchAgreementWaitVM();
 		
 		QueryResultDTO countOrder = countOrder(agentId);
+		QueryResultDTO countOrderLater = countOrderLater(agentId);
 		QueryResultDTO countCart = countSearchCart(obj1, agentId);
 		QueryResultDTO countOrderDebit = countNophi(obj, agentId);
 		
 		QueryResultDTO countBvWaiting = countAgreementWait(obj1, agentId, "0");
 		QueryResultDTO countAgencyWaiting = countAgreementWait(obj1, agentId, "1");
-		QueryResultDTO countOther = countAgreementWait(obj1, agentId, "2");
 		QueryResultDTO countOrderExpire = countAgreementWait(obj1, agentId, "5");
 		
 		data.setCountOrderMe(countOrder.getCount());
+		data.setCountOrderLater(countOrderLater.getCount());
 		data.setCountCart(countCart.getCount());
-		data.setCountOrderOther(countOther.getCount());
 		data.setCountAgencyWaiting(countAgencyWaiting.getCount());
 		data.setCountBvWaiting(countBvWaiting.getCount());
 		data.setCountOrderExpire(countOrderExpire.getCount());
@@ -371,6 +371,28 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE (STATUS_POLICY_ID = '100' OR (STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER')) AND AGENT_ID = :pType";
+
+		Query query = entityManager.createNativeQuery(expression);
+
+		// set parameter 
+		query.setParameter("pType", type);		
+        Object[] data = (Object[]) query.getSingleResult();
+        
+        if (data != null) {
+        	BigDecimal tempCount = (BigDecimal) data[0];
+        	BigDecimal tempPremium = (BigDecimal) data[1];
+        	result.setCount(tempCount.longValue());
+        	result.setPremium(tempPremium.longValue());
+        }
+        
+        return result;
+	}
+	
+	private QueryResultDTO countOrderLater(String type) {
+		QueryResultDTO result = new QueryResultDTO();
+		// create the command for the stored procedure
+        // Presuming the DataTable has a column named .  
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER' AND AGENT_ID = :pType";
 
 		Query query = entityManager.createNativeQuery(expression);
 
