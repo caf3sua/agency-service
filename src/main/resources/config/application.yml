@@ -50,7 +50,8 @@ spring:
             printed-paper:
                 baoviet:
                     #url: https://appuat.baoviet.com.vn:7779/BVAC02/BVAC_AGENCY.asmx
-                    url: http://10.29.83.84/BVAC02/BVAC_AGENCY.asmx?wsdl
+                    #url: http://10.29.83.84/BVAC02/BVAC_AGENCY.asmx?wsdl
+                    url: https://172.29.2.36:7779/BVAC02/BVAC_AGENCY.asmx
                     username: agency
                     password: 9A5459078CDFED5305E8F655F7586A36DFC1E46475ED937D53AFCDB468790C9E
             sms:

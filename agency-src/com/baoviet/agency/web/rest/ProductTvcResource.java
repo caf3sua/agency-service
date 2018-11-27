@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baoviet.agency.domain.AgentDiscount;
 import com.baoviet.agency.domain.BenifitTravel;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.repository.AgentDiscountRepository;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.ProductTvcService;
 import com.baoviet.agency.utils.AppConstants;
@@ -46,8 +49,12 @@ public class ProductTvcResource extends AbstractAgencyResource{
 
     @Autowired
     private ProductTvcService productTvcService;
+    
     @Autowired
     private AgreementService agreementService;
+    
+    @Autowired
+    private AgentDiscountRepository agentDiscountRepository;
     
     @GetMapping("/get-benefit-areaId/{areaId}")
     @Timed
@@ -81,6 +88,16 @@ public class ProductTvcResource extends AbstractAgencyResource{
     public ResponseEntity<PremiumTvcVM> getPremium(@Valid @RequestBody PremiumTvcVM param) throws URISyntaxException, AgencyBusinessException {
 		log.debug("REST request to getPremium : {}", param);
 		
+		// Get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+		
+		AgentDiscount agentDiscount = agentDiscountRepository.findByAgencyIdAndLineId(currentAgency.getId(), "TVC");
+		if (agentDiscount != null) {
+			if (agentDiscount.getDiscount() != null && agentDiscount.getDiscount() > 0) {
+				param.setPremiumDiscount(agentDiscount.getDiscount());
+			}
+		}
+
 		// Call service
 		PremiumTvcVM data = productTvcService.calculatePremium(param);
 		
@@ -97,6 +114,13 @@ public class ProductTvcResource extends AbstractAgencyResource{
 		
 		// Get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
+		
+		AgentDiscount agentDiscount = agentDiscountRepository.findByAgencyIdAndLineId(currentAgency.getId(), "TVC");
+		if (agentDiscount != null) {
+			if (agentDiscount.getDiscount() != null && agentDiscount.getDiscount() > 0) {
+				param.setChangePremium(agentDiscount.getDiscount());
+			}
+		}
 		
 		// Call service
 		ProductTvcVM data = productTvcService.createOrUpdatePolicy(param, currentAgency);

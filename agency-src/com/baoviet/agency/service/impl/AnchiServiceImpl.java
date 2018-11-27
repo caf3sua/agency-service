@@ -1,10 +1,18 @@
 package com.baoviet.agency.service.impl;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.cert.X509Certificate;
 import javax.transaction.Transactional;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
@@ -105,6 +113,9 @@ public class AnchiServiceImpl implements AnchiService {
 	public List<PrintedPaperDTO> searchNew(SearchPrintedPaperVM param, String agencyType)
 			throws JsonParseException, JsonMappingException, IOException {
 		log.debug("Request to searchNew PrintedPaperDTO, SearchPrintedPaperVM {}, agencyType {}", param, agencyType);
+		
+		disableSSL();
+		
 		String lstPrintedPaper = getService().getAnChiByAgency(agencyType);
 
 		// Convert to object
@@ -116,6 +127,42 @@ public class AnchiServiceImpl implements AnchiService {
 		return filterPrintedPaper(result, param, agencyType);
 	}
 
+	@SuppressWarnings("unused")
+	private void disableSSL() {
+		try {
+	        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+	            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                return null;
+	            }
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {
+	            }
+	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+	            }
+				@Override
+				public void checkClientTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
+						throws CertificateException {
+				}
+				@Override
+				public void checkServerTrusted(java.security.cert.X509Certificate[] arg0, String arg1)
+						throws CertificateException {
+				}
+	        }};
+
+	        // Install the all-trusting trust manager
+	        SSLContext sc = SSLContext.getInstance("SSL");
+	        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	        HostnameVerifier allHostsValid = new HostnameVerifier() {
+	            public boolean verify(String hostname, SSLSession session) {
+	                return true;
+	            }
+	        };
+	        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+	        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	@Override
 	public String wsUpdateAnChi(AgreementAnchiVM obj) throws AgencyBusinessException {
 		log.debug("Request to wsUpdateAnChi, AgreementAnchiVM {} :", obj);
@@ -219,6 +266,7 @@ public class AnchiServiceImpl implements AnchiService {
 
 		// Set url ws
 		((BindingProvider) anchiService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsUrl);
+		log.debug("An chi ws url: " + wsUrl);
 
 		Binding binding = ((BindingProvider) anchiService).getBinding();
 		List handlerChain = binding.getHandlerChain();
