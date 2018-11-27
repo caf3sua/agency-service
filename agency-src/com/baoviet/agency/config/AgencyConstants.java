@@ -20,6 +20,20 @@ public final class AgencyConstants {
 //    
 //    public static final String SUCCESS = "Success";
     
+	public class CONTACT_GROUP_TYPE {
+		// POTENTIAL, FAMILIAR, VIP, ORGANIZATION
+		public static final String POTENTIAL = "POTENTIAL";
+		public static final String FAMILIAR = "FAMILIAR";
+		public static final String VIP = "VIP";
+		public static final String ORGANIZATION = "ORGANIZATION";
+	}
+	
+	public class CONTACT_CATEGORY_TYPE {
+		// POTENTIAL, FAMILIAR, VIP, ORGANIZATION
+		public static final String PERSON = "PERSON";
+		public static final String ORGANIZATION = "ORGANIZATION";
+	}
+	
 	public class ATTACHMENT_GROUP_TYPE {
 		public static final String OFFLINE_GYCBH = "OFFLINE_GYCBH";
 		public static final String OFFLINE_GIAY_KHAI_SINH = "OFFLINE_GIAY_KHAI_SINH";
