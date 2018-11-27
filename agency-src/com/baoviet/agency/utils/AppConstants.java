@@ -32,6 +32,7 @@ public class AppConstants {
 	
     public static final String STATUS_POLICY_NAME_CHO_THANHTOAN = "Chờ thanh toán";
     public static final String STATUS_POLICY_NAME_CHO_BV_CAPDON = "Chờ Bảo Việt cấp đơn";
+    public static final String STATUS_POLICY_NAME_THANH_TOAN_SAU = "Thanh toán sau";
     public static final String STATUS_POLICY_NAME_CHO_BV_CAP_GCNBH = "Chờ Bảo Việt cấp GCNBH (bản cứng)";
     public static final String STATUS_POLICY_NAME_CHO_BV_GIAMDINH = "Chờ BV giám định";
     public static final String STATUS_POLICY_NAME_HOANTHANH = "Hoàn thành";

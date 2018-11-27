@@ -61,7 +61,7 @@ public final class AgencyConstants {
     public static final Date DEFAULT_DATE_NOW_VALUE = new Date();
     public static final Date DEFAULT_DOB_VALUE = DateUtils.str2Date("01/01/0001");
     
-    public static final String PAYMENT_METHOD = "PAYMENT_LATER";
+    public static final String PAYMENT_METHOD_LATER = "PAYMENT_LATER";
     
     private AgencyConstants() {
     }
