@@ -33,6 +33,7 @@ import com.baoviet.agency.domain.Kcare;
 import com.baoviet.agency.domain.Moto;
 import com.baoviet.agency.domain.MvAgentAgreement;
 import com.baoviet.agency.domain.MvClaOutletLocation;
+import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.domain.TlAdd;
 import com.baoviet.agency.domain.TravelCareAdd;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -89,6 +90,7 @@ import com.baoviet.agency.service.KcareService;
 import com.baoviet.agency.service.MotoService;
 import com.baoviet.agency.service.PaAddService;
 import com.baoviet.agency.service.PaService;
+import com.baoviet.agency.service.PayActionService;
 import com.baoviet.agency.service.TinhtrangSkService;
 import com.baoviet.agency.service.TlService;
 import com.baoviet.agency.service.TravelcareService;
@@ -225,6 +227,9 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	
 	@Autowired
 	private AdminUserBuRepository adminUserBuRepository;
+	
+	@Autowired
+	private PayActionService payActionService;
 	
 	@Override
 	public AgreementDTO save(AgreementDTO agreementDTO) {
@@ -1111,6 +1116,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// Lưu Agrement
 		Agreement result = agreementRepository.save(agreementMapper.toEntity(agreement));
 		log.debug("Request to save agreement, AgreementId{}", result.getAgreementId());
+		
+		// Luu Payaction
+		PayAction payAction = setPayAction(co, agreement);
+		String payActionId = payActionService.save(payAction);
+		log.debug("Request to save PayAction, payActionId{}", payActionId);
+		
 		// CONVERSATION
 		// xóa trước khi update
 		if (!StringUtils.isEmpty(obj.getAgreementId())) {
@@ -1604,4 +1615,49 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			break;
 		}
 	}
+	
+	private PayAction setPayAction(Contact contact, AgreementDTO agreement)
+    {
+    	PayAction pAction = new PayAction();
+    	pAction.setToPhone(contact.getPhone());
+        pAction.setToSendmail(contact.getEmail());
+        pAction.setMciAddId(agreement.getMciAddId());
+        pAction.setTransactionId(!StringUtils.isEmpty(agreement.getPaymentTransactionId()) ? agreement.getPaymentTransactionId() : "");
+        
+        if (!StringUtils.isEmpty(agreement.getStatusPolicyId()) && agreement.getStatusPolicyId().equals("91")) {
+        	pAction.setStatus(91);
+        } else {
+        	pAction.setStatus(90);
+        }
+            
+        pAction.setBankcode("");
+        pAction.setPaymentGateway("");
+        pAction.setNetAmount(agreement.getNetPremium());
+        pAction.setRefundAmount(0);
+        pAction.setAmount(agreement.getTotalPremium());
+        Date dateNow = new Date();
+        pAction.setTransactionDate(dateNow);
+        if(agreement.getChangePremium() != null) {
+        	pAction.setDiscountAmount(agreement.getChangePremium());	
+        } else {
+        	pAction.setDiscountAmount(0d);	
+        }
+        pAction.setPayStartDate(dateNow);
+        pAction.setPayEndDate(dateNow);
+        pAction.setPolicyNumbers(agreement.getGycbhNumber());
+        pAction.setPayLog("");
+        pAction.setStatusEmailFrom(0);
+        pAction.setStatusEmailTo(0);
+        pAction.setPaymentDiscount(0);
+        pAction.setPaymentRefund(0);
+        pAction.setStatusPaymentRefund(0);
+        pAction.setNumCard("");
+        pAction.setBankName("");
+        pAction.setCardName("");
+        pAction.setAddress("");
+        pAction.setStatusCard(0);
+        pAction.setCardUpdateDate(dateNow);
+        pAction.setStatusEmailPayFrom(0);
+        return pAction;
+    }
 }
