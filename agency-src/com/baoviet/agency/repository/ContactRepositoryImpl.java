@@ -53,6 +53,9 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getGroupType())) {
         	expression = expression +  " AND GROUP_TYPE = :pGroup";
         }
+        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
+        }
         
         
         Query query = entityManager.createNativeQuery(expression, Contact.class);
@@ -68,6 +71,9 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         }
         if (!StringUtils.isEmpty(obj.getGroupType())) {
         	query.setParameter("pGroup", obj.getGroupType());
+        }
+        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+        	query.setParameter("pCategoryType", obj.getCategoryType());
         }
         
         // Paging

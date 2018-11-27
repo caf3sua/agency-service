@@ -38,5 +38,8 @@ public class ContactSearchVM implements Serializable {
 	@ApiModelProperty(value = "Loại khách hàng", required = false, allowableValues = "POTENTIAL,FAMILIAR,VIP")
 	private String groupType;
 	
+	@ApiModelProperty(value = "Khách hàng là cá nhân/tổ chức", required = false, allowableValues = "PERSON,CATEGORY")
+	private String categoryType;
+	
 	private PageableVM pageable;
-}
+} 
