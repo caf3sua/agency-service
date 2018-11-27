@@ -88,7 +88,7 @@ public interface AgreementService {
 
 	AgreementDTO findByGycbhNumberAndAgentId(String gycbhNumber, String agentId);
 	
-	Page<AgreementDTO> search(SearchAgreementVM obj, String type);
+	Page<AgreementDTO> search(SearchAgreementWaitVM obj, String type);
 	
 	Page<AgreementNophiDTO> searchNophi(SearchAgreementVM obj, String type);
 	

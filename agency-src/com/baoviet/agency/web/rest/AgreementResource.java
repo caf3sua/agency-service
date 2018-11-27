@@ -94,7 +94,7 @@ public class AgreementResource extends AbstractAgencyResource {
 	@PostMapping("/search-order")
 	@Timed
 	@ApiOperation(value = "searchOrder", notes = "Hàm tra cứu danh sách đơn hàng.")
-	public ResponseEntity<List<AgreementDTO>> searchOrder(@Valid @RequestBody SearchAgreementVM param)
+	public ResponseEntity<List<AgreementDTO>> searchOrder(@Valid @RequestBody SearchAgreementWaitVM param)
 			throws URISyntaxException, AgencyBusinessException {
 		log.debug("REST request to searchAgreement : {}", param);
 
