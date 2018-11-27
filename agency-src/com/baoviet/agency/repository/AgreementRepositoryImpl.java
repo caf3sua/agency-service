@@ -202,30 +202,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	}
 	
 	@Override
-	public QueryResultDTO countOrder(SearchAgreementVM obj, String type) {
-		QueryResultDTO result = new QueryResultDTO();
-		// create the command for the stored procedure
-        // Presuming the DataTable has a column named .  
-		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE AGENT_ID = :pType";
-
-		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, type));
-
-		// set parameter 
-		setQueryParameter(query, obj, type);
-		
-        Object[] data = (Object[]) query.getSingleResult();
-        
-        if (data != null) {
-        	BigDecimal tempCount = (BigDecimal) data[0];
-        	BigDecimal tempPremium = (BigDecimal) data[1];
-        	result.setCount(tempCount.longValue());
-        	result.setPremium(tempPremium.longValue());
-        }
-        
-        return result;
-	}
-	
-	@Override
 	public QueryResultDTO count(SearchAgreementVM obj, String type) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
@@ -340,18 +316,18 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	}
 
 	@Override
-	public Page<Agreement> search(SearchAgreementVM obj, String type) {
+	public Page<Agreement> search(SearchAgreementWaitVM obj, String type) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT * FROM AGREEMENT WHERE AGENT_ID = :pType";
         
-        Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, type), Agreement.class);
+        Query query = entityManager.createNativeQuery(buildSearchOrder(expression, obj, type), Agreement.class);
 
         // set parameter 
- 		setQueryParameter(query, obj, type);
+        setQueryParameterOrder(query, obj, type);
  		
  		// Paging
- 		Pageable pageable = buildPageable(obj);
+ 		Pageable pageable = buildPageableAgreementWait(obj);
  		if (pageable != null) {
  			query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()); 
  			query.setMaxResults(pageable.getPageSize());
@@ -366,11 +342,35 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         return dataPage;
 	}
 	
+	@Override
+	public QueryResultDTO countOrder(SearchAgreementWaitVM obj, String type) {
+		QueryResultDTO result = new QueryResultDTO();
+		// create the command for the stored procedure
+        // Presuming the DataTable has a column named .  
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE AGENT_ID = :pType";
+
+		Query query = entityManager.createNativeQuery(buildSearchOrder(expression, obj, type));
+
+		// set parameter 
+		setQueryParameterOrder(query, obj, type);
+		
+        Object[] data = (Object[]) query.getSingleResult();
+        
+        if (data != null) {
+        	BigDecimal tempCount = (BigDecimal) data[0];
+        	BigDecimal tempPremium = (BigDecimal) data[1];
+        	result.setCount(tempCount.longValue());
+        	result.setPremium(tempPremium.longValue());
+        }
+        
+        return result;
+	}
+	
 	private QueryResultDTO countOrder(String type) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE STATUS_POLICY_ID IN ('91','92','100') AND AGENT_ID = :pType";
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE (STATUS_POLICY_ID = '100' OR (STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER')) AND AGENT_ID = :pType";
 
 		Query query = entityManager.createNativeQuery(expression);
 
@@ -858,9 +858,14 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	}
         } else if (StringUtils.equals(caseWait, "0")) {	// chờ bảo việt giải quyết
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
-            	expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";
+        		if (obj.getStatusPolicy().equals("91")) {
+        			expression = expression +  " AND STATUS_POLICY_ID = '91' AND PAYMENT_METHOD != 'PAYMENT_LATER'";
+        		} else {
+        			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
+        		}
+            	
         	} else {
-            		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','93')";
+            		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','93') AND PAYMENT_METHOD != 'PAYMENT_LATER' ";
             }
         } else if (StringUtils.equals(caseWait, "2")) { // yêu cầu bảo hiểm khác
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
@@ -1158,6 +1163,26 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
 	}
 	
+	private void setQueryParameterOrder(Query query, SearchAgreementWaitVM obj, String type) {
+		query.setParameter("pType", type);
+        if (!StringUtils.isEmpty(obj.getProductCode())) {
+        	query.setParameter("pLineId", obj.getProductCode());
+        } 
+        // Date
+        if (obj.getFromDate() != null) {
+        	query.setParameter("pFromDate", obj.getFromDate());
+        } 
+        if (obj.getToDate() != null) {
+        	query.setParameter("pToDate", obj.getToDate());
+        }
+        if (!StringUtils.isEmpty(obj.getCreateType())) {
+        	query.setParameter("pCreateType", obj.getCreateType());
+        }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	query.setParameter("pDepartmentId", obj.getDepartmentId());
+        }
+	}
+	
 	private void setQueryParameterAdmin(Query query, SearchAgreementWaitVM obj, String departmentId) {
 		query.setParameter("pDepartmentId", departmentId);
         if (!StringUtils.isEmpty(obj.getProductCode())) {
@@ -1224,9 +1249,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	query.setParameter("pDepartment", obj.getDepartmentId());
         }
-//        if (obj.getCreateDate() != null) {
-//        	query.setParameter("pCreateDate", obj.getCreateDate());
-//        }
 	}
 	
 	private void setQueryParameterAgreementWait(Query query, SearchAgreementWaitVM obj, String type) {
@@ -1318,6 +1340,54 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
         
         return result;
+	}
+	
+	private String buildSearchOrder(String expression, SearchAgreementWaitVM obj, String caseType) {
+		if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
+			if (obj.getStatusPolicy().equals("91")) {
+				expression = expression +  " AND STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER' ";
+			} else {
+				expression = expression +  " AND STATUS_POLICY_ID = '" + obj.getStatusPolicy() + "'";	
+			}
+    	} else {
+    		expression = expression +  " AND (STATUS_POLICY_ID = '100' OR (STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER'))";
+    	}
+		
+		if (!StringUtils.isEmpty(obj.getContactName())) {
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
+        }
+        if (!StringUtils.isEmpty(obj.getEmail())) {
+        	expression = expression +  " AND UPPER(CONTACT_USERNAME) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
+        }
+        if (!StringUtils.isEmpty(obj.getGycbhNumber())) {
+        	expression = expression +  " AND UPPER(GYCBH_NUMBER) LIKE '%" + obj.getGycbhNumber().toUpperCase() + "%'";
+        }
+        if (!StringUtils.isEmpty(obj.getPhone())) {
+        	expression = expression +  " AND CONTACT_PHONE LIKE '%" + obj.getPhone() + "%'";
+        } 
+        if (!StringUtils.isEmpty(obj.getProductCode())) {
+        	expression = expression +  " AND LINE_ID = :pLineId";
+        } 
+        if (obj.getFromDate() != null) {
+        	expression = expression +  " AND TRUNC(INCEPTION_DATE) >= TRUNC(:pFromDate)";
+        } 
+        if (obj.getToDate() != null) {
+        	expression = expression +  " AND TRUNC(EXPIRED_DATE) <= TRUNC(:pToDate)";
+        }
+        if (!StringUtils.isEmpty(obj.getCreateType())) {
+        	expression = expression +  " AND CREATE_TYPE = :pCreateType";
+        }
+        if (!StringUtils.isEmpty(obj.getDepartmentId())) {
+        	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartmentId";
+        }
+        if (!StringUtils.isEmpty(obj.getCreateDate())) {
+        	expression = expression +  " AND TRUNC(AGREEMENT_SYSDATE) = TRUNC(To_date('"+obj.getCreateDate()+"', 'dd/mm/yyyy'))";
+        }
+        
+        // ORDER
+        expression = expression +  " ORDER BY AGREEMENT_ID DESC";
+        
+        return expression;
 	}
 	
 }

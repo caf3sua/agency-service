@@ -669,7 +669,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	}
 
 	@Override
-	public Page<AgreementDTO> search(SearchAgreementVM obj, String type) {
+	public Page<AgreementDTO> search(SearchAgreementWaitVM obj, String type) {
 		Page<AgreementDTO> page = agreementRepository.search(obj, type).map(agreementMapper::toDto);
 
 		// Calulate isCanTaituc

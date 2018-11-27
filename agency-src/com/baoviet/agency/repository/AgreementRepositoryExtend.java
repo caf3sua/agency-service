@@ -27,7 +27,7 @@ public interface AgreementRepositoryExtend {
 	
 	boolean UpdateOTP(String gycbhNunber, String otp, String otpStatus, String otpStartTime);
 	
-	Page<Agreement> search(SearchAgreementVM param, String type);
+	Page<Agreement> search(SearchAgreementWaitVM param, String type);
 	
 	Page<Agreement> searchOrderWait(SearchAgreementWaitVM param, String type, String caseWait);	// caseWait: 1: chờ đại lý, 0: chờ bảo việt 
 	
@@ -35,7 +35,7 @@ public interface AgreementRepositoryExtend {
 	
 	QueryResultDTO count(SearchAgreementVM param, String type);
 	
-	QueryResultDTO countOrder(SearchAgreementVM param, String type);
+	QueryResultDTO countOrder(SearchAgreementWaitVM param, String type);
 	
 	QueryResultDTO countAdmin(SearchAgreementVM param, String type);
 	
