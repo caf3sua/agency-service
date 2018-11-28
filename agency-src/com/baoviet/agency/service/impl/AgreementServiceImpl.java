@@ -1122,13 +1122,12 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		agreement.setOldGycbhId("");
 		agreement.setIsPolicy(0);
 		agreement.setReasonCancel("");
-		Date dateNow = new Date();
-		agreement.setSendDate(dateNow);
-		agreement.setResponseDate(dateNow);
-		agreement.setAgreementSysdate(dateNow);
-		agreement.setCancelPolicyDate(dateNow);
-		agreement.setDateOfRequirement(dateNow);
-		agreement.setDateOfPayment(dateNow);
+		agreement.setSendDate(DbUtil.getSysDate(em));
+		agreement.setResponseDate(DbUtil.getSysDate(em));
+		agreement.setAgreementSysdate(DbUtil.getSysDate(em));
+		agreement.setCancelPolicyDate(DbUtil.getSysDate(em));
+		agreement.setDateOfRequirement(DbUtil.getSysDate(em));
+		agreement.setDateOfPayment(DbUtil.getSysDate(em));
 		agreement.setTypeOfPrint("");
 		
 		// phong ban
@@ -1203,8 +1202,8 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			conversation.setUserName(currentAgency.getEmail());
 		}
 		conversation.setUserId(currentAgency.getId());
-		conversation.setSendDate(dateNow);
-		conversation.setResponseDate(dateNow);
+		conversation.setSendDate(DbUtil.getSysDate(em));
+		conversation.setResponseDate(DbUtil.getSysDate(em));
 		conversation.setCreateDate(DbUtil.getSysDate(em));
 		conversation.setRole("agency"); 
 		

@@ -42,4 +42,6 @@ public class OrderHistoryDTO implements Serializable {
 	private Date hisDate;
 	
 	private String createDateDisplay;
+	
+	private String fromEmail;
 }

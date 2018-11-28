@@ -77,8 +77,7 @@ public class ConversationServiceImpl implements ConversationService {
 	public ConversationDTO save(ConversationVM info, AgencyDTO currentAgency, AgreementDTO agreement) {
 		ConversationDTO conversation = new ConversationDTO();
 
-		String title = "Đại lý - " + info.getTitle();
-		conversation.setTitle(title);
+		conversation.setTitle(info.getTitle());
 		conversation.setParrentId(agreement.getAgreementId());
 		conversation.setSendEmail(info.getSendEmail());
 		if (!StringUtils.isEmpty(info.getConversationContent())) {
@@ -132,8 +131,7 @@ public class ConversationServiceImpl implements ConversationService {
 	public ConversationDTO saveAdmin(ConversationVM info, AgencyDTO currentAgency, AgreementDTO agreement) {
 		ConversationDTO conversation = new ConversationDTO();
 
-		String title = "Bảo Việt - " + info.getTitle();
-		conversation.setTitle(title);
+		conversation.setTitle(info.getTitle());
 		conversation.setParrentId(agreement.getAgreementId());
 		conversation.setSendEmail(info.getSendEmail());
 		if (!StringUtils.isEmpty(info.getConversationContent())) {

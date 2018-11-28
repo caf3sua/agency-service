@@ -28,5 +28,7 @@ public interface AgencyRepository extends JpaRepository<Agency, String> {
 	
 	Agency findById(String type);
 	
+	Agency findByMa(String ma);
+	
 	List<Agency> findByMaDonVi(String madonvi);
 }

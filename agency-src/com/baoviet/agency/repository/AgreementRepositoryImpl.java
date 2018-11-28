@@ -101,6 +101,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 						// TH k có thì hiển thị tạm ngày tạo đơn hàng
 						orderHisCoversation.setHisDate(agHis.getCreateDate());
 					}
+					if (StringUtils.isNotEmpty(conver.getUserName())) {
+						orderHisCoversation.setFromEmail(conver.getUserName());
+					}
 					
 					order++;
 					orderHisCoversation.setOrder(order);

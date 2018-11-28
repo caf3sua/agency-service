@@ -8,12 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,16 +24,12 @@ import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
-import com.baoviet.agency.repository.AdminUserBuRepository;
-import com.baoviet.agency.repository.AdminUserRepository;
+import com.baoviet.agency.repository.AgencyRepository;
 import com.baoviet.agency.repository.AgreementRepository;
-import com.baoviet.agency.repository.MvAgentAgreementRepository;
-import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.security.SecurityUtils;
-import com.baoviet.agency.security.jwt.TokenProvider;
-import com.baoviet.agency.service.AdminUserService;
 import com.baoviet.agency.service.AgencyService;
 import com.baoviet.agency.service.MailService;
+import com.baoviet.agency.service.mapper.AgencyMapper;
 import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.web.rest.vm.AgencyChangePasswordVM;
@@ -53,37 +47,20 @@ public class AccountController extends AgencyBaseResource {
 	private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
 
 	@Autowired
-	private TokenProvider tokenProvider;
-
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private Environment env;
-
-	@Autowired
 	private AgencyService agencyService;
 
-	@Autowired
-	private AdminUserService adminUserService;
-	
 	@Autowired
 	private MailService mailService;
 
 	@Autowired
 	private AgreementRepository agreementRepository;
 	
-	@Autowired
-	private AdminUserRepository adminUserRepository;
 	
 	@Autowired
-	private MvClaOutletLocationRepository mvClaOutletLocationRepository;
+	private AgencyRepository agencyRepository;
 	
 	@Autowired
-	private MvAgentAgreementRepository mvAgentAgreementRepository;
-	
-	@Autowired
-	private AdminUserBuRepository adminUserBuRepository;
+	private AgencyMapper agencyMapper;
 	
 	@GetMapping("/logout")
 	@Timed
@@ -300,6 +277,15 @@ public class AccountController extends AgencyBaseResource {
 
 		// Return data
 		return new ResponseEntity<>(AppConstants.SUCCESS, HttpStatus.OK);
+	}
+	
+	@GetMapping("/get-agency-by-id/{agencyId}")
+	@Timed
+	public ResponseEntity<AgencyDTO> getAgencyById(@PathVariable String agencyId) {
+		
+		AgencyDTO data = agencyMapper.toDto(agencyRepository.findByMa(agencyId));
+		
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
 }
