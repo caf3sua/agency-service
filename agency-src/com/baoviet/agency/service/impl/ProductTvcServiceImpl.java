@@ -274,7 +274,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 
 		}
 
-		if (!obj.getPlanId().equals("2") && !obj.getPlanId().equals("3") && !obj.getPlanId().equals("4")) {
+		if (!obj.getPlanId().equals("1") && !obj.getPlanId().equals("2") && !obj.getPlanId().equals("3") && !obj.getPlanId().equals("4")) {
 			throw new AgencyBusinessException("planId", ErrorCode.INVALID);
 		}
 
@@ -377,7 +377,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		if (!objTravel.getLoaitien().equals("USD") && !objTravel.getLoaitien().equals("EUR")) {
 			throw new AgencyBusinessException("loaitien", ErrorCode.INVALID);
 		}
-		if (!objTravel.getPlanId().equals("2") && !objTravel.getPlanId().equals("3")
+		if (!objTravel.getPlanId().equals("1") && !objTravel.getPlanId().equals("2") && !objTravel.getPlanId().equals("3")
 				&& !objTravel.getPlanId().equals("4")) {
 			throw new AgencyBusinessException("planId", ErrorCode.INVALID);
 		}
