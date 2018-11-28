@@ -226,6 +226,23 @@ public class AdminResource extends AbstractAgencyResource {
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
 	
+//	// Đơn hàng chờ BV giải quyết: Chờ bảo việt giám định StautusPolicy: 93; Chờ bảo việt cấp đơn StautusPolicy: 91; Chờ Bảo Việt cấp GCNBH (bản cứng): 92
+//	@PostMapping("/get-wait-agreement")
+//	@Timed
+//	@ApiOperation(value = "getWaitAgreement", notes = "Hàm lấy tất cả danh sách hợp đồng chờ bảo việt giải quyết của Admin")
+//	public ResponseEntity<List<AgreementDTO>> getWaitAgreement(@Valid @RequestBody SearchAgreementWaitVM param) throws URISyntaxException, AgencyBusinessException {
+//		log.debug("REST request to getWaitAgreement");
+//
+//		// get current agency
+//		AgencyDTO currentAgency = getCurrentAccount();
+//
+//		Page<AgreementDTO> page = agreementService.searchOrderBVWait(param, currentAgency.getMa());
+//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/get-wait-agreement");
+//
+//		// Return data
+//		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//	}
+	
 	@PostMapping("/search-order-transport")
 	@Timed
 	@ApiOperation(value = "searchOrderTransport", notes = "Hàm tra cứu danh sách vận đơn")
@@ -412,23 +429,6 @@ public class AdminResource extends AbstractAgencyResource {
 		// Return data
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-	
-	// Đơn hàng chờ BV giải quyết: Chờ bảo việt giám định StautusPolicy: 93; Chờ bảo việt cấp đơn StautusPolicy: 91; Chờ Bảo Việt cấp GCNBH (bản cứng): 92
-	@GetMapping("/get-wait-agreement")
-	@Timed
-	@ApiOperation(value = "getWaitAgreement", notes = "Hàm lấy tất cả danh sách hợp đồng chờ bảo việt giải quyết của Admin")
-	public ResponseEntity<List<AgreementDTO>> getWaitAgreement(@ApiParam Pageable pageable) throws URISyntaxException, AgencyBusinessException {
-		log.debug("REST request to getWaitAgreement");
-
-		// get current agency
-		AgencyDTO currentAgency = getCurrentAccount();
-
-		Page<AgreementDTO> page = agreementService.getWaitAgreementAdmin(currentAgency.getMa(), pageable);
-		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/get-wait-agreement");
-
-		// Return data
-		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-	}
 	
 	// Đơn hàng chờ đại lý giải quyết : chờ OTP. StautusPolicy: 81; Yêu cầu bổ sung thông tin: 83; 80: Đang soạn
 	@GetMapping("/get-wait-agency")
