@@ -1,13 +1,24 @@
 package com.baoviet.agency.web.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.activation.DataHandler;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +42,8 @@ import com.baoviet.agency.repository.AgentDocumentRepository;
 import com.baoviet.agency.repository.AttachmentRepository;
 import com.baoviet.agency.service.AgentDocumentService;
 import com.baoviet.agency.utils.AppConstants;
+import com.baoviet.agency.utils.UEncrypt;
+import com.baoviet.agency.utils.UFile;
 import com.codahale.metrics.annotation.Timed;
 
 /**
@@ -95,7 +108,7 @@ public class AgentDocumentResource {
 		response.reset();
 		
 		response.setContentType("application/octet-stream");
-		response.setContentLengthLong(entity.getContent().length);
+		response.setContentLength(entity.getContent().length);
 		
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + entity.getFileName() + "\"");
 		
@@ -122,7 +135,7 @@ public class AgentDocumentResource {
 		response.reset();
 		
 		response.setContentType("application/octet-stream");
-		response.setContentLengthLong(entity.getContent().length);
+		response.setContentLength(entity.getContent().length);
 		
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + entity.getAttachmentName() + "\"");
 		
@@ -134,4 +147,53 @@ public class AgentDocumentResource {
 		// Return data
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
+	
+	// Import file excel
+//	@GET
+//    @Path("/downloadImport")
+//    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+//    public Response downloadFileImport(@Context HttpServletRequest request)throws Exception;
+	
+	
+	@PostMapping("/uploadFile")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response uploadATTT(List<org.apache.cxf.jaxrs.ext.multipart.Attachment> attachments, @Context HttpServletRequest request) {
+//		String folderParam = UString.getSafeFileName(request.getParameter("folder"));
+		String folderUpload = "";
+		String folderParam = "";
+		String filePathReturn;
+		Map<String, List> returnMap = new HashMap();
+		List<String> listFilePathReturn = new ArrayList<String>();
+
+		for (org.apache.cxf.jaxrs.ext.multipart.Attachment attachment : attachments) {
+			DataHandler dataHandler = attachment.getDataHandler();
+
+			// get filename to be uploaded
+			MultivaluedMap<String, String> multivaluedMap = attachment.getHeaders();
+			String fileName = UFile.getFileName(multivaluedMap);
+
+			// write & upload file to server
+			try (InputStream inputStream = dataHandler.getInputStream();) {
+				String filePath = UFile.writeToFileServerATTT2(inputStream, fileName, folderParam, folderUpload);
+				filePathReturn = UEncrypt.encryptFileUploadPath(filePath);
+				listFilePathReturn.add(filePathReturn);
+			} catch (Exception ex) {
+//				throw new BusinessException("Loi khi save file", ex);
+			}
+		}
+		returnMap.put("data", listFilePathReturn);
+		return Response.ok(listFilePathReturn).build();
+	}
+//    
+//    @POST
+//    @Path("/uploadTemp")
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response uploadTemp(List<Attachment> attachments, @Context HttpServletRequest request);   
+//    
+//    @GET
+//    @Path("/downloadFileATTT")
+//    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+//    public Response downloadFileATTT(@Context HttpServletRequest request) throws Exception;
 }
