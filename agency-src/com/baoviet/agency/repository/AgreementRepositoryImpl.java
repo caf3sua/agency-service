@@ -714,7 +714,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public Page<Agreement> getWaitAgreementAdmin(String adminId, Pageable pageableIn) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT * FROM AGREEMENT WHERE CREATE_TYPE IN ('0','1') AND STATUS_POLICY_ID IN ('92','91','93') AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pType) ";
+		String expression = "SELECT * FROM AGREEMENT WHERE (STATUS_POLICY_ID = '93' OR ( STATUS_POLICY_ID = '91' AND PAYMENT_METHOD != 'PAYMENT_LATER' )) AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pType) ";
 		
 		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pType ) ORDER BY AGREEMENT_ID DESC";
         
@@ -888,9 +888,8 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         		} else {
         			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
         		}
-            	
         	} else {
-            		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','93') AND PAYMENT_METHOD != 'PAYMENT_LATER' ";
+            		expression = expression +  " AND (STATUS_POLICY_ID = '93' OR ( STATUS_POLICY_ID = '91' AND PAYMENT_METHOD != 'PAYMENT_LATER' ))";
             }
         } else if (StringUtils.equals(caseWait, "2")) { // yêu cầu bảo hiểm khác
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {

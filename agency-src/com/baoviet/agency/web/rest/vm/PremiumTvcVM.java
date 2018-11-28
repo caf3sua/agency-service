@@ -32,7 +32,7 @@ public class PremiumTvcVM {
 	private String ngayVe;
 	
 	@NotEmpty
-	@ApiModelProperty(value = "Chương trình bảo hiểm/Insurance plan", allowableValues = "2,3,4", required = true)
+	@ApiModelProperty(value = "Chương trình bảo hiểm/Insurance plan", allowableValues = "1,2,3,4", required = true)
 	private String planId;
 	
 	@NotEmpty
