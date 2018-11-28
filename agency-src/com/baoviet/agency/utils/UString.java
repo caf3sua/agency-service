@@ -110,57 +110,6 @@ public class UString {
 	}
 
 	/**
-	 * Tách chuỗi ký tự thành các phần tử phân cách bởi regex
-	 *
-	 * @param <T>
-	 *            kiểu dữ liệu của phần tử sau khi được tách
-	 * @param str
-	 *            chuỗi ký tự cần phân tách
-	 * @param regex
-	 *            chuỗi ký tự phân cách
-	 * @param cls
-	 *            kiểu dữ liệu của phần tử sau khi được tách
-	 * @return
-	 * @throws Exception
-	 */
-	public static List<String> split(String str, String regex) {
-		List<String> result = new ArrayList<>();
-		if (!UString.isNullOrWhitespace(str)) {
-			String[] arr = str.split(regex);
-			for (String ele : arr) {
-				if (!isNullOrWhitespace(ele)) {
-					result.add(ele.trim());
-				}
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Ghep list thanh chuoi ky tu.
-	 *
-	 * @param list
-	 *            danh sách cần ghép
-	 * @param separator
-	 *            chuỗi phân cách
-	 * @param parser
-	 *            hàm chuyển phần tử trong list thành chuỗi ký tự cần ghép
-	 * @return
-	 * @throws Exception
-	 */
-	public static String join(List<String> list, String separator) {
-		StringBuilder str = new StringBuilder();
-		if (list != null && !list.isEmpty()) {
-			str.append(list.get(0));
-			for (int i = 1; i < list.size(); i++) {
-				str.append(separator);
-				str.append(list.get(i));
-			}
-		}
-		return str.toString();
-	}
-
-	/**
 	 * Convert sang dữ liệu BigDecimal
 	 *
 	 * @param str
@@ -235,86 +184,10 @@ public class UString {
 		int dotPos = fileName.lastIndexOf(".");
 		return dotPos > 0 ? fileName.substring(dotPos) : "";
 	}
-
-	public static boolean isExtendAllowSave(String fileName, String fileExtAllowSave) {
-		boolean check = false;
-		if (fileName != null && !("").equals(fileName) && fileExtAllowSave != null) {
-			String ext = UString.extractFileExt(fileName).trim();
-			if (ext != null && !"".equals(ext)) {
-				List<String> lstExtend = Arrays.asList(fileExtAllowSave.split(","));
-				if (lstExtend.contains(ext)) {
-					check = true;
-				}
-			} else {
-				check = true;
-			}
-		}
-		return check;
+	
+	public static String extractOriginalFileName(String filename) {
+		int index = filename.indexOf("_");
+		String filenameOriginal = index > 0 ? filename.substring(index + 1) : filename;
+		return filenameOriginal;
 	}
-
-	public static boolean isFolderAllowFolderSave(String folderDir, String folderAllowExt) {
-		boolean check = false;
-
-		if (folderDir != null && !("").equals(folderDir) && folderAllowExt != null) {
-			String ext = folderDir.trim().toLowerCase();
-			if (ext != null && !"".equals(ext)) {
-				List<String> lstExtend = Arrays.asList(folderAllowExt.split(","));
-				if (lstExtend.contains(ext)) {
-					check = true;
-				}
-			}else{
-				return true;
-			}
-		}
-		return check;
-	}
-//	HieuNC 05/10/2017
-	public static String getPattern() {
-		return pattern;
-	}
-
-	public static void setPattern(String pattern) {
-		UString.pattern = pattern;
-	}
-	/**
-	 * Convert a Long array into a String contain one or more element separated by UString.pattern.
-	 * The default pattern is "," but can change by call setPattern(String pattern) method
-	 * For example, the method convert [1L,2L] into "1,2,"
-	 * @param array
-	 * Input array
-	 * @return String
-	 */
-	public static String parseLongArrayToString(Long[] array){
-		if(array == null || array.length==0){
-			return "";
-		}
-		StringBuilder str = new StringBuilder();
-		for (Long x : array){
-			str.append(x.toString() + pattern);
-		}
-		return str.toString();
-	}
-	/**
-	 * Convert a String may contain one or more element separate by UString.pattern into Long array where each element 
-	 * converted from respectively element in String. For example "1,2,3," -> [1L,2L,3L]
-	 * The default separator is "," but can change by setPattern(String pattern) method
-	 * @param str
-	 * Input String to be converted
-	 * @return Long Array
-	 */
-	public static Long[] parseStringToLongArray(String str){
-		if (StringUtils.isEmpty(str)){
-			return null;
-		}
-		String[] strArray = str.split(pattern);
-		Long[] result = new Long[strArray.length];
-		if (strArray.length>0){
-			for (int i=0; i<strArray.length; i++){
-				result[i]=(StringUtils.isEmpty(strArray[i]))?-1:Long.valueOf(strArray[i]);
-			}
-		}
-		return result;
-	}
-//	End
-
 }

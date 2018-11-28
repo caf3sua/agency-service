@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class UEncrypt {
 
-    private static ResourceBundle rb = ResourceBundle.getBundle("config");
-    ;
-	private static String UPLOAD_ENCRYPT_KEY = rb.getString("default_upload_encode_key");
+//    private static ResourceBundle rb = ResourceBundle.getBundle("config");
+	
+    private static String UPLOAD_ENCRYPT_KEY = "20181128";
 
     private static String UID_QUERY_CRYPT = "UID_QUERY_CRYPT";
 

@@ -41,10 +41,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import com.viettel.ktts2.common.UFile;
-import com.viettel.ktts2.common.UString;
-
-public class ImsCommonUtil {
+public class AgencyCommonUtil {
 	public static final Integer NOT_CHECK = -1;
 	public static final Integer CHECK_NULL = 0;
 	public static final Integer CHECK_NUMBER = 1;
@@ -56,7 +53,7 @@ public class ImsCommonUtil {
 	public static final String ERROR_MISMATCH = "Không trùng khớp";
 	public static final String ERROR_IS_ZERO = "Phải lớn hơn 0"; 
 	
-	protected final static Logger LOGGER = Logger.getLogger(ImsCommonUtil.class);
+	protected final static Logger LOGGER = Logger.getLogger(AgencyCommonUtil.class);
 	static public String customFormat(String pattern, double value) {
 		DecimalFormat myFormatter = new DecimalFormat(pattern);
 		return  myFormatter.format(value);
@@ -161,7 +158,7 @@ public class ImsCommonUtil {
 	}
 	
 	public static Date convertToDate(String date) {
-		return ImsCommonUtil.convertString2Date(date, ImsCommonConstant.DATE_FORMAT.FORMAT_DATETIME_DDMMYYYYsshh);
+		return AgencyCommonUtil.convertString2Date(date, "dd/MM/yyyy HH:mm");
 	}
 	
 	
@@ -476,7 +473,7 @@ public class ImsCommonUtil {
 	 * @return
 	 */
 	public static boolean isNullImport(String param) {
-		if (ImsCommonUtil.isNullOrBlank(param)) {
+		if (AgencyCommonUtil.isNullOrBlank(param)) {
 			return true;
 		}
 		return false;
@@ -579,13 +576,13 @@ public class ImsCommonUtil {
 		HSSFCellStyle styleValue = style;
 		String value = data;
 		boolean result = false;
-		if(typeCheck.equals(ImsCommonUtil.CHECK_NULL) && ImsCommonUtil.isNullImport(data)){
-			value = ImsCommonUtil.ERROR_NULL;
+		if(typeCheck.equals(AgencyCommonUtil.CHECK_NULL) && AgencyCommonUtil.isNullImport(data)){
+			value = AgencyCommonUtil.ERROR_NULL;
 			result = true;
 			styleValue = styleError ;
 		}
-		if(typeCheck.equals(ImsCommonUtil.CHECK_NUMBER) && ImsCommonUtil.isNotNumberImport(data)){
-			value = ImsCommonUtil.ERROR_NOT_FEILD;
+		if(typeCheck.equals(AgencyCommonUtil.CHECK_NUMBER) && AgencyCommonUtil.isNotNumberImport(data)){
+			value = AgencyCommonUtil.ERROR_NOT_FEILD;
 			result = true;
 			styleValue = styleError ;
 		}

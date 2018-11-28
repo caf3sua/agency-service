@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductTvcImportDTO implements Serializable {
+public class BasePathInfoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private boolean error;

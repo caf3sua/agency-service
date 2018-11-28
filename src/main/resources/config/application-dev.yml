@@ -63,6 +63,8 @@ spring:
         cache-seconds: 1
     thymeleaf:
         cache: false
+    upload:
+        folder-upload: D:/programme/upload_temp/
 
 liquibase:
     contexts: dev
