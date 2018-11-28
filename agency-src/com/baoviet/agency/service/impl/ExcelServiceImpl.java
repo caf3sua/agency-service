@@ -12,13 +12,21 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -50,12 +58,15 @@ public class ExcelServiceImpl implements ExcelService {
 
     private final Logger log = LoggerFactory.getLogger(ExcelServiceImpl.class);
     
-    private static final int ROW_TITLE_INDEX = 5;
+    private static final int ROW_TITLE_INDEX = 3;
     
     private static final String CELL_TYPE_CHECK_NUMBER = "CHECK_NUMBER"; 
     private static final String CELL_TYPE_CHECK_DATA = "CHECK_DATA";
     private static final String CELL_TYPE_CHECK_STRING = "CHECK_STRING";
 
+    @Value("${spring.upload.folder-upload}")
+	private String folderUpload;
+    
 	@Override
 	public ProductTvcImportResponseDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
@@ -64,49 +75,43 @@ public class ExcelServiceImpl implements ExcelService {
 		List<String> lstErrorMessage = null;
 		
 		try {
-//			String fileName = UEncrypt.decryptFileUploadPath(obj.getPath());
-//			List<TvcAddBaseVM> data = new ArrayList<>(); 
-//			FileInputStream file = new FileInputStream(new File(fileName));
-//			
-//			
-//			XSSFWorkbook workbook = new XSSFWorkbook(file);
-//			XSSFSheet sheet = workbook.getSheetAt(0);
-//			
-//			int count = 0;
-//			Row rowTitle= sheet.getRow(ROW_TITLE_INDEX);
-//			boolean check = false;
-//			
-//			for (Row row : sheet) {
-//				itemDTO = new TvcAddBaseVM();
-//				if (count > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
-//					lstErrorMessage = getValueImportTVC(rowTitle, row, itemDTO);
-//					
-//					if(lstErrorMessage != null && lstErrorMessage.size() > 0){
-//						String errorMessageFormat = StringUtils.join(lstErrorMessage, ", ");
-//						Cell cell=row.createCell(15);
-//						cell.setCellValue(errorMessageFormat);
-//						cell.setCellStyle(this.createErrorCellStyle(workbook));
-//						check=true;
-//					} else {
-//						data.add(itemDTO);
-//					}
-//				}
-//				count++;
-//			}
-//			
-//			if (check) {
-//				String path = AgencyCommonUtil.customUploadFix(workbook, "Imp_HMTT_ERROR.xlsx", "default", folderUpload);
-//				dataImportDTO.setPath(UEncrypt.encryptFileUploadPath(path));
-//			} else {
-//				dataImportDTO.setData(data);
-//				// Load invest project 
-//				List<IProjInvestProjectDTO> lstProjectInvest = getProjInvestProjects(data);
-//				dataImportDTO.setLstProjInvestProject(lstProjectInvest);
-//			}
-//			
-//			dataImportDTO.setError(check);
-//			workbook.close();
-//			file.close();
+			String fileName = UEncrypt.decryptFileUploadPath(obj.getPath());
+			List<TvcAddBaseVM> data = new ArrayList<>(); 
+			FileInputStream file = new FileInputStream(new File(fileName));
+			
+			Workbook workbook = WorkbookFactory.create(file);
+			Sheet sheet = workbook.getSheetAt(0);
+			
+			Row rowTitle= sheet.getRow(ROW_TITLE_INDEX);
+			boolean check = false;
+			
+			for (Row row : sheet) {
+				itemDTO = new TvcAddBaseVM();
+				if (row.getRowNum() > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
+					lstErrorMessage = getValueImportTVC(rowTitle, row, itemDTO);
+					
+					if(lstErrorMessage != null && lstErrorMessage.size() > 0){
+						String errorMessageFormat = StringUtils.join(lstErrorMessage, ", ");
+						Cell cell=row.createCell(5);
+						cell.setCellValue(errorMessageFormat);
+						cell.setCellStyle(this.createErrorCellStyle(workbook));
+						check=true;
+					} else {
+						data.add(itemDTO);
+					}
+				}
+			}
+			
+			if (check) {
+				String path = AgencyCommonUtil.customUploadFix(workbook, "Imp_TVC_Data_Error.xls", folderUpload);
+				dataImportDTO.setPath(UEncrypt.encryptFileUploadPath(path));
+			} else {
+				dataImportDTO.setData(data);
+			}
+			
+			dataImportDTO.setError(check);
+			workbook.close();
+			file.close();
 			return dataImportDTO;
 		} catch (NullPointerException pointerException) {
 			log.error(pointerException.getMessage(), pointerException);
@@ -140,7 +145,7 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 		
 		/*0. STT */
-		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 0);
+		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_NUMBER, 0);
 		
 		/*1. Họ và tên*/
 		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 1);
@@ -149,9 +154,9 @@ public class ExcelServiceImpl implements ExcelService {
 		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 2);
 		
 		/*8. Ngày sinh*/
-		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_NUMBER, 3);
+		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 3);
 		/*9. Quan hệ*/
-		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_NUMBER, 4);
+		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 4);
 		
 		return lstErrorMessage;
 	}
@@ -188,7 +193,7 @@ public class ExcelServiceImpl implements ExcelService {
 			if (StringUtils.equals(CELL_TYPE_CHECK_STRING, typeCheck)) {
 				data = itemValue;
 			} else if (StringUtils.equals(CELL_TYPE_CHECK_NUMBER, typeCheck)) {
-				data = Double.parseDouble(StringUtils.isNotEmpty(itemValue) ? itemValue : "0");
+				data = Integer.parseInt(StringUtils.isNotEmpty(itemValue) ? itemValue : "0");
 			}
 			
 			// Set
@@ -212,6 +217,20 @@ public class ExcelServiceImpl implements ExcelService {
 	            	break;
 	        }
 		}
+	}
+	
+	private CellStyle createErrorCellStyle(Workbook workbook) {
+		Font fontBold = workbook.createFont();
+		fontBold.setFontHeightInPoints((short) 12);  
+		fontBold.setFontName("Times New Roman");  
+		fontBold.setColor(IndexedColors.RED.getIndex());  
+		fontBold.setBold(true);  
+		fontBold.setItalic(false);  
+		CellStyle errCellStyle = workbook.createCellStyle();  
+		errCellStyle.setFont(fontBold);  
+		errCellStyle.setAlignment(CellStyle.ALIGN_CENTER);  
+		errCellStyle.setWrapText(true);    
+		return errCellStyle;
 	}
 //	
 //	public String downloadTemplate() throws BusinessException {

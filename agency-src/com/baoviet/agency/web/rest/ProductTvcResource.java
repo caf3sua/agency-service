@@ -174,8 +174,9 @@ public class ProductTvcResource extends AbstractAgencyResource{
     }
     
     // Import file excel
-    @POST
-    @Path("/import-excel")
+    @PostMapping("/import-excel")
+    @Timed
+    @ApiOperation(value="importExcel", notes="Import excel")
     public ResponseEntity<ProductTvcImportResponseDTO> importExcel(@Valid @RequestBody ProductImportDTO param) throws Exception {
 
     	log.debug("REST request to importExcel : {}", param);

@@ -22,5 +22,5 @@ public class ProductTvcImportResponseDTO extends BasePathInfoDTO implements Seri
 	private static final long serialVersionUID = 1L;
 	
 	@ApiModelProperty(value = "Danh sách người được bảo hiểm/List of the insured")
-    private List<TvcAddBaseVM> listTvcAddBaseVM;
+    private List<TvcAddBaseVM> data;
 }

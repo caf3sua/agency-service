@@ -266,6 +266,19 @@ public class AgencyCommonUtil {
 
 	}
 	
+	static public String customUploadFix(Workbook wb, String fileName, String folder) throws Exception {
+		long currentTime = System.currentTimeMillis();
+		
+		String safeFileName = UString.getSafeFileName(fileName);
+		String uploadPath = folder + currentTime + "_" + safeFileName;
+		File udir = new File(uploadPath);
+		try (OutputStream out = new FileOutputStream(udir)) {
+			wb.write(out);
+			out.close();
+		}
+		return uploadPath;
+	}
+	
 	public static HSSFCellStyle createStyleForParentTitle(HSSFSheet sheet) {
 		HSSFFont font = sheet.getWorkbook().createFont();
 		font.setBold(true);

@@ -55,7 +55,6 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	@Override
 	public List<OrderHistoryDTO> getOrderHistoryByGycbhNumber(List<AgreementHis> lstAgreementHis) {
 		List<OrderHistoryDTO> data = new ArrayList<>();
-		List<FileContentDTO> lstFiles = new ArrayList<>();
 		
 		int order = 0;
 		for (AgreementHis agHis : lstAgreementHis) {
@@ -75,6 +74,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 					OrderHistoryDTO orderHisCoversation = new OrderHistoryDTO();
 					List<Attachment> lstAttach = attachmentRepository.findByParrentId(conver.getConversationId());
 					if (lstAttach != null && lstAttach.size() > 0) {
+						List<FileContentDTO> lstFiles = new ArrayList<>();
 						for (Attachment item : lstAttach) {
 							FileContentDTO fileContent = new FileContentDTO();
 							//fileContent.setContent(encoder.encode(item.getContent()));

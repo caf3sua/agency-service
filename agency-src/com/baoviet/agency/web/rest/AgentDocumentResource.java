@@ -1,5 +1,6 @@
 package com.baoviet.agency.web.rest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,12 +31,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -198,6 +202,32 @@ public class AgentDocumentResource {
 		
 		// Return data
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/download-template")
+    public ResponseEntity<InputStreamResource> downloadTemplate(@RequestParam("filename") String filename, final HttpServletResponse response) throws Exception  {
+		
+		if (StringUtils.isEmpty(filename)) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại đường dẫn đến file upload");
+        }
+		
+		File file = ResourceUtils.getFile("src/main/resources/templates/" + filename);
+		if (!file.exists()) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+		}
+		
+		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());
+ 
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+ 
+        return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                // Content-Type
+                .contentType(mediaType)
+                // Contet-Length
+                .contentLength(file.length()) //
+                .body(resource);
 	}
 	
 	@GetMapping("/download-file")
