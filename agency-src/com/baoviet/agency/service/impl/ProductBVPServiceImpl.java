@@ -130,7 +130,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 						tinhtrangSkRepository.deleteByIdThamchieu(obj.getGycbhId());
 					}
 				}
-				if (StringUtils.equals(obj.getQ3(), "1")) {
+				if (StringUtils.equals(obj.getQ3(), "1") || StringUtils.equals(obj.getQ2(), "1") || StringUtils.equals(obj.getQ1(), "1")) {
 					for (SKTDAddVM sk : obj.getLstAdd()) {
 						TinhtrangSkDTO skInfo = new TinhtrangSkDTO();
 						if (sk.getNgaydieutri() != null && !StringUtils.isEmpty(DateUtils.date2Str(sk.getNgaydieutri()))) {
