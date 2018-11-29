@@ -480,6 +480,22 @@ public class AgencyCommonUtil {
 			return true;
 		}
 	}
+	
+	public static boolean isNotDateImport(String param) {
+		if(!StringUtils.isNotEmpty(param)) return true;
+		try {
+			Date date = DateUtils.str2Date(param);
+			if (date == null) {
+				return true;
+			}
+			
+			return false;
+		} catch (Exception e) {
+			LOGGER.error(e.getCause(),e);
+			return true;
+		}
+	}
+	
 	/**
 	 * check null
 	 * @param param
@@ -794,8 +810,8 @@ public class AgencyCommonUtil {
 		fontBold.setItalic(false);  
 		CellStyle errCellStyle = workbook.createCellStyle();  
 		errCellStyle.setFont(fontBold);  
-		errCellStyle.setAlignment(CellStyle.ALIGN_CENTER);  
-		errCellStyle.setWrapText(true);    
+		errCellStyle.setAlignment(HorizontalAlignment.LEFT);  
+		errCellStyle.setWrapText(true);
 		return errCellStyle;
 	}
 	
