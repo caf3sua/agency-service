@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductTvcImportResponseDTO extends BasePathInfoDTO implements Serializable {
+public class ProductTvcExcelDTO extends BasePathInfoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@ApiModelProperty(value = "Danh sách người được bảo hiểm/List of the insured")

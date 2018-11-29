@@ -20,6 +20,29 @@ public final class AgencyConstants {
 //    
 //    public static final String SUCCESS = "Success";
     
+	public class RELATIONSHIP {
+		public static final String BAN_THAN = "30";
+		public static final String VO_CHONG = "31";
+		public static final String CON = "32";
+		public static final String BO_ME = "33";
+		
+		public static final String BO_ME_CUA_VO_CHONG = "34";
+		public static final String ANH_CHI_EM_RUOT = "35";
+		public static final String ANH_CHI_EM_RUOT_CUA_VO_CHONG = "36";
+		public static final String ONG_BA = "37";
+		public static final String CHAU = "38";
+		public static final String KHACH_DOAN = "39";
+		public static final String GIOI_THIEU = "41";
+		public static final String KHAC = "99";
+	}
+	
+	public class EXCEL {
+		// POTENTIAL, FAMILIAR, VIP, ORGANIZATION
+		public static final String TEMPLATE_NAME_TVC = "TVC_Template.xls";
+		public static final String IMPORT_NAME_TVC_ERROR = "Imp_TVC_Data_Error.xls";
+		public static final String EXPORT_NAME_TVC = "Export_TVC_Data.xls";
+	}
+	
 	public class CONTACT_GROUP_TYPE {
 		// POTENTIAL, FAMILIAR, VIP, ORGANIZATION
 		public static final String POTENTIAL = "POTENTIAL";

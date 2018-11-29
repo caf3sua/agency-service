@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.BenifitTravel;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -77,7 +78,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
  		}
  		
  		// Check validate data
-        validateDataPolicy(tvcBase);
+        validateDataPolicy(tvcBase, co);
         tvcBase.setPolicyNumber(tvcBase.getGycbhNumber());            
         
         // TRAVELCARE
@@ -293,20 +294,24 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		}
 	}
 
-	private void validateDataPolicy(ProductTvcVM objTravel) throws AgencyBusinessException {
+	private void validateDataPolicy(ProductTvcVM objTravel, Contact co) throws AgencyBusinessException {
 		log.debug("request to validateDataPolicy, ProductTvcVM {}", objTravel);
-		if (!DateUtils.isValidDate(objTravel.getPropserNgaysinh(), "dd/MM/yyyy")) {
-			throw new AgencyBusinessException("propserNgaysinh", ErrorCode.FORMAT_DATE_INVALID);
-		}
-
-		int utageYCBH = DateUtils.countYears(DateUtils.str2Date(objTravel.getPropserNgaysinh()),
-				DateUtils.str2Date(objTravel.getInceptionDate()));
-
-		if (utageYCBH < 18 || utageYCBH > 85) {
-			throw new AgencyBusinessException("propserNgaysinh", ErrorCode.INVALID,
-					"Người yêu cầu bảo hiểm phải từ 18 đến 85 tuổi");
-		}
 		
+		// check type of ContactCode
+		if (!StringUtils.equals(co.getCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
+			if (!DateUtils.isValidDate(objTravel.getPropserNgaysinh(), "dd/MM/yyyy")) {
+				throw new AgencyBusinessException("propserNgaysinh", ErrorCode.FORMAT_DATE_INVALID);
+			}
+
+			int utageYCBH = DateUtils.countYears(DateUtils.str2Date(objTravel.getPropserNgaysinh()),
+					DateUtils.str2Date(objTravel.getInceptionDate()));
+
+			if (utageYCBH < 18 || utageYCBH > 85) {
+				throw new AgencyBusinessException("propserNgaysinh", ErrorCode.INVALID,
+						"Người yêu cầu bảo hiểm phải từ 18 đến 85 tuổi");
+			}
+		}
+				
 		// kiem tra dinh dang so dien thoai
 		if (!ValidateUtils.isPhone(objTravel.getReceiverUser().getMobile())) {
 			throw new AgencyBusinessException("moible", ErrorCode.INVALID, "Số điện thoại người nhận không đúng định dạng");
@@ -427,11 +432,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 					if (!tvcAd.getRelationship().equals("30") && !tvcAd.getRelationship().equals("31")
 							&& !tvcAd.getRelationship().equals("32") && !tvcAd.getRelationship().equals("33")
 							&& !tvcAd.getRelationship().equals("34") && !tvcAd.getRelationship().equals("39")) {
-						throw new AgencyBusinessException("relationship", ErrorCode.INVALID);
+						throw new AgencyBusinessException("relationship", ErrorCode.INVALID, "Quan hệ không hợp lệ");
 					}
 
 					if (objTravel.getTravelWithId().equals("3")) {
-						if (!tvcAd.getRelationship().equals("39")) {
+						if (!tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.KHACH_DOAN)) {
 							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
 									"Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn");
 						}

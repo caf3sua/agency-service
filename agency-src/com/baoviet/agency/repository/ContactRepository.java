@@ -29,6 +29,7 @@ public interface ContactRepository extends JpaRepository<Contact, String>, Conta
 	Contact findByContactIdAndType(String contactId, String type);
 	
 	Contact findOneByPhoneAndType(String phone, String type);
+	Contact findOneByPhoneAndTypeAndCategoryType(String phone, String type, String categoryType);
 	Contact findOneByIdNumberAndType(String idNumber, String type);
 	Contact findOneByEmailAndType(String email, String type);
 }

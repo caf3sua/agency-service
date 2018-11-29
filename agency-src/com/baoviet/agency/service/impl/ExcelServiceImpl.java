@@ -2,6 +2,9 @@ package com.baoviet.agency.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,9 +13,12 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OLE2NotOfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -29,14 +35,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.ResourceUtils;
 
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Permission;
 import com.baoviet.agency.domain.Role;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
-import com.baoviet.agency.dto.excel.ProductTvcImportResponseDTO;
+import com.baoviet.agency.dto.excel.ProductTvcExcelDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AgencyRepository;
@@ -68,9 +76,9 @@ public class ExcelServiceImpl implements ExcelService {
 	private String folderUpload;
     
 	@Override
-	public ProductTvcImportResponseDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
+	public ProductTvcExcelDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
-    	ProductTvcImportResponseDTO dataImportDTO = new ProductTvcImportResponseDTO();
+    	ProductTvcExcelDTO dataImportDTO = new ProductTvcExcelDTO();
     	TvcAddBaseVM itemDTO = null;
 		List<String> lstErrorMessage = null;
 		
@@ -94,7 +102,7 @@ public class ExcelServiceImpl implements ExcelService {
 						String errorMessageFormat = StringUtils.join(lstErrorMessage, ", ");
 						Cell cell=row.createCell(5);
 						cell.setCellValue(errorMessageFormat);
-						cell.setCellStyle(this.createErrorCellStyle(workbook));
+						cell.setCellStyle(AgencyCommonUtil.createErrorCellStyle(workbook));
 						check=true;
 					} else {
 						data.add(itemDTO);
@@ -103,7 +111,7 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 			
 			if (check) {
-				String path = AgencyCommonUtil.customUploadFix(workbook, "Imp_TVC_Data_Error.xls", folderUpload);
+				String path = AgencyCommonUtil.customUploadFix(workbook, AgencyConstants.EXCEL.IMPORT_NAME_TVC_ERROR, folderUpload);
 				dataImportDTO.setPath(UEncrypt.encryptFileUploadPath(path));
 			} else {
 				dataImportDTO.setData(data);
@@ -125,13 +133,87 @@ public class ExcelServiceImpl implements ExcelService {
 		return dataImportDTO;
 	}
 
+	@Override
+	public BasePathInfoDTO processExportTVC(ProductTvcExcelDTO obj) throws AgencyBusinessException {
+		BasePathInfoDTO result = new BasePathInfoDTO();
+		InputStream excelFileToRead = null;
+		File file = null;
+		try {
+			// Load file into input stream
+			file = ResourceUtils.getFile("src/main/resources/templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+			if (!file.exists()) {
+				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+			}
+			excelFileToRead = new FileInputStream(file);
+			
+			Workbook workbook = WorkbookFactory.create(excelFileToRead);
+			Sheet sheet0 = workbook.getSheetAt(0); // Lay sheet dau tien
+			
+			bindingDataForExcelItemTvc(obj.getData(), sheet0);
+			
+			// close resource
+			excelFileToRead.close();
+			String path = AgencyCommonUtil.customUploadFix(workbook, AgencyConstants.EXCEL.EXPORT_NAME_TVC, folderUpload);
+			result.setPath(UEncrypt.encryptFileUploadPath(path));
+		} catch (FileNotFoundException e) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file template: " + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+			e.printStackTrace();
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Lỗi khi tạo file workbook excel");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AgencyBusinessException(ErrorCode.UNKNOW_ERROR, e.getMessage());
+		}
+				
+		return result;
+	}
 
+	
+	
     /*
 	 * -------------------------------------------------
 	 * ---------------- Private method -----------------
 	 * -------------------------------------------------
 	 */
-  private List<String> getValueImportTVC(Row rowTitle, Row row, TvcAddBaseVM resultDTO) {
+	private void createCellAndStyle(Row row, int cellIndex, Object value, CellStyle style) {
+		Cell cell = row.createCell(cellIndex, CellType.STRING);
+		cell.setCellValue(String.valueOf(value));
+		cell.setCellStyle(style);
+	}
+	
+	private void bindingDataForExcelItemTvc(List<TvcAddBaseVM> lstObj, Sheet sheet) {
+		Row row = null;
+		int rowNum = 4;
+		int i = 1;
+		
+		for (TvcAddBaseVM obj : lstObj) {
+			row = sheet.createRow(rowNum++);
+			bindDataForOneRowTvc(obj, i, row, sheet);
+			i++;
+		}
+	}
+	
+	private void bindDataForOneRowTvc(TvcAddBaseVM obj, int stt, Row row, Sheet sheet) {
+		CellStyle styleText = AgencyCommonUtil.styleText(sheet);
+		CellStyle styleNumber = AgencyCommonUtil.styleNumber(sheet);
+		
+		// STT
+		createCellAndStyle(row, 0, stt, styleNumber);
+		
+		// Ho va ten
+		createCellAndStyle(row, 1, obj.getInsuredName(), styleText);
+		
+		// CMND/Passport
+		createCellAndStyle(row, 2, obj.getIdPasswport(), styleText);
+		
+		// Ngay sinh
+		createCellAndStyle(row, 3, obj.getDob(), styleText);
+		
+		// Quan he	
+		createCellAndStyle(row, 4, "Khách đoàn", styleText);
+	}
+	
+	private List<String> getValueImportTVC(Row rowTitle, Row row, TvcAddBaseVM resultDTO) {
 		
 		// Declare variable
 		DataFormatter formatter = new DataFormatter();
@@ -211,7 +293,7 @@ public class ExcelServiceImpl implements ExcelService {
 	            	resultDTO.setDob((String)data);
 	            	break;
 	            case 4:  
-	            	resultDTO.setRelationship((String)data);
+	            	resultDTO.setRelationship(AgencyConstants.RELATIONSHIP.KHACH_DOAN); // Khach doan
 	            	break;
 	            default:
 	            	break;
@@ -219,20 +301,6 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 	}
 	
-	private CellStyle createErrorCellStyle(Workbook workbook) {
-		Font fontBold = workbook.createFont();
-		fontBold.setFontHeightInPoints((short) 12);  
-		fontBold.setFontName("Times New Roman");  
-		fontBold.setColor(IndexedColors.RED.getIndex());  
-		fontBold.setBold(true);  
-		fontBold.setItalic(false);  
-		CellStyle errCellStyle = workbook.createCellStyle();  
-		errCellStyle.setFont(fontBold);  
-		errCellStyle.setAlignment(CellStyle.ALIGN_CENTER);  
-		errCellStyle.setWrapText(true);    
-		return errCellStyle;
-	}
-//	
 //	public String downloadTemplate() throws BusinessException {
 //		String path = null;
 //		try {

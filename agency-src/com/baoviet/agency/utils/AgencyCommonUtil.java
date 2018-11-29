@@ -605,31 +605,6 @@ public class AgencyCommonUtil {
         return result;
 	}
 	
-//	public static void main(String[] args) throws IOException {
-//
-//		DataValidation dataValidation = null;
-//		DataValidationConstraint constraint = null;
-//		DataValidationHelper validationHelper = null;
-//
-//		 XSSFWorkbook wb = new XSSFWorkbook();
-//		 XSSFSheet sheet1=(XSSFSheet) wb.createSheet("sheet1");
-//
-//
-//		    validationHelper=new XSSFDataValidationHelper(sheet1);
-//		    CellRangeAddressList addressList = new  CellRangeAddressList(0,10,1,1);
-//		    
-//		    constraint =validationHelper.createExplicitListConstraint(new String[]{"Tủ tích hợp nguồn AC 'V5-3P' ", "Tủ điện 1800x800x400 - HxWxD", "tole 2mm (Sơn tĩnh điện)", "Quạt thông gió Delta - EFB1248ME", "Mặt bích gá quạt"});
-//		    dataValidation = validationHelper.createValidation(constraint, addressList);
-//		    dataValidation.setSuppressDropDownArrow(true);      
-//		    sheet1.addValidationData(dataValidation);
-//
-//		    FileOutputStream fileOut = new FileOutputStream("D:\\IMS\\vineet.xlsx");
-//		    wb.write(fileOut);
-//		    fileOut.close();
-//		}
-
-	
-	
 	public static boolean isRowEmpty(Row row) {
 		for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
 			Cell cell = row.getCell(c);
@@ -807,6 +782,51 @@ public class AgencyCommonUtil {
 		style.setBorderLeft(BorderStyle.MEDIUM);
 		style.setBorderRight(BorderStyle.MEDIUM);
 		style.setBorderTop(BorderStyle.MEDIUM);
+		return style;
+	}
+	
+	public static CellStyle createErrorCellStyle(Workbook workbook) {
+		Font fontBold = workbook.createFont();
+		fontBold.setFontHeightInPoints((short) 12);  
+		fontBold.setFontName("Times New Roman");  
+		fontBold.setColor(IndexedColors.RED.getIndex());  
+		fontBold.setBold(true);  
+		fontBold.setItalic(false);  
+		CellStyle errCellStyle = workbook.createCellStyle();  
+		errCellStyle.setFont(fontBold);  
+		errCellStyle.setAlignment(CellStyle.ALIGN_CENTER);  
+		errCellStyle.setWrapText(true);    
+		return errCellStyle;
+	}
+	
+	public static CellStyle styleNumber(Sheet sheet) {
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setFontHeight((short) 240);
+		CellStyle style = sheet.getWorkbook().createCellStyle();
+		style.setAlignment(HorizontalAlignment.RIGHT);
+		style.setVerticalAlignment(VerticalAlignment.CENTER);
+		style.setFont(font);
+		style.setWrapText(true);
+		style.setBorderBottom(BorderStyle.THIN);
+		style.setBorderLeft(BorderStyle.THIN);
+		style.setBorderRight(BorderStyle.THIN);
+		style.setBorderTop(BorderStyle.THIN);
+		return style;
+	}
+	
+	public static CellStyle styleText(Sheet sheet){
+		Font font = sheet.getWorkbook().createFont();
+		font.setFontName("Times New Roman");
+		font.setFontHeight((short) 240);
+		CellStyle style = sheet.getWorkbook().createCellStyle();
+		style.setVerticalAlignment(VerticalAlignment.CENTER);
+		style.setFont(font);
+		style.setWrapText(true);
+		style.setBorderBottom(BorderStyle.THIN);
+		style.setBorderLeft(BorderStyle.THIN);
+		style.setBorderRight(BorderStyle.THIN);
+		style.setBorderTop(BorderStyle.THIN);
 		return style;
 	}
 }

@@ -23,8 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baoviet.agency.domain.AgentDiscount;
 import com.baoviet.agency.domain.BenifitTravel;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
-import com.baoviet.agency.dto.excel.ProductTvcImportResponseDTO;
+import com.baoviet.agency.dto.excel.ProductTvcExcelDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.repository.AgentDiscountRepository;
 import com.baoviet.agency.service.AgreementService;
@@ -177,16 +178,29 @@ public class ProductTvcResource extends AbstractAgencyResource{
     @PostMapping("/import-excel")
     @Timed
     @ApiOperation(value="importExcel", notes="Import excel")
-    public ResponseEntity<ProductTvcImportResponseDTO> importExcel(@Valid @RequestBody ProductImportDTO param) throws Exception {
+    public ResponseEntity<ProductTvcExcelDTO> importExcel(@Valid @RequestBody ProductImportDTO param) throws Exception {
 
     	log.debug("REST request to importExcel : {}", param);
 		
 		// Call service
-    	ProductTvcImportResponseDTO result = excelService.processImportTVC(param);
+    	ProductTvcExcelDTO result = excelService.processImportTVC(param);
 		
 		// Return data
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     
+    @PostMapping("/export-excel")
+    @Timed
+    @ApiOperation(value="exportExcel", notes="Export excel")
+    public ResponseEntity<BasePathInfoDTO> exportExcel(@Valid @RequestBody ProductTvcExcelDTO param) throws Exception {
+
+    	log.debug("REST request to export : {}", param);
+		
+		// Call service
+    	BasePathInfoDTO result = excelService.processExportTVC(param);
+		
+		// Return data
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }    
 
 }

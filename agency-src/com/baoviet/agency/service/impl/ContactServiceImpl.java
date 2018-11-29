@@ -452,6 +452,9 @@ public class ContactServiceImpl implements ContactService {
 		if (!StringUtils.isEmpty(co.getFacebookId())) {
 			contact.setFacebookId(co.getFacebookId());
 		}
+		if (!StringUtils.isEmpty(co.getCategoryType())) {
+			contact.setCategoryType(co.getCategoryType());
+		}
 
 		// Get listRelationship by contactId
 		List<ContactRelationship> listRelationship = contactRelationshipRepository.findByContactId(co.getContactId());
