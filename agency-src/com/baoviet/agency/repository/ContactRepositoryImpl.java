@@ -16,12 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Repository;
 
-import com.baoviet.agency.bean.QueryResultDTO;
-import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.web.rest.vm.ContactSearchVM;
-import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 
 /**
  * Spring Data JPA repository for the GnocCR module.
@@ -39,13 +36,16 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT * FROM CONTACT WHERE type = :pType";
         if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
-        } 
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
+        }
+        if (!StringUtils.isEmpty(obj.getEmail())) {
+        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
+        }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND PHONE = :pPhone";
+        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	expression = expression +  " AND ID_NUMBER = :pIdNumber";
+        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
         } 
         if (obj.getDateOfBirth() != null) {
         	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
@@ -60,12 +60,6 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         
         Query query = entityManager.createNativeQuery(expression, Contact.class);
         query.setParameter("pType", type);
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	query.setParameter("pPhone", obj.getPhone());
-        } 
-        if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	query.setParameter("pIdNumber", obj.getIdNumber());
-        } 
         if (obj.getDateOfBirth() != null) {
         	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
         }
@@ -97,35 +91,38 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT count(*) FROM CONTACT WHERE type = :pType";
         if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND CONTACT_NAME LIKE '%" + obj.getContactName() + "%'";
-        } 
+        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
+        }
+        if (!StringUtils.isEmpty(obj.getEmail())) {
+        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
+        }
         if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND PHONE = :pPhone";
+        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
         } 
         if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	expression = expression +  " AND ID_NUMBER = :pIdNumber";
-        } 
+        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
+        }  
         if (obj.getDateOfBirth() != null) {
         	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
         }
         if (!StringUtils.isEmpty(obj.getGroupType())) {
         	expression = expression +  " AND GROUP_TYPE = :pGroup";
         }
+        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
+        }
         
         
         Query query = entityManager.createNativeQuery(expression);
         query.setParameter("pType", type);
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	query.setParameter("pPhone", obj.getPhone());
-        } 
-        if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	query.setParameter("pIdNumber", obj.getIdNumber());
-        } 
         if (obj.getDateOfBirth() != null) {
         	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
         }
         if (!StringUtils.isEmpty(obj.getGroupType())) {
         	query.setParameter("pGroup", obj.getGroupType());
+        }
+        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+        	query.setParameter("pCategoryType", obj.getCategoryType());
         }
         
         BigDecimal data = (BigDecimal) query.getSingleResult();

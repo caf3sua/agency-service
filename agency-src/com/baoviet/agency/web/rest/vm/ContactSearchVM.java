@@ -21,7 +21,7 @@ import lombok.Setter;
 public class ContactSearchVM implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "Tên khách hàng/Contact name", required = true)
+	@ApiModelProperty(value = "Tên khách hàng/Contact name")
 	private String contactName;
 
 	@JsonSerialize(using = DateSerializer.class)
@@ -29,17 +29,19 @@ public class ContactSearchVM implements Serializable {
 	@ApiModelProperty(value = "Ngày sinh/Date of birth", allowableValues = "dd/MM/yyyy", required = false)
 	private Date dateOfBirth;
 
-	@ApiModelProperty(value = "Số điện thoại/Phone", required = true)
+	@ApiModelProperty(value = "Số điện thoại/Phone")
 	private String phone;
 
-	@ApiModelProperty(value = "Số hộ chiếu-CMND/Passport", required = false)
+	@ApiModelProperty(value = "Số hộ chiếu-CMND/Passport")
 	private String idNumber;
 	
-	@ApiModelProperty(value = "Loại khách hàng", required = false, allowableValues = "POTENTIAL,FAMILIAR,VIP")
+	@ApiModelProperty(value = "Loại khách hàng", allowableValues = "POTENTIAL,FAMILIAR,VIP")
 	private String groupType;
 	
-	@ApiModelProperty(value = "Khách hàng là cá nhân/tổ chức", required = false, allowableValues = "PERSON,CATEGORY")
+	@ApiModelProperty(value = "Khách hàng là cá nhân/tổ chức", allowableValues = "PERSON,CATEGORY")
 	private String categoryType;
+	
+	private String email;
 	
 	private PageableVM pageable;
 } 
