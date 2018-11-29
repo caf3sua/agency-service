@@ -40,6 +40,12 @@ public abstract class ProductBaseVM {
 	@ApiModelProperty(value = "Ngày sinh khách hàng - dùng trong trường hợp cập nhật")
 	private String contactDob;
     
+	@ApiModelProperty(value = "Nhóm khách hàng - dùng trong trường hợp cập nhật")
+	private String contactCategoryType;
+	
+	@ApiModelProperty(value = "Địa chỉ khách hàng - dùng trong trường hợp cập nhật")
+	private String contactAddress;
+	
 	@ApiModelProperty(value = "Phương thức nhận đơn bảo hiểm(1: nhận bản mềm, 2: nhận bản cứng)", allowableValues = "1,2")
     private String receiveMethod;
 

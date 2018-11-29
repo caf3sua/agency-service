@@ -344,6 +344,8 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		// set contactName
 		Contact co = contactRepository.findOneByContactCode(object.getContactCode());
 		if (co != null) {
+			object.setContactCategoryType(co.getCategoryType());
+			object.setContactAddress(co.getHomeAddress());
 			object.setContactName(co.getContactName());
 			object.setContactDob(DateUtils.date2Str(co.getDateOfBirth()));
 		}
