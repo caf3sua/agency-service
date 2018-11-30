@@ -289,6 +289,8 @@ public class AgreementDTO implements Serializable {
 	// More attribute private
 	private Boolean canTaituc;
 	
+	private Boolean checkTVC;
+	
 	@Override
 	public String toString() {
 		return "AgreementDTO [agencyId=" + agencyId + ", agentId=" + agentId + ", agentName=" + agentName

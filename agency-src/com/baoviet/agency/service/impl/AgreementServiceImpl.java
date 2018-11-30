@@ -1629,6 +1629,17 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 						agreementDTO.setCanTaituc(true);
 					}
 				}
+				
+				// check TVC cho sửa khi thanh toán sau
+				if (StringUtils.equals(agreementDTO.getLineId(), "TVC") && StringUtils.equals(agreementDTO.getStatusPolicyId(), "91") && StringUtils.equals(agreementDTO.getPaymentMethod(), AgencyConstants.PAYMENT_METHOD_LATER)) {
+					if (agreementDTO.getInceptionDate() != null) {
+						Date now = new Date();
+						int sn = DateUtils.getNumberDaysBetween2Date(agreementDTO.getInceptionDate(), now);
+						if (0 <= sn) {
+							agreementDTO.setCheckTVC(true);
+						}
+					}
+				}
 			}
 		}
 	}
