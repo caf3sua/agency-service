@@ -4,8 +4,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

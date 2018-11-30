@@ -280,11 +280,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		}
 
 		if (obj.getPremiumPackage().equals("3")) {
-			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 20) {
+			if (obj.getNumberOfPerson() < 2) { // || obj.getNumberOfPerson() > 20) {
 				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
 			}
 		} else if (obj.getPremiumPackage().equals("2")) {
-			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 5) {
+			if (obj.getNumberOfPerson() < 2 ) { // || obj.getNumberOfPerson() > 5) {
 				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
 			}
 		} else if (obj.getPremiumPackage().equals("1")) {
@@ -339,16 +339,16 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 5) {
+				if (objTravel.getSoNguoiThamGia() < 2) { // || objTravel.getSoNguoiThamGia() > 5) {
 					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 đến 5 người");
+							"Số người tham gia phải từ 2 người");
 				}
 			}
 			// Khach doan
 			if (objTravel.getTravelWithId().equals("3")) {
-				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 20) {
+				if (objTravel.getSoNguoiThamGia() < 2) { // || objTravel.getSoNguoiThamGia() > 20) {
 					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
-							"Số người tham gia phải trong từ 2 đến 20 người");
+							"Số người tham gia phải từ 2 người");
 				}
 			}
 		}
@@ -401,16 +401,16 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 5) {
+				if (objTravel.getListTvcAddBaseVM().size() < 2) { // || objTravel.getListTvcAddBaseVM().size() > 5) {
 					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 đến 5 người");
+							"Số người tham gia phải từ 2 người");
 				}
 			}
 			// Khach doanh
 			if (objTravel.getTravelWithId().equals("3")) {
-				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 20) {
+				if (objTravel.getListTvcAddBaseVM().size() < 2) { // || objTravel.getListTvcAddBaseVM().size() > 20) {
 					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
-							"Số người tham gia phải trong từ 2 đến 20 người");
+							"Số người tham gia phải từ 2 người");
 				}
 			}
 			int banthan = 0;
