@@ -29,4 +29,5 @@ public class AgreementNophiDTO implements Serializable {
 	private String agreementId;
 	private String contactId;
 	private String note;
+	private String statusPolicyId;
 }

@@ -749,7 +749,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public Page<AgreementNophiDTO> searchNophi(SearchAgreementVM obj, String type) {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT p.ID, a.GYCBH_NUMBER, a.CONTACT_NAME, a.LINE_ID, a.LINE_NAME, a.CONTACT_PHONE, a.STATUS_POLICY_NAME, a.INCEPTION_DATE, a.EXPIRED_DATE, a.TOTAL_PREMIUM, p.SOTIEN, p.AGREEMENT_ID, p.CONTACT_ID, p.NOTE FROM AGREEMENT a JOIN AGREEMENT_NO_PHI p ON a.AGREEMENT_ID = p.AGREEMENT_ID WHERE a.CREATE_TYPE = 0 AND a.AGENT_ID = :pType";
+		String expression = "SELECT p.ID, a.GYCBH_NUMBER, a.CONTACT_NAME, a.LINE_ID, a.LINE_NAME, a.CONTACT_PHONE, a.STATUS_POLICY_NAME"
+				+ ", a.INCEPTION_DATE, a.EXPIRED_DATE, a.TOTAL_PREMIUM, p.SOTIEN, p.AGREEMENT_ID, p.CONTACT_ID, p.NOTE, a.STATUS_POLICY_ID"
+				+ " FROM AGREEMENT a JOIN AGREEMENT_NO_PHI p ON a.AGREEMENT_ID = p.AGREEMENT_ID WHERE a.CREATE_TYPE = 0 AND a.AGENT_ID = :pType";
         
         Query query = entityManager.createNativeQuery(buildSearchNophiExpression(expression, obj, type));
 
@@ -1042,6 +1044,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  			item.setAgreementId((String) obj[11]);
  			item.setContactId((String) obj[12]);
  			item.setNote((String) obj[13]);
+ 			item.setStatusPolicyId((String) obj[14]);
  			data.add(item);
 		}
  		

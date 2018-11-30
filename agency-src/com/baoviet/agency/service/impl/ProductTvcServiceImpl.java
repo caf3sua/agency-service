@@ -436,9 +436,10 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 					}
 
 					if (objTravel.getTravelWithId().equals("3")) {
-						if (!tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.KHACH_DOAN)) {
+						if (!(tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.KHACH_DOAN) 
+								|| tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BAN_THAN))) {
 							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
-									"Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn");
+									"Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân");
 						}
 					} else {
 						if (tvcAd.getRelationship().equals("39")) {
