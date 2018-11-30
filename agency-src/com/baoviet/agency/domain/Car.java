@@ -16,249 +16,249 @@ import org.hibernate.annotations.Parameter;
 import lombok.Getter;
 import lombok.Setter;
 
-
 /**
  * The persistent class for the PA_RATE database table.
  * 
  */
 @Entity
-@Table(name="CARS")
+@Table(name = "CARS")
 @Getter
 @Setter
 public class Car implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GenericGenerator(name = "STRING_SEQUENCE_GENERATOR", strategy = "com.baoviet.agency.utils.StringSequenceGenerator", parameters = { @Parameter(name = "sequence", value = "CARS_SEQ") })
+	@GenericGenerator(name = "STRING_SEQUENCE_GENERATOR", strategy = "com.baoviet.agency.utils.StringSequenceGenerator", parameters = {
+			@Parameter(name = "sequence", value = "CARS_SEQ") })
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "STRING_SEQUENCE_GENERATOR")
-	@Column(name="CAR_ID", unique=true)
+	@Column(name = "CAR_ID", unique = true)
 	private String carId;
 	@Column
 	private String soGycbh;
 	@Column
-	private String statusId	;
+	private String statusId;
 	@Column
-	private String statusName	;
+	private String statusName;
 	@Column
-	private Date dateOfRequirement	;
+	private Date dateOfRequirement;
 	@Column
-	private Date inceptionDate	;
+	private Date inceptionDate;
 	@Column
-	private Date expiredDate	;
+	private Date expiredDate;
 	@Column
-	private Date dateOfPayment	;
+	private Date dateOfPayment;
 	@Column
-	private String policyNumber	;
+	private String policyNumber;
 	@Column
-	private String policyStatus	;
+	private String policyStatus;
 	@Column
-	private String policyStatusName	;
+	private String policyStatusName;
 	@Column
-	private Double entitlements	;
+	private Double entitlements;
 	@Column
-	private String registrationNumber	;
+	private String registrationNumber;
 	@Column
-	private String chassisNumber	;
+	private String chassisNumber;
 	@Column
-	private String engineNumber	;
+	private String engineNumber;
 	@Column
-	private String origin	;
+	private String origin;
 	@Column
-	private String originName	;
+	private String originName;
 	@Column
-	private Double actualValue	;
+	private Double actualValue;
 	@Column
-	private String makeId	;
+	private String makeId;
 	@Column
-	private String makeName	;
+	private String makeName;
 	@Column
-	private String modelId	;
+	private String modelId;
 	@Column
-	private String modelName	;
+	private String modelName;
 	@Column
-	private String typeOfCarid	;
+	private String typeOfCarid;
 	@Column
-	private String typeOfCarname	;
+	private String typeOfCarname;
 	@Column
-	private Double seatNumber	;
+	private Double seatNumber;
 	@Column
-	private String yearOfMake	;
+	private String yearOfMake;
 	@Column
-	private String yearOfUse	;
+	private String yearOfUse;
 	@Column
-	private String purposeOfUsageId	;
+	private String purposeOfUsageId;
 	@Column
-	private String purposeOfUsageName	;
+	private String purposeOfUsageName;
 	@Column
-	private Double physicalDamageSi	;
+	private Double physicalDamageSi;
 	@Column
-	private Double physicalDamageRate	;
+	private Double physicalDamageRate;
 	@Column
-	private Double physicalDamagePremium	;
+	private Double physicalDamagePremium;
 	@Column
-	private Double thirdPartySiTs	;
+	private Double thirdPartySiTs;
 	@Column
-	private Double thirdPartySiCn	;
+	private Double thirdPartySiCn;
 	@Column
-	private Double thirdPartyRate	;
+	private Double thirdPartyRate;
 	@Column
-	private Double thirdPartyPremium	;
+	private Double thirdPartyPremium;
 	@Column
-	private Double passengersAccidentSi	;
+	private Double passengersAccidentSi;
 	@Column
-	private Double passengersAccidentRate	;
+	private Double passengersAccidentRate;
 	@Column
-	private Double passengersAccidentPremium	;
+	private Double passengersAccidentPremium;
 	@Column
-	private Double passengersAccidentPerson	;
+	private Double passengersAccidentPerson;
 	@Column
-	private Double passengersAccidentNumber	;
+	private Double passengersAccidentNumber;
 	@Column
-	private Double matCapBoPhanRate	;
+	private Double matCapBoPhanRate;
 	@Column
-	private Double matCapBoPhanPremium	;
+	private Double matCapBoPhanPremium;
 	@Column
-	private Double totalNetPremium	;
+	private Double totalNetPremium;
 	@Column
-	private String changePremiumId	;
+	private String changePremiumId;
 	@Column
-	private String changePremiumContent	;
+	private String changePremiumContent;
 	@Column
-	private Double changePremiumRate	;
+	private Double changePremiumRate;
 	@Column
-	private Double changePremiumPremium	;
+	private Double changePremiumPremium;
 	@Column
-	private Double totalBasicPremium	;
+	private Double totalBasicPremium;
 	@Column
-	private Double premiumVat	;
+	private Double premiumVat;
 	@Column
-	private Double totalPremium	;
+	private Double totalPremium;
 	@Column
-	private String bankId	;
+	private String bankId;
 	@Column
-	private String bankName	;
+	private String bankName;
 	@Column
-	private String teamId	;
+	private String teamId;
 	@Column
-	private String teamName	;
+	private String teamName;
 	@Column
-	private String agentId	;
+	private String agentId;
 	@Column
-	private String agentName	;
+	private String agentName;
 	@Column
-	private String contactId	;
+	private String contactId;
 	@Column
-	private String contactCode	;
+	private String contactCode;
 	@Column
-	private String taxIdNumber	;
+	private String taxIdNumber;
 	@Column
-	private String postalAddress	;
+	private String postalAddress;
 	@Column
-	private String permanentAddress	;
+	private String permanentAddress;
 	@Column
-	private String contactName	;
+	private String contactName;
 	@Column
-	private Date dateOfBirth	;
+	private Date dateOfBirth;
 	@Column
-	private String occupation	;
+	private String occupation;
 	@Column
-	private String contactPhone	;
+	private String contactPhone;
 	@Column
-	private String contactMobilePhone	;
+	private String contactMobilePhone;
 	@Column
-	private String contactEmail	;
+	private String contactEmail;
 	@Column
-	private String contactGioitinhId	;
+	private String contactGioitinhId;
 	@Column
-	private String contactGioitinhName	;
+	private String contactGioitinhName;
 	@Column
-	private Date smartappSysdate	;
+	private Date smartappSysdate;
 	@Column
-	private String pathOwner	;
+	private String pathOwner;
 	@Column
-	private String pathCreated	;
+	private String pathCreated;
 	@Column
-	private String baovietUserId	;
+	private String baovietUserId;
 	@Column
-	private String baovietUserName	;
+	private String baovietUserName;
 	@Column
-	private String baovietCompanyId	;
+	private String baovietCompanyId;
 	@Column
-	private String baovietCompanyName	;
+	private String baovietCompanyName;
 	@Column
-	private String baovietDepartmentId	;
+	private String baovietDepartmentId;
 	@Column
-	private String baovietDepartmentName	;
+	private String baovietDepartmentName;
 	@Column
-	private Date sendDate	;
+	private Date sendDate;
 	@Column
-	private Date responseDate	;
+	private Date responseDate;
 	@Column
-	private String statusRenewalsId	;
+	private String statusRenewalsId;
 	@Column
-	private String statusRenewalsName	;
+	private String statusRenewalsName;
 	@Column
-	private Double renewalsRate	;
+	private Double renewalsRate;
 	@Column
-	private Double renewalsPremium	;
+	private Double renewalsPremium;
 	@Column
-	private String oldPolicyNumber	;
+	private String oldPolicyNumber;
 	@Column
-	private String oldGycbhNumber	;
+	private String oldGycbhNumber;
 	@Column
-	private String note	;
+	private String note;
 	@Column
-	private String renewalsReason	;
+	private String renewalsReason;
 	@Column
-	private String loanAccount	;
+	private String loanAccount;
 	@Column
-	private String changePremiumPaId	;
+	private String changePremiumPaId;
 	@Column
-	private String changePremiumPaContent	;
+	private String changePremiumPaContent;
 	@Column
-	private Double changePremiumPaRate	;
+	private Double changePremiumPaRate;
 	@Column
-	private Double changePremiumPaPremium	;
+	private Double changePremiumPaPremium;
 	@Column
-	private String invoiceCompany	;
+	private String invoiceCompany;
 	@Column
-	private String invoiceAddress	;
+	private String invoiceAddress;
 	@Column
-	private String invoiceNumber	;
+	private String invoiceNumber;
 	@Column
-	private Double invoiceCheck	;
+	private Double invoiceCheck;
 	@Column
-	private Double feeReceive	;
+	private Double feeReceive;
 	@Column
-	private Date policySendDate	;
+	private Date policySendDate;
 	@Column
-	private String receiverName	;
+	private String receiverName;
 	@Column
-	private String receiverAddress	;
+	private String receiverAddress;
 	@Column
-	private String receiverEmail	;
+	private String receiverEmail;
 	@Column
-	private String receiverMoible	;
+	private String receiverMoible;
 	@Column
-	private String couponsCode	;
+	private String couponsCode;
 	@Column
-	private Double couponsValue	;
+	private Double couponsValue;
 	@Column
-	private Double khauTru	;
+	private Double khauTru;
 	@Column
-	private Double khaoHao	;
+	private Double khaoHao;
 	@Column
-	private Double matCap	;
+	private Double matCap;
 	@Column
-	private Double ngapNuoc	;
+	private Double ngapNuoc;
 	@Column
-	private Double garage	;
+	private Double garage;
 	@Column
-	private String nganhangTh	;
+	private String nganhangTh;
 	@Column
-	private String chinhanhTh	;
+	private String chinhanhTh;
 	@Column
-	private String diachiTh	;
+	private String diachiTh;
 	@Column
-	private Double sotienTh	;
+	private Double sotienTh;
 }
