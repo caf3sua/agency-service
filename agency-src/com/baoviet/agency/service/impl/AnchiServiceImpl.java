@@ -28,6 +28,7 @@ import org.tempuri.BVACAGENCY;
 import org.tempuri.BVACAGENCYSoap;
 
 import com.baoviet.agency.domain.Anchi;
+import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AnchiDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperTypeDTO;
@@ -36,6 +37,7 @@ import com.baoviet.agency.dto.printedpaper.UpdateAnChiResultDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AnchiRepository;
+import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.AnchiService;
 import com.baoviet.agency.service.mapper.AnchiMapper;
 import com.baoviet.agency.utils.logging.SOAPLoggingHandler;
@@ -71,17 +73,32 @@ public class AnchiServiceImpl implements AnchiService {
 	private String wsPassword;
 
 	@Autowired
-	private AnchiRepository anchiRepository;
+	private AgreementService agreementService;
 
+	@Autowired
+	private AnchiRepository anchiRepository;
+	
 	@Autowired
 	private AnchiMapper anchiMapper;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	public List<Anchi> search(SearchPrintedPaperVM param, String type) {
+	public List<AnchiDTO> search(SearchPrintedPaperVM param, String type) {
 		List<Anchi> data = anchiRepository.search(param, type);
-		return data;
+		List<AnchiDTO> result = anchiMapper.toDto(data);
+		
+		// Get status
+		if (result != null && result.size() > 0) {
+			for (AnchiDTO anchi : result) {
+				AgreementDTO agreementDTO = agreementService.findByGycbhNumberAndAgentId(anchi.getPolicyNumber(), type);
+				if (agreementDTO != null) {
+					anchi.setPolicyStatusId(agreementDTO.getStatusPolicyId());
+				}
+			}
+		}
+		
+		return result;
 	}
 
 	@Override

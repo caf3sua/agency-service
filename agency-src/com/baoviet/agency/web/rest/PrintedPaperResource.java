@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baoviet.agency.domain.Anchi;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.AnchiDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperTypeDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
@@ -79,13 +80,13 @@ public class PrintedPaperResource extends AbstractAgencyResource {
     @PostMapping("/search-used")
     @Timed
     @ApiOperation(value="searchUsed", notes="Lấy danh sách ấn chỉ đã sử dụng theo mã đại lý, số URN")
-    public ResponseEntity<List<Anchi>> searchUsed(@Valid @RequestBody SearchPrintedPaperVM param) throws URISyntaxException, AgencyBusinessException, JsonParseException, JsonMappingException, IOException{
+    public ResponseEntity<List<AnchiDTO>> searchUsed(@Valid @RequestBody SearchPrintedPaperVM param) throws URISyntaxException, AgencyBusinessException, JsonParseException, JsonMappingException, IOException{
 		log.debug("REST request to searchUsed");
 
 		// Get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 				
-		List<Anchi> result = anchiService.search(param, currentAgency.getMa());
+		List<AnchiDTO> result = anchiService.search(param, currentAgency.getMa());
 		// Return data
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

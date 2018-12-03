@@ -83,4 +83,6 @@ public class AnchiDTO implements Serializable {
 	private String lineId;
 	
 	private String contactId;
+	
+	private String policyStatusId;
 }

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
  */
 public interface AnchiService {
 	
-	List<Anchi> search(SearchPrintedPaperVM param, String type);
+	List<AnchiDTO> search(SearchPrintedPaperVM param, String type);
 	
 	List<PrintedPaperTypeDTO> getLoaiAnchi(String agencyType) throws JsonParseException, JsonMappingException, IOException;
 	
