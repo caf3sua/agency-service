@@ -481,7 +481,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 					if (utageNDBHYear >= 17)
 						nguoilon++;
 
-					if (tvcAd.getRelationship().equals("30")) {
+					if (!objTravel.getTravelWithId().equals("3") && tvcAd.getRelationship().equals("30")) {
 						banthan++;
 						int checkDate = DateUtils.str2Date(objTravel.getPropserNgaysinh())
 								.compareTo(DateUtils.str2Date(tvcAd.getDob()));

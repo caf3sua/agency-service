@@ -76,6 +76,7 @@ import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.repository.TlAddRepository;
 import com.baoviet.agency.repository.TravelCareAddRepository;
+import com.baoviet.agency.service.AgencyService;
 import com.baoviet.agency.service.AgreementNoPhiService;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.AnchiService;
@@ -1726,4 +1727,10 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
         pAction.setStatusEmailPayFrom(0);
         return pAction;
     }
+	
+	private void addMoreInformation(List<AgreementDTO> lstAgreement) {
+		// Add Ma + Name of Agency
+		for (AgreementDTO agreementDTO : lstAgreement) {
+		}
+	}
 }
