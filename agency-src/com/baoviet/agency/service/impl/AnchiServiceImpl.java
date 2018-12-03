@@ -85,19 +85,7 @@ public class AnchiServiceImpl implements AnchiService {
 
 	@Override
 	public List<AnchiDTO> search(SearchPrintedPaperVM param, String type) {
-		List<Anchi> data = anchiRepository.search(param, type);
-		List<AnchiDTO> result = anchiMapper.toDto(data);
-		
-		// Get status
-		if (result != null && result.size() > 0) {
-			for (AnchiDTO anchi : result) {
-				AgreementDTO agreementDTO = agreementService.findByGycbhNumberAndAgentId(anchi.getPolicyNumber(), type);
-				if (agreementDTO != null) {
-					anchi.setPolicyStatusId(agreementDTO.getStatusPolicyId());
-				}
-			}
-		}
-		
+		List<AnchiDTO> result = anchiRepository.search(param, type);
 		return result;
 	}
 

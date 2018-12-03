@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.baoviet.agency.domain.Anchi;
+import com.baoviet.agency.dto.AnchiDTO;
 import com.baoviet.agency.web.rest.vm.SearchPrintedPaperVM;
 
 
@@ -14,5 +15,5 @@ import com.baoviet.agency.web.rest.vm.SearchPrintedPaperVM;
 @Repository
 public interface AnchiRepositoryExtend {
 	
-	List<Anchi> search(SearchPrintedPaperVM param, String type); 
+	List<AnchiDTO> search(SearchPrintedPaperVM param, String type); 
 }
