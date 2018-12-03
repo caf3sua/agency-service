@@ -90,6 +90,9 @@ public class AgentDocumentResource {
 	@Value("${spring.upload.folder-upload}")
 	private String folderUpload;
 	
+	@Value("${spring.upload.folder-template}")
+	private String folderTemplate;
+	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_DOCUMENT_CREATE')")
 	@PostMapping("/add")
 	@Timed
@@ -218,7 +221,11 @@ public class AgentDocumentResource {
 		File file = new File(classLoader.getResource("templates/" + filename).getFile());
 		
 		if (!file.exists()) {
-			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+			// Load from template folder
+			file = new File(folderTemplate + filename);
+			if (!file.exists()) {
+				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+			}
 		}
 		
 		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());

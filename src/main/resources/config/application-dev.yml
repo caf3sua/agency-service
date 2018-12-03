@@ -65,6 +65,7 @@ spring:
         cache: false
     upload:
         folder-upload: D:/programme/upload_temp/
+        folder-template: D:/programme/upload_temp/
 
 liquibase:
     contexts: dev

@@ -61,6 +61,7 @@ spring:
         cache: false
     upload:
         folder-upload: /root/agency/temp/
+        folder-template: /root/agency/template/
 
 liquibase:
     contexts: prod
