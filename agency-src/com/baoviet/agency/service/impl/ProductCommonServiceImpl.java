@@ -342,12 +342,17 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		object.setDepartmentId(result.getObjAgreement().getBaovietDepartmentId());
 		
 		// set contactName
+		object.setContactName(result.getObjAgreement().getContactName());
+		object.setContactDob(DateUtils.date2Str(result.getObjAgreement().getContactDob()));
+		object.setContactPhone(result.getObjAgreement().getContactPhone());
+		object.setContactEmail(result.getObjAgreement().getContactUsername());
+		
 		Contact co = contactRepository.findOneByContactCode(object.getContactCode());
 		if (co != null) {
 			object.setContactCategoryType(co.getCategoryType());
 			object.setContactAddress(co.getHomeAddress());
-			object.setContactName(co.getContactName());
-			object.setContactDob(DateUtils.date2Str(co.getDateOfBirth()));
+//			object.setContactName(co.getContactName());
+//			object.setContactDob(DateUtils.date2Str(co.getDateOfBirth()));
 		}
 		
 		return object;
