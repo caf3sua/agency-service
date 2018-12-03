@@ -423,9 +423,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 				if (StringUtils.isEmpty(tvcAd.getInsuredName())) {
 					throw new AgencyBusinessException("insuredName", ErrorCode.NULL_OR_EMPTY);
 				}
-				if (StringUtils.isEmpty(tvcAd.getIdPasswport())) {
-					throw new AgencyBusinessException("idPasswport", ErrorCode.NULL_OR_EMPTY);
+				if (StringUtils.isEmpty(tvcAd.getIdPasswport()) && StringUtils.isEmpty(tvcAd.getDob())) {
+					throw new AgencyBusinessException("idPasswport", ErrorCode.NULL_OR_EMPTY, "Thiếu thông tin ngày sinh hoặc CMND/Hộ chiếu");
 				}
+								
+				
 				if (StringUtils.isEmpty(tvcAd.getRelationship())) {
 					throw new AgencyBusinessException("relationship", ErrorCode.NULL_OR_EMPTY);
 				} else {
@@ -449,8 +451,8 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 					}
 				}
 				if (StringUtils.isEmpty(tvcAd.getDob())) {
-					throw new AgencyBusinessException("dob", ErrorCode.NULL_OR_EMPTY,
-							"Thiếu ngày sinh người được bảo hiểm");
+//					throw new AgencyBusinessException("dob", ErrorCode.NULL_OR_EMPTY,
+//							"Thiếu ngày sinh người được bảo hiểm");
 				} else {
 					if (!DateUtils.isValidDate(tvcAd.getDob(), "dd/MM/yyyy")) {
 						throw new AgencyBusinessException("dob", ErrorCode.FORMAT_DATE_INVALID);
