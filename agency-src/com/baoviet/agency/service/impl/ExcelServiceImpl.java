@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ResourceUtils;
@@ -77,8 +79,8 @@ public class ExcelServiceImpl implements ExcelService {
     @Value("${spring.upload.folder-upload}")
 	private String folderUpload;
     
-    @Value("${spring.upload.folder-template}")
-	private String folderTemplate;
+    @Autowired
+	private ResourceLoader resourceLoader;
     
 	@Override
 	public ProductTvcExcelDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
@@ -150,14 +152,22 @@ public class ExcelServiceImpl implements ExcelService {
 		File file = null;
 		try {
 			// Load file into input stream
-			file = ResourceUtils.getFile("src/main/resources/templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+			ClassLoader classLoader = getClass().getClassLoader();
+			file = new File(classLoader.getResource("templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC).getFile());
+			log.debug("Path to file template : {}", file.getAbsolutePath());
+			
 			if (!file.exists()) {
-				// Load from template folder
-				file = new File(folderTemplate + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
-				if (!file.exists()) {
-					throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
-				}
+				Resource resource = resourceLoader.getResource("classpath:templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+				excelFileToRead = resource.getInputStream(); // <-- this is the difference
+			} else {
+				excelFileToRead = new FileInputStream(file);
 			}
+			
+			if (excelFileToRead == null) {
+				// Load from template folder
+				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+			}
+			
 			excelFileToRead = new FileInputStream(file);
 			
 			Workbook workbook = WorkbookFactory.create(excelFileToRead);

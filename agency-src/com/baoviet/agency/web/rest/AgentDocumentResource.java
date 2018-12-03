@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,12 +88,12 @@ public class AgentDocumentResource {
 	
 	@Autowired
     private ServletContext servletContext;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
         
 	@Value("${spring.upload.folder-upload}")
 	private String folderUpload;
-	
-	@Value("${spring.upload.folder-template}")
-	private String folderTemplate;
 	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_DOCUMENT_CREATE')")
 	@PostMapping("/add")
@@ -214,28 +216,29 @@ public class AgentDocumentResource {
 			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại đường dẫn đến file upload");
         }
 		
-		//File file = new ClassPathResource("/templates/" + filename).getFile();
-		//File file = ResourceUtils.getFile("src/main/resources/templates/" + filename);
-		
+		InputStream fileAsStream = null;
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("templates/" + filename).getFile());
 		log.debug("Path to file template : {}", file.getAbsolutePath());
 		
 		if (!file.exists()) {
-			// Load from template folder
-			file = new File(folderTemplate + filename);
-			if (!file.exists()) {
-				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
-			}
+			Resource resource = resourceLoader.getResource("classpath:templates/" + filename);
+	        fileAsStream = resource.getInputStream(); // <-- this is the difference
+		} else {
+			fileAsStream = new FileInputStream(file);
 		}
 		
-		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, file.getName());
- 
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+		if (fileAsStream == null) {
+			// Load from template folder
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+		}
+		
+		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, filename);
+        InputStreamResource resource = new InputStreamResource(fileAsStream);
  
         return ResponseEntity.ok()
                 // Content-Disposition
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
                 // Content-Type
                 .contentType(mediaType)
                 // Contet-Length
