@@ -211,7 +211,8 @@ public class AgentDocumentResource {
 			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại đường dẫn đến file upload");
         }
 		
-		File file = ResourceUtils.getFile("src/main/resources/templates/" + filename);
+		File file = new ClassPathResource("/templates/" + filename).getFile();
+		//File file = ResourceUtils.getFile("src/main/resources/templates/" + filename);
 		if (!file.exists()) {
 			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
 		}

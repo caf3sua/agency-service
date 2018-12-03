@@ -60,7 +60,7 @@ spring:
     thymeleaf:
         cache: false
     upload:
-        folder-upload: D:/programme/upload_temp/
+        folder-upload: /root/agency/temp/
 
 liquibase:
     contexts: prod
