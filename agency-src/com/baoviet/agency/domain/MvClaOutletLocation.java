@@ -16,7 +16,7 @@ import lombok.Setter;
  * 
  */
 @Entity
-@Table(name = "MV_CLA_OUTLET_LOCATION")
+@Table(name = "CLA_OUTLET_LOCATION")
 @Getter
 @Setter
 public class MvClaOutletLocation implements Serializable {

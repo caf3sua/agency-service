@@ -17,7 +17,7 @@ import lombok.Setter;
  * 
  */
 @Entity
-@Table(name="MV_AGENT_AGREEMENT")
+@Table(name="AGENT_AGREEMENT")
 @Getter
 @Setter
 public class MvAgentAgreement implements Serializable {
