@@ -259,14 +259,18 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	public CountOrderDTO getAdmCountAllOrder(String departmentId) {
 		CountOrderDTO data = new CountOrderDTO();
 		SearchAgreementWaitVM obj = new SearchAgreementWaitVM();
+		SearchAgreementWaitVM objLater = new SearchAgreementWaitVM();
+		objLater.setStatusPolicy(AgencyConstants.AgreementStatus.THANH_TOAN_SAU);
 
 		QueryResultDTO countBvWaiting = countAdminAgreement(obj, departmentId, "0");
 		QueryResultDTO countCart = countAdminAgreement(obj, departmentId, "3");
 		QueryResultDTO countTrans = countAdminAgreement(obj, departmentId, "4");
+		QueryResultDTO countOrderLater = countAdminAgreement(objLater, departmentId, "4");
 		
 		data.setCountBvWaiting(countBvWaiting.getCount());
 		data.setCountCart(countCart.getCount());
 		data.setCountOrderDebit(countTrans.getCount());
+		data.setCountOrderLater(countOrderLater.getCount());
 		return data;
 	}
 	
@@ -909,9 +913,15 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	}
         } else if (StringUtils.equals(caseWait, "4")) { // admin màn hình đơn hàng bảo việt (cả màn hình vận đơn)
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
-       			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
+        		if (obj.getStatusPolicy().equals(AgencyConstants.AgreementStatus.THANH_TOAN_SAU)) {
+        			expression = expression +  " AND STATUS_POLICY_ID = '91' AND PAYMENT_METHOD = 'PAYMENT_LATER'";
+        		} else if (obj.getStatusPolicy().equals(AgencyConstants.AgreementStatus.DA_THANH_TOAN)) {
+        			expression = expression +  " AND STATUS_POLICY_ID = '91' AND (PAYMENT_METHOD != 'PAYMENT_LATER' OR PAYMENT_METHOD IS NULL) ";
+        		} else {
+        			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";        			
+        		}
         	} else {
-        		expression = expression +  " AND STATUS_POLICY_ID IN ('91','92','100')";
+        		expression = expression +  " AND STATUS_POLICY_ID IN ('91', '100')";
         	}
         } else if (StringUtils.equals(caseWait, "5")) { // agency màn hình đơn hàng quá hạn
        			expression = expression +  " AND STATUS_POLICY_ID = '84' ";	

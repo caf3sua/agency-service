@@ -711,6 +711,9 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	@Override
 	public Page<AgreementDTO> searchOrderTransport(SearchAgreementWaitVM obj, String departmentId) {
 		Page<AgreementDTO> page = agreementRepository.searchOrderTransport(obj, departmentId).map(agreementMapper::toDto);
+		
+		// check thanh toán sau
+		calculateIsPaymentLater(page.getContent());
 		return page;
 	}
 	
@@ -1641,6 +1644,15 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	private void calculateIsPaymentLater(List<AgreementDTO> data) {
+		for (AgreementDTO agreementDTO : data) {
+			// Check thanh toán sau
+			if (StringUtils.equals(agreementDTO.getStatusPolicyId(), "91") &&  StringUtils.equals(AgencyConstants.PAYMENT_METHOD_LATER, agreementDTO.getPaymentMethod())) {
+				agreementDTO.setCheckPaymentLater(true);
 			}
 		}
 	}

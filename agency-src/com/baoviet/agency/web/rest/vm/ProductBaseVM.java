@@ -39,7 +39,7 @@ public abstract class ProductBaseVM {
 	
 	@ApiModelProperty(value = "Ngày sinh khách hàng - dùng trong trường hợp cập nhật")
 	private String contactDob;
-    
+	
 	@ApiModelProperty(value = "Nhóm khách hàng - dùng trong trường hợp cập nhật")
 	private String contactCategoryType;
 	
@@ -64,4 +64,10 @@ public abstract class ProductBaseVM {
     
 	@ApiModelProperty(value = "Id phòng ban")
     private String departmentId;
+	
+	@ApiModelProperty(value = "Số điện thoại - dùng trong trường hợp cập nhật")
+	private String contactPhone;
+	
+	@ApiModelProperty(value = "Email - dùng trong trường hợp cập nhật")
+	private String contactEmail;
 }

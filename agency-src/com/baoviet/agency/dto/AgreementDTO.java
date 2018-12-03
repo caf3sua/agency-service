@@ -291,6 +291,8 @@ public class AgreementDTO implements Serializable {
 	
 	private Boolean checkTVC;
 	
+	private Boolean checkPaymentLater;
+	
 	@Override
 	public String toString() {
 		return "AgreementDTO [agencyId=" + agencyId + ", agentId=" + agentId + ", agentName=" + agentName

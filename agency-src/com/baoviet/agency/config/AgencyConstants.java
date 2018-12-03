@@ -93,6 +93,7 @@ public final class AgencyConstants {
     	public static final String HUY_DON_BAO_HIEM = "89";
     	public static final String CHUA_THANH_TOAN = "90";
     	public static final String DA_THANH_TOAN = "91";
+    	public static final String THANH_TOAN_SAU = "91_1";
     	public static final String CAN_GIAM_DINH = "92";
     	public static final String YEU_CAU_GIAM_DINH = "93";
     	public static final String YEU_CAU_THANH_TOAN_TIEN_MAT = "94";

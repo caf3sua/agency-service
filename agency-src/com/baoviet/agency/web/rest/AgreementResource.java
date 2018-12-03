@@ -144,7 +144,6 @@ public class AgreementResource extends AbstractAgencyResource {
 			data = agreementService.findById(agreementId, currentAgency.getMa());
 		}
 		
-		
 		if (data == null) {
 			throw new AgencyBusinessException(agreementId, ErrorCode.INVALID, "Không tồn tại đơn hàng với mã " + agreementId);
 		}
