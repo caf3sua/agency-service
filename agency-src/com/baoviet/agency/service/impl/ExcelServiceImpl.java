@@ -77,6 +77,9 @@ public class ExcelServiceImpl implements ExcelService {
     @Value("${spring.upload.folder-upload}")
 	private String folderUpload;
     
+    @Value("${spring.upload.folder-template}")
+	private String folderTemplate;
+    
 	@Override
 	public ProductTvcExcelDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
@@ -149,7 +152,11 @@ public class ExcelServiceImpl implements ExcelService {
 			// Load file into input stream
 			file = ResourceUtils.getFile("src/main/resources/templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
 			if (!file.exists()) {
-				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+				// Load from template folder
+				file = new File(folderTemplate + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+				if (!file.exists()) {
+					throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+				}
 			}
 			excelFileToRead = new FileInputStream(file);
 			

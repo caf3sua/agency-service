@@ -219,6 +219,7 @@ public class AgentDocumentResource {
 		
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("templates/" + filename).getFile());
+		log.debug("Path to file template : {}", file.getAbsolutePath());
 		
 		if (!file.exists()) {
 			// Load from template folder
