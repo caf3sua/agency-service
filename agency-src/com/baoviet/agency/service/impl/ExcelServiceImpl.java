@@ -111,10 +111,12 @@ public class ExcelServiceImpl implements ExcelService {
 			
 			Row rowTitle= sheet.getRow(ROW_TITLE_INDEX);
 			boolean check = false;
+			int index = 0;
 			
 			for (Row row : sheet) {
 				itemDTO = new TvcAddBaseVM();
 				if (row.getRowNum() > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
+					index++;
 					lstErrorMessage = getValueImportTVC(obj, rowTitle, row, itemDTO, lstCmnd);
 					
 					if(lstErrorMessage != null && lstErrorMessage.size() > 0){
@@ -130,16 +132,20 @@ public class ExcelServiceImpl implements ExcelService {
 				}
 			}
 			
-			if (check) {
+			boolean extraCheck = validateNumberOfPerson(workbook, rowTitle, obj.getTravelWithId(), index);
+			
+			if (check || extraCheck) {
+				dataImportDTO.setError(true);
 				sheet.setColumnWidth(5, 40000);
 				
 				String path = AgencyCommonUtil.customUploadFix(workbook, AgencyConstants.EXCEL.IMPORT_NAME_TVC_ERROR, folderUpload);
 				dataImportDTO.setPath(UEncrypt.encryptFileUploadPath(path));
 			} else {
+				dataImportDTO.setError(false);
 				dataImportDTO.setData(data);
 			}
 			
-			dataImportDTO.setError(check);
+			
 			workbook.close();
 			file.close();
 			return dataImportDTO;
@@ -155,6 +161,30 @@ public class ExcelServiceImpl implements ExcelService {
 		return dataImportDTO;
 	}
 
+	private boolean validateNumberOfPerson(Workbook workbook, Row rowTitle, String travelWithId, int total) {
+		String message = null;
+		if (StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_CA_NHAN)) {
+			if (total > 1) {
+				message = "Số người đi du lịch cá nhân phải = 1";
+			}
+		}
+		
+		if (!StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_CA_NHAN)) {
+			if (total <= 1) {
+				message = "Số người đi du lịch theo gia đình/đoàn phải > 1";
+			}
+		}
+		
+		if(StringUtils.isNotEmpty(message)){
+			Cell cell= rowTitle.createCell(5);
+			cell.setCellValue(message);
+			cell.setCellStyle(AgencyCommonUtil.createErrorCellStyle(workbook));
+			return true;
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public BasePathInfoDTO processExportTVC(ProductTvcExcelDTO obj) throws AgencyBusinessException {
 		BasePathInfoDTO result = new BasePathInfoDTO();
