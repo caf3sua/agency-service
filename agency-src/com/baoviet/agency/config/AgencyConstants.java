@@ -20,6 +20,12 @@ public final class AgencyConstants {
 //    
 //    public static final String SUCCESS = "Success";
     
+	public class TVC {
+		public static final String PACKAGE_CA_NHAN = "1";
+		public static final String PACKAGE_GIA_DINH = "2";
+		public static final String PACKAGE_KHACH_DOAN = "3";
+	}
+	
 	public class RELATIONSHIP {
 		public static final String BAN_THAN = "30";
 		public static final String VO_CHONG = "31";
@@ -34,6 +40,7 @@ public final class AgencyConstants {
 		public static final String KHACH_DOAN = "39";
 		public static final String GIOI_THIEU = "41";
 		public static final String KHAC = "99";
+		public static final String KHONG_XAC_DINH = "00";
 	}
 	
 	public class EXCEL {

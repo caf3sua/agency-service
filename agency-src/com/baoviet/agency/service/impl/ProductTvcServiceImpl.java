@@ -433,7 +433,8 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 				} else {
 					if (!tvcAd.getRelationship().equals("30") && !tvcAd.getRelationship().equals("31")
 							&& !tvcAd.getRelationship().equals("32") && !tvcAd.getRelationship().equals("33")
-							&& !tvcAd.getRelationship().equals("34") && !tvcAd.getRelationship().equals("39")) {
+							&& !tvcAd.getRelationship().equals("34") && !tvcAd.getRelationship().equals("39")
+							&& !tvcAd.getRelationship().equals("99")) {
 						throw new AgencyBusinessException("relationship", ErrorCode.INVALID, "Quan hệ không hợp lệ");
 					}
 

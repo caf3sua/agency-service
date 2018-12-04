@@ -17,4 +17,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductImportDTO extends BasePathInfoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	// 1: Cá nhân, 2: Gia đình, 3: Khách đoàn 
+	private String travelWithId;
 }

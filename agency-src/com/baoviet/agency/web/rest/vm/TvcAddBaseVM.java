@@ -26,5 +26,7 @@ public class TvcAddBaseVM {
 	@ApiModelProperty(value = "Quan hệ người được bảo hiểm với người YCBH/Relationship", allowableValues = "30, 31, 32, 33, 34, 39", required = true)
     private String relationship;
 	
+	private String relationshipName;
+	
 	private int order;
 }

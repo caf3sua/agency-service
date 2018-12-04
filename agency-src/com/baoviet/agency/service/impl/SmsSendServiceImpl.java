@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.domain.SmsSend;
@@ -68,6 +69,7 @@ public class SmsSendServiceImpl implements SmsSendService {
 	}
 
 	@Override
+	@Async
 	// 1 , 2: success; 0: error
 	public int sendSMS(String phone, String content) {
 		log.debug("Request to sendSMS, phone {}, content {}", phone, content);

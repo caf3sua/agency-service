@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +45,7 @@ import org.springframework.util.ResourceUtils;
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Permission;
+import com.baoviet.agency.domain.Relationship;
 import com.baoviet.agency.domain.Role;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
@@ -50,10 +54,12 @@ import com.baoviet.agency.dto.excel.ProductTvcExcelDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AgencyRepository;
+import com.baoviet.agency.repository.RelationshipRepository;
 import com.baoviet.agency.service.AgencyService;
 import com.baoviet.agency.service.ExcelService;
 import com.baoviet.agency.service.mapper.AgencyMapper;
 import com.baoviet.agency.utils.AgencyCommonUtil;
+import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.UEncrypt;
 import com.baoviet.agency.web.rest.vm.TvcAddBaseVM;
 
@@ -82,6 +88,10 @@ public class ExcelServiceImpl implements ExcelService {
     @Autowired
 	private ResourceLoader resourceLoader;
     
+    @Autowired
+	private RelationshipRepository relationshipRepository;
+    
+    
 	@Override
 	public ProductTvcExcelDTO processImportTVC(ProductImportDTO obj) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
@@ -105,7 +115,7 @@ public class ExcelServiceImpl implements ExcelService {
 			for (Row row : sheet) {
 				itemDTO = new TvcAddBaseVM();
 				if (row.getRowNum() > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
-					lstErrorMessage = getValueImportTVC(rowTitle, row, itemDTO, lstCmnd);
+					lstErrorMessage = getValueImportTVC(obj, rowTitle, row, itemDTO, lstCmnd);
 					
 					if(lstErrorMessage != null && lstErrorMessage.size() > 0){
 						String errorMessageFormat = StringUtils.join(lstErrorMessage, ", ");
@@ -204,7 +214,7 @@ public class ExcelServiceImpl implements ExcelService {
 	}
 	
 	private void bindingDataForExcelItemTvc(List<TvcAddBaseVM> lstObj, Sheet sheet) {
-		Row row = null;
+ 		Row row = null;
 		int rowNum = 4;
 		int i = 1;
 		
@@ -232,10 +242,15 @@ public class ExcelServiceImpl implements ExcelService {
 		createCellAndStyle(row, 3, obj.getDob(), styleText);
 		
 		// Quan he	
-		createCellAndStyle(row, 4, "Khách đoàn", styleText);
+		Relationship rEntity = relationshipRepository.getOne(obj.getRelationship());
+		String relationshipName = "Khác";
+		if (rEntity != null) {
+			relationshipName = rEntity.getRelationshipName();
+		}
+		createCellAndStyle(row, 4, relationshipName, styleText);
 	}
 	
-	private List<String> getValueImportTVC(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstCmnd) {
+	private List<String> getValueImportTVC(ProductImportDTO obj, Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstCmnd) {
 		
 		// Declare variable
 		List<String> lstErrorMessage = new ArrayList<>();
@@ -260,6 +275,10 @@ public class ExcelServiceImpl implements ExcelService {
 		
 		// Validate bat buoc nhap Cmnd hoac Ngay sinh
 		validateRequiredCmndOrDob(rowTitle, row, resultDTO, lstErrorMessage);
+		
+		validateRelationship(rowTitle, row, resultDTO, lstErrorMessage, obj.getTravelWithId());
+		
+		validateExtraInfo(rowTitle, row, resultDTO, lstErrorMessage);
 		
 		return lstErrorMessage;
 	}
@@ -321,13 +340,28 @@ public class ExcelServiceImpl implements ExcelService {
 	            case 3:  
 	            	resultDTO.setDob((String)data);
 	            	break;
-	            case 4:  
-	            	resultDTO.setRelationship(AgencyConstants.RELATIONSHIP.KHACH_DOAN); // Khach doan
+	            case 4:
+	            	resultDTO.setRelationship(getRelationshipIdByName((String)data));
+	            	resultDTO.setRelationshipName((String)data);
 	            	break;
 	            default:
 	            	break;
 	        }
 		}
+	}
+	
+	private String getRelationshipIdByName(String relationshipName) {
+		String relationShipId = AgencyConstants.RELATIONSHIP.KHONG_XAC_DINH;
+		
+		Relationship rEntity = relationshipRepository.findTopByRelationshipName(relationshipName);
+		
+		if (rEntity == null) {
+			return relationShipId;
+		}
+		
+		relationShipId = rEntity.getRelationshipId();
+		
+		return relationShipId;
 	}
 	
 	private void validateDuplicateCmnd(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, List<String> lstCmnd) {
@@ -345,6 +379,54 @@ public class ExcelServiceImpl implements ExcelService {
 		if (StringUtils.isEmpty(resultDTO.getIdPasswport()) && StringUtils.isEmpty(resultDTO.getDob())) {
 			String errorMessage = "Cần nhập dữ liệu cho Số hộ chiếu/CMND hoặc Ngày sinh";
 			lstErrorMessage.add(errorMessage);
+		}
+	}
+	
+	private void validateRelationship(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, String travelWithId) {
+		if (StringUtils.isEmpty(resultDTO.getRelationshipName())) {
+			return;
+		}
+		
+		if (StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_KHACH_DOAN)) {
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN) 
+					|| StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHACH_DOAN))) {
+				String errorMessage = "Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân";
+				lstErrorMessage.add(errorMessage);
+			}
+			
+		} else {
+			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHACH_DOAN)) {
+				String errorMessage = "Quan hệ là: Thành viên đoàn chỉ áp dụng cho khách du lịch theo đoàn";
+				lstErrorMessage.add(errorMessage);
+			}
+		}
+	}
+	
+	private void validateExtraInfo(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage) {
+		if (StringUtils.isEmpty(resultDTO.getDob())) {
+			return;
+		}
+		
+		if (!DateUtils.isValidDate(resultDTO.getDob(), "dd/MM/yyyy")) {
+			String errorMessage = "Định dạng ngày sinh không đúng (dd/MM/yyyy)";
+			lstErrorMessage.add(errorMessage);
+			return;
+		}
+
+		int utageNDBHYear = DateUtils.countYears(DateUtils.str2Date(resultDTO.getDob()),
+				new Date()); // DateUtils.str2Date(objTravel.getInceptionDate())
+		int utageNDBHMonth = DateUtils.getNumberMonthsBetween2Date(DateUtils.str2Date(resultDTO.getDob()),
+				new Date());
+
+		if (utageNDBHYear == 0 && utageNDBHMonth < 6) {
+			String errorMessage = "Người được bảo hiểm phải từ 6 tháng tuổi";
+			lstErrorMessage.add(errorMessage);
+			return;
+		}
+		if (utageNDBHYear > 85) {
+			String errorMessage = "Người được bảo hiểm phải <= 85 tuổi";
+			lstErrorMessage.add(errorMessage);
+			return;
 		}
 	}
 }
