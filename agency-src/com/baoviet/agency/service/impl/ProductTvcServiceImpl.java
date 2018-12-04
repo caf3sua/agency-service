@@ -204,7 +204,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         }
 
 		if (vo == null)
-			throw new AgencyBusinessException("InvalidData", ErrorCode.INVALID, "Chưa có dữ liệu phù hợp để tính phí");
+			throw new AgencyBusinessException("planId", ErrorCode.INVALID, "Chưa có dữ liệu phù hợp để tính phí");
 
 		// kiem tra discount va tinh tong phi
         if (obj.getPremiumPackage().equals("2")) { // gói gia đình thì phí ko nhân với số người
@@ -247,7 +247,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		Date expiredDate = DateUtils.str2Date(obj.getNgayVe());
 
 		if (expiredDate.before(inceptionDate)) {
-			throw new AgencyBusinessException("ngayDi", ErrorCode.INVALID,
+			throw new AgencyBusinessException("expiredDate", ErrorCode.INVALID,
 					"Ngày khởi hành không được lớn hơn ngày trở về");
 		}
 
@@ -281,11 +281,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 
 		if (obj.getPremiumPackage().equals("3")) {
 			if (obj.getNumberOfPerson() < 2) { // || obj.getNumberOfPerson() > 20) {
-				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo đoàn phải lớn hơn 1");
 			}
 		} else if (obj.getPremiumPackage().equals("2")) {
 			if (obj.getNumberOfPerson() < 2 ) { // || obj.getNumberOfPerson() > 5) {
-				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID);
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải lớn hơn 1");
 			}
 		} else if (obj.getPremiumPackage().equals("1")) {
 			if (obj.getNumberOfPerson() > 1) {
