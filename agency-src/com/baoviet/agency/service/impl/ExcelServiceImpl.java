@@ -168,8 +168,6 @@ public class ExcelServiceImpl implements ExcelService {
 				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
 			}
 			
-			excelFileToRead = new FileInputStream(file);
-			
 			Workbook workbook = WorkbookFactory.create(excelFileToRead);
 			Sheet sheet0 = workbook.getSheetAt(0); // Lay sheet dau tien
 			
