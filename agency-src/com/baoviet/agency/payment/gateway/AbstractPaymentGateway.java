@@ -217,7 +217,8 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			}
 
 			// Trừ phí TNDSBB xe ô tô, TNDSBB xe máy
-			calculateTotalPremiumForSpecificAgreement(promotionBanks, config, agreement, param.getBankCode());
+			// duclm comment 04/12/2018
+			// calculateTotalPremiumForSpecificAgreement(promotionBanks, config, agreement, param.getBankCode());
 
 			// TODO : user agent
 			agreement.setUserAgent("");
@@ -524,7 +525,12 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			// duclm add 10.08.2018 end
 			
 			// Update agreement
-			Agreement agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "90");
+			// duclm add 04/12/2018: Đối với những đơn offline không hiểu sao đơn hàng được tự động chuyển lên trạng thái 100. Nên khi tìm kiếm cần tìm kiếm theo status = 100. Hoặc có thể sửa chỉ tìm theo MciAddId
+			Agreement agreement = new Agreement();
+			agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "90");
+			if (agreement == null) {
+				agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "100");	
+			}
 			
 			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
@@ -540,55 +546,57 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			Date now = new Date();
 
 			for (Agreement data : agreements) {
-				// Forward to company
-				forwardPolicyToCompany(data);
+				if (data.getGycbhId() != null) {	// check vì đơn offline ko có gycbhId duclm add 04/12/2018
+					// Forward to company
+					forwardPolicyToCompany(data);
 
-				switch (ProductType.valueOf(data.getLineId())) {
-				case HOM:
-					Home home = homeRepository.findOne(data.getGycbhId());
-					home.setPayment_date(now);
-					homeRepository.save(home);
-					break;
-				case TVC:
-					Travelcare travelcare = travelcareRepository.findOne(data.getGycbhId());
-					travelcare.setDateOfPayment(now);
-					travelcareRepository.save(travelcare);
-					break;
-				case TVI:
-					Tvicare tvicare = tvicareRepository.findOne(data.getGycbhId());
-					tvicare.setDateOfPayment(now);
-					tvicareRepository.save(tvicare);
-					break;
-				case CAR:
-					Car car = carRepository.findOne(data.getGycbhId());
-					car.setDateOfPayment(now);
-					carRepository.save(car);
-					break;
-				case MOT:
-					Moto moto = motoRepository.findOne(data.getGycbhId());
-					moto.setNgayNopPhi(now);
-					motoRepository.save(moto);
-					break;
-				case TNC:
-					Pa pa = paRepository.findOne(data.getGycbhId());
-					pa.setDateOfPayment(now);
-					paRepository.save(pa);
-					break;
-				case KHC:
-					Tl tl = tlRepository.findOne(data.getGycbhId());
-					tl.setDateOfPayment(now);
-					tlRepository.save(tl);
-					break;
-				case KCR:
-					Kcare kcare = kcareRepository.findOne(data.getGycbhId());
-					kcare.setDateOfPayment(now);
-					kcareRepository.save(kcare);
-					break;
-				case BVP:
-					Bvp bvp = bvpRepository.findOne(data.getGycbhId());
-					bvp.setDateOfPayment(now);
-					bvpRepository.save(bvp);
-					break;
+					switch (ProductType.valueOf(data.getLineId())) {
+					case HOM:
+						Home home = homeRepository.findOne(data.getGycbhId());
+						home.setPayment_date(now);
+						homeRepository.save(home);
+						break;
+					case TVC:
+						Travelcare travelcare = travelcareRepository.findOne(data.getGycbhId());
+						travelcare.setDateOfPayment(now);
+						travelcareRepository.save(travelcare);
+						break;
+					case TVI:
+						Tvicare tvicare = tvicareRepository.findOne(data.getGycbhId());
+						tvicare.setDateOfPayment(now);
+						tvicareRepository.save(tvicare);
+						break;
+					case CAR:
+						Car car = carRepository.findOne(data.getGycbhId());
+						car.setDateOfPayment(now);
+						carRepository.save(car);
+						break;
+					case MOT:
+						Moto moto = motoRepository.findOne(data.getGycbhId());
+						moto.setNgayNopPhi(now);
+						motoRepository.save(moto);
+						break;
+					case TNC:
+						Pa pa = paRepository.findOne(data.getGycbhId());
+						pa.setDateOfPayment(now);
+						paRepository.save(pa);
+						break;
+					case KHC:
+						Tl tl = tlRepository.findOne(data.getGycbhId());
+						tl.setDateOfPayment(now);
+						tlRepository.save(tl);
+						break;
+					case KCR:
+						Kcare kcare = kcareRepository.findOne(data.getGycbhId());
+						kcare.setDateOfPayment(now);
+						kcareRepository.save(kcare);
+						break;
+					case BVP:
+						Bvp bvp = bvpRepository.findOne(data.getGycbhId());
+						bvp.setDateOfPayment(now);
+						bvpRepository.save(bvp);
+						break;
+					}
 				}
 			}
 
