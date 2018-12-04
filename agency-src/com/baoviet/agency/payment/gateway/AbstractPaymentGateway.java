@@ -523,26 +523,6 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			}
 			
 			// duclm add 10.08.2018 end
-			
-			// Update agreement
-			// duclm add 04/12/2018: Đối với những đơn offline không hiểu sao đơn hàng được tự động chuyển lên trạng thái 100. Nên khi tìm kiếm cần tìm kiếm theo status = 100. Hoặc có thể sửa chỉ tìm theo MciAddId
-			Agreement agreement = new Agreement();
-			agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "90");
-			if (agreement == null) {
-				agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "100");	
-			}
-			
-			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
-			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
-			agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
-			agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
-			agreement.setPaymentMethod("1");
-			agreement.setCancelPolicySupport3(1d);
-			agreement.setCancelPolicyCommision3(1d);
-			agreement.setDateOfPayment(new Date());
-			agreement.setPaymentTransactionId(transactionID);
-			agreementRepository.save(agreement);
-
 			Date now = new Date();
 
 			for (Agreement data : agreements) {
@@ -599,6 +579,25 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 					}
 				}
 			}
+			
+			// Update agreement
+			// duclm add 04/12/2018: Đối với những đơn offline không hiểu sao đơn hàng được tự động chuyển lên trạng thái 100. Nên khi tìm kiếm cần tìm kiếm theo status = 100. Hoặc có thể sửa chỉ tìm theo MciAddId
+			Agreement agreement = new Agreement();
+			agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "90");
+			if (agreement == null) {
+				agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "100");	
+			}
+			
+			agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+			agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+			agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
+			agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
+			agreement.setPaymentMethod("1");
+			agreement.setCancelPolicySupport3(1d);
+			agreement.setCancelPolicyCommision3(1d);
+			agreement.setDateOfPayment(new Date());
+			agreement.setPaymentTransactionId(transactionID);
+			agreementRepository.save(agreement);
 
 			// Update order
 			PayOrder payOrder = payOrderRepository.findByMciAddId(mciAddId);
