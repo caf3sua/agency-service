@@ -2,9 +2,10 @@ package com.baoviet.agency.payment.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MomoResponseDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -52,4 +54,7 @@ public class MomoResponseDTO implements Serializable {
 	
 	@JsonProperty("deeplinkWebInApp")
 	private String deeplinkWebInApp;
+	
+	@JsonProperty("paymentCredit")
+	private String paymentCredit;
 }
