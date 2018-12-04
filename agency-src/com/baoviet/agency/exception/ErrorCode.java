@@ -12,7 +12,8 @@ public enum ErrorCode {
 	GYCBH_EXIST(2007, "gycbhNumber is exist"),
 	PRINTED_PAPER_NOT_FOUND(2008, "printed paper not found"),
 	CREATE_YCBH_ANCHI_ERROR(2009, "create ycbh an chi error"),
-	CREATE_YCBH_ANCHI_UNKNOW_ERROR(2010, "create ycbh an chi error");
+	CREATE_YCBH_ANCHI_UNKNOW_ERROR(2010, "create ycbh an chi error"),
+	PAYMENT_ERROR(2011, "payment error");
 	
 	
 	private ErrorCode(int statusCode, String description) {

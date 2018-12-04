@@ -130,7 +130,6 @@ public class PaymentResource extends AbstractAgencyResource {
 	public ResponseEntity<PaymentProcessResponseVM> processPayment(@Valid @RequestBody PaymentProcessRequestVM param)
 			throws URISyntaxException, AgencyBusinessException {
 		log.info("START REST request to processPayment");
-		log.info("Param : ", param.toString());
 
 		// Get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
@@ -142,6 +141,11 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(paymentType);
 		PaymentResult paymentResult = paymentGateway.processPayment(currentAgency, param, agreements);
 
+		// namnh: check payment result
+		if (paymentResult.getResponseType() != PaymentResponseType.SUCCESS) {
+			throw new AgencyBusinessException(ErrorCode.PAYMENT_ERROR, "Có lỗi xảy ra trong quá trình thanh toán");
+		}
+		
 		PaymentProcessResponseVM processResponseVM = new PaymentProcessResponseVM();
 		processResponseVM.setRedirectUrl(paymentResult.getRedirectUrl());
 

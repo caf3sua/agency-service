@@ -38,7 +38,7 @@ import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
 
 @Service
 public class PaymentGatewayVnPay extends AbstractPaymentGateway {
-	private final Logger log = LoggerFactory.getLogger(PaymentGateway123Pay.class);
+	private final Logger log = LoggerFactory.getLogger(PaymentGatewayVnPay.class);
 
 	@Autowired
 	private GateWayVnPayConfig config;

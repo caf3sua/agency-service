@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PaymentGatewayMomo extends AbstractPaymentGateway {
-	private final Logger log = LoggerFactory.getLogger(PaymentGateway123Pay.class);
+	private final Logger log = LoggerFactory.getLogger(PaymentGatewayMomo.class);
 
 	private static final String HMAC_SHA1_ALGORITHM = "HmacSHA256";
 
