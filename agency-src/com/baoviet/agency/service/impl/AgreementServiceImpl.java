@@ -1638,7 +1638,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 				if (StringUtils.equals(agreementDTO.getLineId(), "TVC") && StringUtils.equals(agreementDTO.getStatusPolicyId(), "91") && StringUtils.equals(agreementDTO.getPaymentMethod(), AgencyConstants.PAYMENT_METHOD_LATER)) {
 					if (agreementDTO.getInceptionDate() != null) {
 						Date now = new Date();
-						int sn = DateUtils.getNumberDaysBetween2Date(agreementDTO.getInceptionDate(), now);
+						int sn = DateUtils.getNumberDaysBetween2Date(now, agreementDTO.getInceptionDate());
 						if (0 <= sn) {
 							agreementDTO.setCheckTVC(true);
 						}
