@@ -1,5 +1,7 @@
 package com.baoviet.agency.service;
 
+import com.baoviet.agency.domain.Contact;
+import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.SmsSendDTO;
 
 /**
@@ -9,7 +11,7 @@ public interface SmsSendService {
 	
 	String save(SmsSendDTO param);
 	
-	int sendSMS(String phone, String content);
+	void sendSMS(AgreementDTO agreement, Contact contact, String phone, String content);
 	
 }
 

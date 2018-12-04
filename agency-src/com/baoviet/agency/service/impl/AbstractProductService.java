@@ -114,16 +114,15 @@ public class AbstractProductService {
 		// gui sms
 		if (!StringUtils.isEmpty(agreement.getOtp())) {
 			String content = "Baoviet SMS: Ma xac thuc cho don hang " + agreement.getGycbhNumber() + " cua quy khach la: " + agreement.getOtp();
-			int status = 0;
+			String phonenumber = StringUtils.EMPTY;
 			if (!StringUtils.isEmpty(contact.getPhone())) {
-				status = smsSendService.sendSMS(contact.getPhone(), content);	
+				phonenumber = contact.getPhone();
 			} else {
-				status = smsSendService.sendSMS(agreement.getReceiverMoible(), content);
+				phonenumber = agreement.getReceiverMoible();
 			}
 			
 			// save SMS
-			insertSmsSend(agreement, contact, content, status);
-			
+			smsSendService.sendSMS(agreement, contact, phonenumber, content);	
 		}
 		
 		log.debug("Request to savePayActionInfo : payActionId {}", payActionId);
@@ -133,16 +132,15 @@ public class AbstractProductService {
 		// gui sms
 		if (!StringUtils.isEmpty(agreement.getOtp())) {
 			String content = "Baoviet SMS: Ma xac thuc cho don hang " + agreement.getGycbhNumber() + " cua quy khach la: " + agreement.getOtp();
-			int status = 0;
+			String phonenumber = StringUtils.EMPTY;
 			if (!StringUtils.isEmpty(contact.getPhone())) {
-				status = smsSendService.sendSMS(contact.getPhone(), content);	
+				phonenumber = contact.getPhone();
 			} else {
-				status = smsSendService.sendSMS(agreement.getReceiverMoible(), content);
+				phonenumber = agreement.getReceiverMoible();
 			}
 			
 			// save SMS
-			insertSmsSend(agreement, contact, content, status);
-			
+			smsSendService.sendSMS(agreement, contact, phonenumber, content);	
 		}
 	}
 	
@@ -324,25 +322,25 @@ public class AbstractProductService {
 	}
 	
 	
-	protected void insertSmsSend(AgreementDTO voAg, Contact contact, String content, Integer status) {
-		log.debug("Request to insertSmsSend : AgreementDTO {}, Contact {}", voAg, contact);
-		
-		SmsSendDTO smsSend = new SmsSendDTO();
-		smsSend.setContent(content);
-		if (!StringUtils.isEmpty(contact.getPhone())) {
-			smsSend.setPhoneNumber(contact.getPhone());	
-		} else {
-			smsSend.setPhoneNumber(voAg.getReceiverMoible());
-		}
-		smsSend.setNumberSuccess(status);
-		smsSend.setNumberFails(0);
-		smsSend.setUserId("AGREEMENT");                        
-		smsSend.setUserName("AGREEMENT");                        
-		smsSend.setFullname("AGREEMENT");
-		smsSend.setSmsSysdate(new Date());
-		
-		smsSendService.save(smsSend);
-	}
+//	protected void insertSmsSend(AgreementDTO voAg, Contact contact, String content, Integer status) {
+//		log.debug("Request to insertSmsSend : AgreementDTO {}, Contact {}", voAg, contact);
+//		
+//		SmsSendDTO smsSend = new SmsSendDTO();
+//		smsSend.setContent(content);
+//		if (!StringUtils.isEmpty(contact.getPhone())) {
+//			smsSend.setPhoneNumber(contact.getPhone());	
+//		} else {
+//			smsSend.setPhoneNumber(voAg.getReceiverMoible());
+//		}
+//		smsSend.setNumberSuccess(status);
+//		smsSend.setNumberFails(0);
+//		smsSend.setUserId("AGREEMENT");                        
+//		smsSend.setUserName("AGREEMENT");                        
+//		smsSend.setFullname("AGREEMENT");
+//		smsSend.setSmsSysdate(new Date());
+//		
+//		smsSendService.save(smsSend);
+//	}
 	
     //************** Private method *****************//
 	private void setPolicyStatus(String lineId, AgreementDTO voAg) {

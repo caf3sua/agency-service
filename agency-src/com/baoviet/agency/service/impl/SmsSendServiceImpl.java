@@ -1,11 +1,13 @@
 package com.baoviet.agency.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.SmsSend;
+import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.SmsSendDTO;
 import com.baoviet.agency.repository.SmsSendRepository;
 import com.baoviet.agency.service.SmsSendService;
@@ -71,10 +75,13 @@ public class SmsSendServiceImpl implements SmsSendService {
 	@Override
 	@Async
 	// 1 , 2: success; 0: error
-	public int sendSMS(String phone, String content) {
+	public void sendSMS(AgreementDTO voAg, Contact contact, String phone, String content) {
 		log.debug("Request to sendSMS, phone {}, content {}", phone, content);
 		String status = getService().sendMT(phone, content, "", "", wsUsername, wsPassword);
-		return Integer.parseInt(status);
+		int iStatus = Integer.parseInt(status);
+		
+		// Save
+		insertSmsSend(voAg, contact, phone, iStatus);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -93,4 +100,23 @@ public class SmsSendServiceImpl implements SmsSendService {
 		return smsService;
 	}
 
+	protected void insertSmsSend(AgreementDTO voAg, Contact contact, String content, Integer status) {
+		log.debug("Request to insertSmsSend : AgreementDTO {}, Contact {}", voAg, contact);
+		
+		SmsSendDTO smsSend = new SmsSendDTO();
+		smsSend.setContent(content);
+		if (!StringUtils.isEmpty(contact.getPhone())) {
+			smsSend.setPhoneNumber(contact.getPhone());	
+		} else {
+			smsSend.setPhoneNumber(voAg.getReceiverMoible());
+		}
+		smsSend.setNumberSuccess(status);
+		smsSend.setNumberFails(0);
+		smsSend.setUserId("AGREEMENT");                        
+		smsSend.setUserName("AGREEMENT");                        
+		smsSend.setFullname("AGREEMENT");
+		smsSend.setSmsSysdate(new Date());
+		
+		this.save(smsSend);
+	}
 }
