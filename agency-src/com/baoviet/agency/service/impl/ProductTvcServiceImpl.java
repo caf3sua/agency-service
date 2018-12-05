@@ -679,6 +679,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         premiumTVC.setNgayVe(obj.getExpiredDate());
         premiumTVC.setPlanId(obj.getPlanId());
         premiumTVC.setPremiumPackage(obj.getTvcPackage());
+        premiumTVC.setPremiumDiscount(obj.getChangePremium());
         calculatePremium(premiumTVC);
         voAg.setStandardPremium(premiumTVC.getPremiumNet()); // phí gốc sản phẩm
         double changePremium = 0.0;
@@ -686,8 +687,8 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         	changePremium = premiumTVC.getPremiumNet() - premiumTVC.getPremiumDiscount() * premiumTVC.getPremiumNet();
         }
         voAg.setChangePremium(changePremium);
-        voAg.setNetPremium(premiumTVC.getPremiumTvc());
-        voAg.setTotalPremium(voAg.getNetPremium()); // Chưa thanh toán qua cổng nên phí total = phí nét
+        voAg.setNetPremium(premiumTVC.getPremiumNet());
+        voAg.setTotalPremium(premiumTVC.getPremiumTvc()); 
         voAg.setTotalVat(0.0);
         voAg.setUserAgent("");
      	if (objContact.getContactName() != null) {
