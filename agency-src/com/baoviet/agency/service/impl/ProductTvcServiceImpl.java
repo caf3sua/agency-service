@@ -103,7 +103,9 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         	tvcad.setTvcAddId("");
             tvcad.setTravaelcareId(String.valueOf(idTravelCare));
             tvcad.setInsuredName(item.getInsuredName());
-            tvcad.setDob(DateUtils.str2Date(item.getDob()));
+            if (StringUtils.isNotEmpty(item.getDob())) {
+            	tvcad.setDob(DateUtils.str2Date(item.getDob()));
+            }
             tvcad.setDateofbỉth(DateUtils.str2Date(item.getDob()));
             tvcad.setIdPasswport(item.getIdPasswport());
             tvcad.setRelationshipId(item.getRelationship());                

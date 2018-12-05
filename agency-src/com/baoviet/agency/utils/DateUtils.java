@@ -64,7 +64,7 @@ public class DateUtils {
 	public static Date str2Date(String strDate) {
 	    try {
 			return new SimpleDateFormat("dd/MM/yyyy").parse(strDate);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}  
 	}
