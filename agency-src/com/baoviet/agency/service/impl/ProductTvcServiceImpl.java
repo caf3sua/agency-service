@@ -240,7 +240,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			throw new AgencyBusinessException("ngayDi", ErrorCode.FORMAT_DATE_INVALID);
 		}
 		if (!DateUtils.isValidDate(obj.getNgayVe(), "dd/MM/yyyy")) {
-			throw new AgencyBusinessException("ngayVe", ErrorCode.FORMAT_DATE_INVALID);
+			throw new AgencyBusinessException("expiredDate", ErrorCode.FORMAT_DATE_INVALID);
 		}
 
 		Date inceptionDate = DateUtils.str2Date(obj.getNgayDi());
@@ -258,7 +258,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		Date newDate = cal.getTime();
 
 		if (expiredDate.after(newDate)) {
-			throw new AgencyBusinessException("ngayVe", ErrorCode.INVALID, "Thời gian du lịch quá 180 ngày");
+			throw new AgencyBusinessException("expiredDate", ErrorCode.INVALID, "Thời gian du lịch quá 180 ngày");
 		}
 
 		int sn = DateUtils.getNumberDaysBetween2Date(inceptionDate, expiredDate);

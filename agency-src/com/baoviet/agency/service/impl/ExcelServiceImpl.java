@@ -61,6 +61,7 @@ import com.baoviet.agency.service.mapper.AgencyMapper;
 import com.baoviet.agency.utils.AgencyCommonUtil;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.UEncrypt;
+import com.baoviet.agency.utils.UString;
 import com.baoviet.agency.web.rest.vm.TvcAddBaseVM;
 
 
@@ -266,16 +267,18 @@ public class ExcelServiceImpl implements ExcelService {
 		createCellAndStyle(row, 1, obj.getInsuredName(), styleText);
 		
 		// CMND/Passport
-		createCellAndStyle(row, 2, obj.getIdPasswport(), styleText);
+		createCellAndStyle(row, 2, UString.safeString(obj.getIdPasswport()), styleText);
 		
 		// Ngay sinh
 		createCellAndStyle(row, 3, obj.getDob(), styleText);
 		
-		// Quan he	
-		Relationship rEntity = relationshipRepository.getOne(obj.getRelationship());
-		String relationshipName = "Khác";
-		if (rEntity != null) {
-			relationshipName = rEntity.getRelationshipName();
+		// Quan he
+		String relationshipName = "";
+		if (StringUtils.isNotEmpty(obj.getRelationship())) {
+			Relationship rEntity = relationshipRepository.getOne(obj.getRelationship());
+			if (rEntity != null) {
+				relationshipName = rEntity.getRelationshipName();
+			}
 		}
 		createCellAndStyle(row, 4, relationshipName, styleText);
 	}

@@ -190,4 +190,12 @@ public class UString {
 		String filenameOriginal = index > 0 ? filename.substring(index + 1) : filename;
 		return filenameOriginal;
 	}
+	
+	public static String safeString(String input) {
+		if (StringUtils.isEmpty(input)) {
+			return StringUtils.EMPTY;
+		}
+		
+		return input;
+	}
 }
