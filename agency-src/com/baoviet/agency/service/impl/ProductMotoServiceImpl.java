@@ -1,6 +1,5 @@
 package com.baoviet.agency.service.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.transaction.Transactional;
@@ -127,7 +126,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 			double tndsbbPhi = 60000 + 60000 / 10;
 			obj.setTndsbbPhi(tndsbbPhi);
 		} else {
-			throw new AgencyBusinessException("typeOfCar", ErrorCode.INVALID);
+			throw new AgencyBusinessException("typeOfMoto", ErrorCode.INVALID, "Loại xe không phù hợp");
 		}
 		return obj;
 	}
@@ -141,7 +140,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 				} else if (obj.getTndstnSotien() == 100000000) {
 					obj.setTndstnPhi((double) 150000 + 150000 / 10);
 				} else {
-					throw new AgencyBusinessException("tndstnSotien", ErrorCode.INVALID, "Cần nhập số tiền tham gia bảo hiểm");
+					throw new AgencyBusinessException("tndstnSotien", ErrorCode.INVALID, "Cần lựa chọn mức trách nhiệm");
 				}
 			} else {
 				if (obj.getTndstnSotien() == 50000000) {
@@ -149,7 +148,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 				} else if (obj.getTndstnSotien() == 100000000) {
 					obj.setTndstnPhi((double) 210000 + 210000 / 10);
 				} else {
-					throw new AgencyBusinessException("tndstnSotien", ErrorCode.INVALID, "Cần nhập số tiền tham gia bảo hiểm");
+					throw new AgencyBusinessException("tndstnSotien", ErrorCode.INVALID, "Cần lựa chọn mức trách nhiệm");
 				}
 			}
 		}
@@ -160,7 +159,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 		log.debug("REST request to calculateValidNNTX : {}", obj);
 		if (obj.getNntxCheck()) {
 			if (obj.getNntxSoNguoi() != 1 && obj.getNntxSoNguoi() != 2)
-				throw new AgencyBusinessException("nntxSoNguoi", ErrorCode.INVALID);
+				throw new AgencyBusinessException("nntxSoNguoi", ErrorCode.INVALID, "Vượt quá số lượng người cho phép!");
 
 			if (obj.getNntxStbh() >= 3000000 && obj.getNntxStbh() <= 30000000) {
 				double phi = obj.getNntxStbh() * obj.getNntxSoNguoi() * 10 / 10000;
@@ -173,7 +172,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 				obj.setNntxPhi(phi);
 
 			} else {
-				throw new AgencyBusinessException("nntxStbh", ErrorCode.INVALID, "Cần nhập số tiền tham gia bảo hiểm");
+				throw new AgencyBusinessException("nntxStbh", ErrorCode.INVALID, "Số tiền bảo hiểm người ngồi trên xe tối thiểu từ 3 triệu đồng đến tối đa 500 triệu đồng");
 			}
 		}
 		return obj;
@@ -188,7 +187,7 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 			} else if (obj.getChaynoStbh() > 50000000 && obj.getChaynoStbh() <= 100000000) {
 				obj.setChaynoPhi((double) obj.getChaynoStbh() * 45 / 10000);
 			} else {
-				throw new AgencyBusinessException("chaynoStbh", ErrorCode.INVALID, "Cần nhập số tiền tham gia bảo hiểm");
+				throw new AgencyBusinessException("chaynoStbh", ErrorCode.INVALID, "Số tiền bảo hiểm cháy nổ trong khoảng từ 10 triệu đồng đến tối đa 100 triệu đồng");
 			}
 			obj.setChaynoPhi((double) obj.getChaynoPhi() * 110 / 100);
 		}
