@@ -476,7 +476,6 @@ public class AgencyCommonUtil {
 			Double.parseDouble(param);
 			return false;
 		} catch (Exception e) {
-			LOGGER.error(e.getCause(),e);
 			return true;
 		}
 	}

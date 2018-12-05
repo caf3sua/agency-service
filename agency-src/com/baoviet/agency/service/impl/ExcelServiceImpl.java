@@ -152,6 +152,7 @@ public class ExcelServiceImpl implements ExcelService {
 			return dataImportDTO;
 		} catch (NullPointerException pointerException) {
 			log.error(pointerException.getMessage(), pointerException);
+			throw new AgencyBusinessException("fileImport", ErrorCode.INVALID , "Sai định dạng biểu mẫu !");
 		} catch (OLE2NotOfficeXmlFileException ole) {
 			log.error(ole.getMessage(), ole);
 			throw new AgencyBusinessException("fileImport", ErrorCode.INVALID , "Sai định dạng biểu mẫu !");
@@ -159,7 +160,6 @@ public class ExcelServiceImpl implements ExcelService {
 			log.error(e.getMessage(), e);
 			throw new AgencyBusinessException("fileImport", ErrorCode.UNKNOW_ERROR , e.getMessage());
 		}
-		return dataImportDTO;
 	}
 
 	private boolean validateNumberOfPerson(Workbook workbook, Row rowTitle, String travelWithId, int total) {
