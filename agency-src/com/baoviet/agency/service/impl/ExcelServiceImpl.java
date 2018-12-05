@@ -190,19 +190,19 @@ public class ExcelServiceImpl implements ExcelService {
 	public BasePathInfoDTO processExportTVC(ProductTvcExcelDTO obj) throws AgencyBusinessException {
 		BasePathInfoDTO result = new BasePathInfoDTO();
 		InputStream excelFileToRead = null;
-		File file = null;
+//		File file = null;
 		try {
 			// Load file into input stream
-			ClassLoader classLoader = getClass().getClassLoader();
-			file = new File(classLoader.getResource("templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC).getFile());
-			log.debug("Path to file template : {}", file.getAbsolutePath());
+//			ClassLoader classLoader = getClass().getClassLoader();
+//			file = new File(classLoader.getResource("templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC).getFile());
+//			log.debug("Path to file template : {}", file.getAbsolutePath());
 			
-			if (!file.exists()) {
-				Resource resource = resourceLoader.getResource("classpath:templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
-				excelFileToRead = resource.getInputStream(); // <-- this is the difference
-			} else {
-				excelFileToRead = new FileInputStream(file);
-			}
+//			if (!file.exists()) {
+			Resource resource = resourceLoader.getResource("classpath:templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_TVC);
+			excelFileToRead = resource.getInputStream(); // <-- this is the difference
+//			} else {
+//				excelFileToRead = new FileInputStream(file);
+//			}
 			
 			if (excelFileToRead == null) {
 				// Load from template folder

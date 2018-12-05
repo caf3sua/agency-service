@@ -217,16 +217,16 @@ public class AgentDocumentResource {
         }
 		
 		InputStream fileAsStream = null;
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("templates/" + filename).getFile());
-		log.debug("Path to file template : {}", file.getAbsolutePath());
+//		ClassLoader classLoader = getClass().getClassLoader();
+//		File file = new File(classLoader.getResource("templates/" + filename).getFile());
+//		log.debug("Path to file template : {}", file.getAbsolutePath());
 		
-		if (!file.exists()) {
+//		if (!file.exists()) {
 			Resource resource = resourceLoader.getResource("classpath:templates/" + filename);
 	        fileAsStream = resource.getInputStream(); // <-- this is the difference
-		} else {
-			fileAsStream = new FileInputStream(file);
-		}
+//		} else {
+//			fileAsStream = new FileInputStream(file);
+//		}
 		
 		if (fileAsStream == null) {
 			// Load from template folder
@@ -234,7 +234,7 @@ public class AgentDocumentResource {
 		}
 		
 		MediaType mediaType = MediaTypeUtils.getMediaTypeForFileName(this.servletContext, filename);
-        InputStreamResource resource = new InputStreamResource(fileAsStream);
+        InputStreamResource inputStreamResource = new InputStreamResource(fileAsStream);
  
         return ResponseEntity.ok()
                 // Content-Disposition
@@ -242,8 +242,8 @@ public class AgentDocumentResource {
                 // Content-Type
                 .contentType(mediaType)
                 // Contet-Length
-                .contentLength(file.length()) //
-                .body(resource);
+                .contentLength(fileAsStream.available()) //
+                .body(inputStreamResource);
 	}
 	
 	@GetMapping("/download-file")
