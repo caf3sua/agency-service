@@ -298,7 +298,7 @@ public class ExcelServiceImpl implements ExcelService {
 		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 2, false);
 		
 		/*8. Ngày sinh*/
-		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 3, false);
+		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_DATE, 3, false);
 		
 		/*9. Quan hệ*/
 		processCellDataTVC(rowTitle, row, resultDTO, lstErrorMessage, CELL_TYPE_CHECK_STRING, 4, true);
@@ -353,7 +353,7 @@ public class ExcelServiceImpl implements ExcelService {
 			lstErrorMessage.add(errorMessage);
 		} else {
 			Object data = 0;
-			if (StringUtils.equals(CELL_TYPE_CHECK_STRING, typeCheck)) {
+			if (StringUtils.equals(CELL_TYPE_CHECK_STRING, typeCheck) || StringUtils.equals(CELL_TYPE_CHECK_DATE, typeCheck)) {
 				data = itemValue;
 			} else if (StringUtils.equals(CELL_TYPE_CHECK_NUMBER, typeCheck)) {
 				data = Integer.parseInt(StringUtils.isNotEmpty(itemValue) ? itemValue : "0");

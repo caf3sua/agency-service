@@ -69,6 +69,17 @@ public class DateUtils {
 		}  
 	}
 	
+	public static boolean validDateFormat(String strDate) {
+	    try {
+			SimpleDateFormat format =  new SimpleDateFormat("dd/MM/yyyy");
+			format.setLenient(false);
+			format.parse(strDate);
+			return true;
+		} catch (ParseException e) {
+			return false;
+		}  
+	}
+	
 	public static Date str2Date(String strDate, String format) {
 	    try {
 			return new SimpleDateFormat(format).parse(strDate);

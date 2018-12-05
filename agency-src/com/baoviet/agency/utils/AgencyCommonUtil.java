@@ -483,12 +483,7 @@ public class AgencyCommonUtil {
 	public static boolean isNotDateImport(String param) {
 		if(!StringUtils.isNotEmpty(param)) return true;
 		try {
-			Date date = DateUtils.str2Date(param);
-			if (date == null) {
-				return true;
-			}
-			
-			return false;
+			return !DateUtils.validDateFormat(param);
 		} catch (Exception e) {
 			LOGGER.error(e.getCause(),e);
 			return true;
