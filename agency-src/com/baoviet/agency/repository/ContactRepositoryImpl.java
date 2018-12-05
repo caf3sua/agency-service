@@ -57,6 +57,7 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
         	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
         }
         
+        expression = expression +  " ORDER BY CONTACT_ID DESC";
         
         Query query = entityManager.createNativeQuery(expression, Contact.class);
         query.setParameter("pType", type);
