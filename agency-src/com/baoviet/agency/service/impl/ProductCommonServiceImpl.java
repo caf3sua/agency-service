@@ -346,7 +346,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		object.setContactDob(DateUtils.date2Str(result.getObjAgreement().getContactDob()));
 		object.setContactPhone(result.getObjAgreement().getContactPhone());
 		object.setContactEmail(result.getObjAgreement().getContactUsername());
-		
+		object.setContactIdNumber(result.getObjAgreement().getTaxIdNumber());
 		Contact co = contactRepository.findOneByContactCode(object.getContactCode());
 		if (co != null) {
 			object.setContactCategoryType(co.getCategoryType());

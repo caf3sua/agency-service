@@ -70,4 +70,7 @@ public abstract class ProductBaseVM {
 	
 	@ApiModelProperty(value = "Email - dùng trong trường hợp cập nhật")
 	private String contactEmail;
+	
+	@ApiModelProperty(value = "CMT/MST - dùng trong trường hợp cập nhật")
+	private String contactIdNumber;
 }
