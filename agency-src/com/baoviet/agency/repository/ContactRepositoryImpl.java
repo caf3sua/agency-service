@@ -35,40 +35,47 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT * FROM CONTACT WHERE type = :pType";
-        if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
-        }
-        if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
-        }
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
-        } 
-        if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
-        } 
-        if (obj.getDateOfBirth() != null) {
-        	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
-        }
-        if (!StringUtils.isEmpty(obj.getGroupType())) {
-        	expression = expression +  " AND GROUP_TYPE = :pGroup";
-        }
-        if (!StringUtils.isEmpty(obj.getCategoryType())) {
-        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
-        }
+		if (!StringUtils.isEmpty(obj.getKeyWord())) {
+			expression = expression +  " AND ( UPPER(CONTACT_NAME) LIKE '%" + obj.getKeyWord().toUpperCase() + "%' OR UPPER(EMAIL) LIKE '%" + obj.getKeyWord().toUpperCase() + "%' OR PHONE LIKE '%" + obj.getKeyWord() + "%' OR UPPER(ID_NUMBER) LIKE '%" + obj.getKeyWord().toUpperCase() + "%' )";
+		} else {
+			if (!StringUtils.isEmpty(obj.getContactName())) {
+	        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
+	        }
+	        if (!StringUtils.isEmpty(obj.getEmail())) {
+	        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
+	        }
+	        if (!StringUtils.isEmpty(obj.getPhone())) {
+	        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
+	        } 
+	        if (!StringUtils.isEmpty(obj.getIdNumber())) {
+	        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
+	        } 
+	        if (obj.getDateOfBirth() != null) {
+	        	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
+	        }
+	        if (!StringUtils.isEmpty(obj.getGroupType())) {
+	        	expression = expression +  " AND GROUP_TYPE = :pGroup";
+	        }
+	        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+	        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
+	        }
+		}
         
         expression = expression +  " ORDER BY CONTACT_ID DESC";
         
         Query query = entityManager.createNativeQuery(expression, Contact.class);
         query.setParameter("pType", type);
-        if (obj.getDateOfBirth() != null) {
-        	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
-        }
-        if (!StringUtils.isEmpty(obj.getGroupType())) {
-        	query.setParameter("pGroup", obj.getGroupType());
-        }
-        if (!StringUtils.isEmpty(obj.getCategoryType())) {
-        	query.setParameter("pCategoryType", obj.getCategoryType());
+        
+        if (StringUtils.isEmpty(obj.getKeyWord())) {
+        	if (obj.getDateOfBirth() != null) {
+            	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
+            }
+            if (!StringUtils.isEmpty(obj.getGroupType())) {
+            	query.setParameter("pGroup", obj.getGroupType());
+            }
+            if (!StringUtils.isEmpty(obj.getCategoryType())) {
+            	query.setParameter("pCategoryType", obj.getCategoryType());
+            }	
         }
         
         // Paging
@@ -91,39 +98,47 @@ public class ContactRepositoryImpl implements ContactRepositoryExtend {
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
 		String expression = "SELECT count(*) FROM CONTACT WHERE type = :pType";
-        if (!StringUtils.isEmpty(obj.getContactName())) {
-        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
-        }
-        if (!StringUtils.isEmpty(obj.getEmail())) {
-        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
-        }
-        if (!StringUtils.isEmpty(obj.getPhone())) {
-        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
-        } 
-        if (!StringUtils.isEmpty(obj.getIdNumber())) {
-        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
-        }  
-        if (obj.getDateOfBirth() != null) {
-        	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
-        }
-        if (!StringUtils.isEmpty(obj.getGroupType())) {
-        	expression = expression +  " AND GROUP_TYPE = :pGroup";
-        }
-        if (!StringUtils.isEmpty(obj.getCategoryType())) {
-        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
-        }
+        
+		if (!StringUtils.isEmpty(obj.getKeyWord())) {
+			expression = expression +  " AND ( UPPER(CONTACT_NAME) LIKE '%" + obj.getKeyWord().toUpperCase() + "%' OR UPPER(EMAIL) LIKE '%" + obj.getKeyWord().toUpperCase() + "%' OR PHONE LIKE '%" + obj.getKeyWord() + "%' )";
+		} else {
+			if (!StringUtils.isEmpty(obj.getContactName())) {
+	        	expression = expression +  " AND UPPER(CONTACT_NAME) LIKE '%" + obj.getContactName().toUpperCase() + "%'";
+	        }
+	        if (!StringUtils.isEmpty(obj.getEmail())) {
+	        	expression = expression +  " AND UPPER(EMAIL) LIKE '%" + obj.getEmail().toUpperCase() + "%'";
+	        }
+	        if (!StringUtils.isEmpty(obj.getPhone())) {
+	        	expression = expression +  " AND PHONE LIKE '%" + obj.getPhone() + "%'";
+	        } 
+	        if (!StringUtils.isEmpty(obj.getIdNumber())) {
+	        	expression = expression +  " AND UPPER(ID_NUMBER) LIKE '%" + obj.getIdNumber().toUpperCase() + "%'";
+	        } 
+	        if (obj.getDateOfBirth() != null) {
+	        	expression = expression +  " AND to_char(DATE_OF_BIRTH, 'DD/MM/YYYY') = :pDoB";
+	        }
+	        if (!StringUtils.isEmpty(obj.getGroupType())) {
+	        	expression = expression +  " AND GROUP_TYPE = :pGroup";
+	        }
+	        if (!StringUtils.isEmpty(obj.getCategoryType())) {
+	        	expression = expression +  " AND CATEGORY_TYPE = :pCategoryType";
+	        }
+		}
         
         
         Query query = entityManager.createNativeQuery(expression);
         query.setParameter("pType", type);
-        if (obj.getDateOfBirth() != null) {
-        	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
-        }
-        if (!StringUtils.isEmpty(obj.getGroupType())) {
-        	query.setParameter("pGroup", obj.getGroupType());
-        }
-        if (!StringUtils.isEmpty(obj.getCategoryType())) {
-        	query.setParameter("pCategoryType", obj.getCategoryType());
+        
+        if (StringUtils.isEmpty(obj.getKeyWord())) {
+        	if (obj.getDateOfBirth() != null) {
+            	query.setParameter("pDoB", DateUtils.date2Str(obj.getDateOfBirth()));
+            }
+            if (!StringUtils.isEmpty(obj.getGroupType())) {
+            	query.setParameter("pGroup", obj.getGroupType());
+            }
+            if (!StringUtils.isEmpty(obj.getCategoryType())) {
+            	query.setParameter("pCategoryType", obj.getCategoryType());
+            }	
         }
         
         BigDecimal data = (BigDecimal) query.getSingleResult();

@@ -43,5 +43,7 @@ public class ContactSearchVM implements Serializable {
 	
 	private String email;
 	
+	private String keyWord;
+	
 	private PageableVM pageable;
 } 
