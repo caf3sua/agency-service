@@ -76,7 +76,6 @@ import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.repository.TlAddRepository;
 import com.baoviet.agency.repository.TravelCareAddRepository;
-import com.baoviet.agency.service.AgencyService;
 import com.baoviet.agency.service.AgreementNoPhiService;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.AnchiService;
@@ -638,18 +637,8 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 	}
 	
 	@Override
-	public Page<AgreementDTO> getWaitAgency(String agentId, Pageable pageable) {
-		return agreementRepository.getWaitAgency(agentId, pageable).map(agreementMapper::toDto);
-	}
-	
-	@Override
 	public Page<AgreementDTO> getWaitAgencyAdmin(String agentId, Pageable pageable) {
 		return agreementRepository.getWaitAgencyAdmin(agentId, pageable).map(agreementMapper::toDto);
-	}
-	
-	@Override
-	public Page<AgreementDTO> getWaitAgreement(String agentId, Pageable pageable) {
-		return agreementRepository.getWaitAgreement(agentId, pageable).map(agreementMapper::toDto);
 	}
 	
 	@Override

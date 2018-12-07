@@ -43,10 +43,6 @@ public interface AgreementRepositoryExtend {
 	
 	Page<Agreement> searchCart(String type, List<String> lstStatus, Pageable pageable);
 	
-	Page<Agreement> getWaitAgency(String type, Pageable pageable);
-	
-	Page<Agreement> getWaitAgreement(String type, Pageable pageable);
-	
 	Page<Agreement> searchCart(SearchAgreementWaitVM param, String type);
 	
 	List<OrderHistoryDTO> getOrderHistoryByGycbhNumber(List<AgreementHis> lstAgreementHis);

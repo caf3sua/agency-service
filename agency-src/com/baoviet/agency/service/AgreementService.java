@@ -108,10 +108,6 @@ public interface AgreementService {
 	
 	AgreementDTO findByGycbhNumberAndAgentIdAndOTP(String gycbhNumber, String agentId, String otp);
 	
-	Page<AgreementDTO> getWaitAgency(String agentId, Pageable pageable);
-	
-	Page<AgreementDTO> getWaitAgreement(String agentId, Pageable pageable);
-	
 	Page<AgreementDTO> searchOrderWait(SearchAgreementWaitVM obj, String type, String caseWait); // caseWait:  0: chờ bảo việt, 1: chờ đại lý, 2: Khác
 	
 	AgreementDTO updateOTP(AgreementDTO data) throws AgencyBusinessException;

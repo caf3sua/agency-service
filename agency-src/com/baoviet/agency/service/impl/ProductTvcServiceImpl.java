@@ -286,8 +286,8 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo đoàn phải lớn hơn 1");
 			}
 		} else if (obj.getPremiumPackage().equals("2")) {
-			if (obj.getNumberOfPerson() < 2 ) { // || obj.getNumberOfPerson() > 5) {
-				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải lớn hơn 1");
+			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 6) {
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
 			}
 		} else if (obj.getPremiumPackage().equals("1")) {
 			if (obj.getNumberOfPerson() > 1) {
@@ -330,26 +330,25 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			throw new AgencyBusinessException("travelWithId", ErrorCode.INVALID);
 		}
 		if (objTravel.getSoNguoiThamGia() <= 0) {
-			throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID, "Số người tham gia phải > 0");
+			throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người tham gia phải > 0");
 		} else {
 			// Ca nhan
 			if (objTravel.getTravelWithId().equals("1")) {
 				if (objTravel.getSoNguoiThamGia() > 1) {
-					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
+					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID,
 							"Số người tham gia phải = 1");
 				}
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getSoNguoiThamGia() < 2) { // || objTravel.getSoNguoiThamGia() > 5) {
-					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 người");
+				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 6) {
+					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
 				}
 			}
 			// Khach doan
 			if (objTravel.getTravelWithId().equals("3")) {
 				if (objTravel.getSoNguoiThamGia() < 2) { // || objTravel.getSoNguoiThamGia() > 20) {
-					throw new AgencyBusinessException("soNguoiThamGia", ErrorCode.INVALID,
+					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID,
 							"Số người tham gia phải từ 2 người");
 				}
 			}
@@ -403,9 +402,8 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getListTvcAddBaseVM().size() < 2) { // || objTravel.getListTvcAddBaseVM().size() > 5) {
-					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 người");
+				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 6) {
+					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
 				}
 			}
 			// Khach doanh
@@ -445,6 +443,14 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 								|| tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BAN_THAN))) {
 							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
 									"Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân");
+						}
+					} else if (objTravel.getTravelWithId().equals("2")) {
+						if (!tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BO_ME) 
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.VO_CHONG)
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.CON) 
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BAN_THAN) ) {
+							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
+									"Du lịch theo gia đình chỉ có 4 mối quan hệ : Bố/mẹ, vợ chồng, con cái, bản thân");
 						}
 					} else {
 						if (tvcAd.getRelationship().equals("39")) {

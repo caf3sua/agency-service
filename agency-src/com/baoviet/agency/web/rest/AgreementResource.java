@@ -519,40 +519,6 @@ public class AgreementResource extends AbstractAgencyResource {
 		}
 	}
 	
-	// Đơn hàng chờ đại lý giải quyết : chờ OTP. StautusPolicy: 81; Yêu cầu bổ sung thông tin: 83; 80: Đang soạn
-//	@GetMapping("/get-wait-agency")
-//	@Timed
-//	@ApiOperation(value = "getWaitAgency", notes = "Hàm lấy tất cả danh sách hợp đồng chờ đại lý giải quyết - chờ OTP")
-//	public ResponseEntity<List<AgreementDTO>> getWaitAgency(@ApiParam Pageable pageable) throws URISyntaxException, AgencyBusinessException {
-//		log.debug("REST request to getWaitAgency");
-//
-//		// get current agency
-//		AgencyDTO currentAgency = getCurrentAccount();
-//
-//		Page<AgreementDTO> page = agreementService.getWaitAgency(currentAgency.getMa(), pageable);
-//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/agreement/get-wait-agency");
-//
-//		// Return data
-//		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//	}
-	
-	// Đơn hàng chờ BV giải quyết: Chờ bảo việt giám định StautusPolicy: 93; Chờ bảo việt cấp đơn StautusPolicy: 91; Chờ Bảo Việt cấp GCNBH (bản cứng): 92
-//	@GetMapping("/get-wait-agreement")
-//	@Timed
-//	@ApiOperation(value = "getWaitAgreement", notes = "Hàm lấy tất cả danh sách hợp đồng chờ bảo việt giải quyết")
-//	public ResponseEntity<List<AgreementDTO>> getWaitAgreement(@ApiParam Pageable pageable) throws URISyntaxException, AgencyBusinessException {
-//		log.debug("REST request to getWaitAgreement");
-//
-//		// get current agency
-//		AgencyDTO currentAgency = getCurrentAccount();
-//
-//		Page<AgreementDTO> page = agreementService.getWaitAgreement(currentAgency.getMa(), pageable);
-//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/agreement/get-wait-agreement");
-//
-//		// Return data
-//		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//	}
-	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
 	@PostMapping("/search-order-wait")
 	@Timed
