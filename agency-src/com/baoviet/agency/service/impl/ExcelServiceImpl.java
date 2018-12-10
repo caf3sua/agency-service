@@ -5,13 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -23,15 +19,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,25 +30,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
-import org.springframework.util.ResourceUtils;
 
 import com.baoviet.agency.config.AgencyConstants;
-import com.baoviet.agency.domain.Agency;
-import com.baoviet.agency.domain.Permission;
 import com.baoviet.agency.domain.Relationship;
-import com.baoviet.agency.domain.Role;
-import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
 import com.baoviet.agency.dto.excel.ProductTvcExcelDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
-import com.baoviet.agency.repository.AgencyRepository;
 import com.baoviet.agency.repository.RelationshipRepository;
-import com.baoviet.agency.service.AgencyService;
 import com.baoviet.agency.service.ExcelService;
-import com.baoviet.agency.service.mapper.AgencyMapper;
 import com.baoviet.agency.utils.AgencyCommonUtil;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.UEncrypt;
@@ -173,6 +155,12 @@ public class ExcelServiceImpl implements ExcelService {
 		if (!StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_CA_NHAN)) {
 			if (total <= 1) {
 				message = "Số người đi du lịch theo gia đình/đoàn phải > 1";
+			}
+		}
+		
+		if (StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
+			if (total > 6) {
+				message = "Số người đi du lịch theo gia đình phải nhỏ hơn hoặc bằng 6";
 			}
 		}
 		
@@ -309,7 +297,7 @@ public class ExcelServiceImpl implements ExcelService {
 		// Validate bat buoc nhap Cmnd hoac Ngay sinh
 		validateRequiredCmndOrDob(rowTitle, row, resultDTO, lstErrorMessage);
 		
-		validateRelationship(rowTitle, row, resultDTO, lstErrorMessage, obj.getTravelWithId());
+		validateRelationship(rowTitle, row, resultDTO, lstErrorMessage, obj);
 		
 		validateExtraInfo(rowTitle, row, resultDTO, lstErrorMessage);
 		
@@ -415,12 +403,29 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 	}
 	
-	private void validateRelationship(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, String travelWithId) {
+	private void validateRelationship(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, ProductImportDTO obj) {
 		if (StringUtils.isEmpty(resultDTO.getRelationshipName())) {
 			return;
 		}
 		
-		if (StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_KHACH_DOAN)) {
+		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC))) {
+				String errorMessage = "Người yêu cầu là tổ chức thì du lịch theo gia đình quan hệ phải là: Khác";
+				lstErrorMessage.add(errorMessage);
+			}
+		}
+		
+		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.PERSON) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BO_ME))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.VO_CHONG))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.CON))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN))) {
+				String errorMessage = "Người yêu cầu là cá nhân thì du lịch theo gia đình quan hệ phải là: Bố/mẹ, vợ chồng, con cái, bản thân";
+				lstErrorMessage.add(errorMessage);
+			}
+		}
+		
+		if (StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_KHACH_DOAN)) {
 			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN) 
 					|| StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHACH_DOAN))) {
 				String errorMessage = "Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân";

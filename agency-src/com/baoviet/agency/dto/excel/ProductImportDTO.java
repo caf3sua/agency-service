@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,4 +21,7 @@ public class ProductImportDTO extends BasePathInfoDTO implements Serializable {
 	
 	// 1: Cá nhân, 2: Gia đình, 3: Khách đoàn 
 	private String travelWithId;
+	
+	@ApiModelProperty(value = "Nhóm khách hàng", allowableValues = "ORGANIZATION, PERSON") 
+	private String contactCategoryType;
 }
