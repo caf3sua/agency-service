@@ -3,11 +3,13 @@ package com.baoviet.agency.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -80,4 +82,14 @@ public class AgencyUtils {
         }
     }
 	
+	public String toKhongDau(String str) {
+	    try {
+	        String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
+	        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+	        return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll(" ", "-").replaceAll("đ", "d");
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return "";
+	}
 }

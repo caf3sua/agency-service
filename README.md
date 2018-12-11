@@ -1,6 +1,8 @@
 #Anchi
 D:\programme\java\jdk1.8.0_151\bin\wsimport -keep -verbose -d D:\programme\temp https://appuat.baoviet.com.vn:7779/BVAC02/BVAC_AGENCY.asmx?wsdl
 
+D:\programme\java\jdk1.8.0_151\bin\wsimport -keep -verbose -d D:\programme\temp https://172.29.2.36:7779/BVAC02/BVAC_AGENCY.asmx?wsdl
+
 #SMS
 C:\Program Files\Java\jdk1.8.0_161\bin\wsimport -keep -verbose -d D:\programme\temp http://172.29.1.76/INSUREJ_BRANDNAME/SMSSendService.asmx?wsdl
 

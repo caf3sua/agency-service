@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
  *       &lt;sequence>
  *         &lt;element name="userName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="password" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="sysCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/sequence>
  *       &lt;anyAttribute/>
  *     &lt;/restriction>
@@ -34,12 +35,14 @@ import javax.xml.namespace.QName;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AuthTokenKeyHeader", propOrder = {
     "userName",
-    "password"
+    "password",
+    "sysCode"
 })
 public class AuthTokenKeyHeader {
 
     protected String userName;
     protected String password;
+    protected String sysCode;
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
@@ -89,6 +92,30 @@ public class AuthTokenKeyHeader {
      */
     public void setPassword(String value) {
         this.password = value;
+    }
+
+    /**
+     * Gets the value of the sysCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSysCode() {
+        return sysCode;
+    }
+
+    /**
+     * Sets the value of the sysCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSysCode(String value) {
+        this.sysCode = value;
     }
 
     /**

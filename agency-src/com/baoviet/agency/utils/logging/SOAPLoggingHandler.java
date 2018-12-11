@@ -36,6 +36,8 @@ public class SOAPLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 	private String wsUsername;
     
 	private String wsPassword;
+	
+	private String sysCode;
     
 	
 	public SOAPLoggingHandler() {
@@ -48,6 +50,13 @@ public class SOAPLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 		this.wsPassword = wsPassword;
 	}
 
+	public SOAPLoggingHandler(String wsUsername, String wsPassword, String sysCode) {
+		super();
+		this.wsUsername = wsUsername;
+		this.wsPassword = wsPassword;
+		this.sysCode = sysCode;
+	}
+	
 	@Override
 	public void close(MessageContext arg0) {
 	}
@@ -80,6 +89,7 @@ public class SOAPLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 				
 				soapHeaderElement.addChildElement(soapEnv.createName("userName", "", "http://tempuri.org/")).addTextNode(wsUsername);
 				soapHeaderElement.addChildElement(soapEnv.createName("password", "", "http://tempuri.org/")).addTextNode(wsPassword);
+				soapHeaderElement.addChildElement(soapEnv.createName("sysCode", "", "http://tempuri.org/")).addTextNode(sysCode);
 				soapMsg.saveChanges();
 			} catch (SOAPException e) {
 				System.err.println(e);

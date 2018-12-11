@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "BVAC_AGENCY", targetNamespace = "http://tempuri.org/", wsdlLocation = "https://172.29.2.36:7779/BVAC02/BVAC_AGENCY.asmx?wsdl")
+@WebServiceClient(name = "BVAC_AGENCY", targetNamespace = "http://tempuri.org/", wsdlLocation = "http://172.29.1.76/INSUREJ_BRANDNAME/SMSSendService.asmx?wsdl")
 public class BVACAGENCY
     extends Service
 {
@@ -30,7 +30,7 @@ public class BVACAGENCY
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("https://172.29.2.36:7779/BVAC02/BVAC_AGENCY.asmx?wsdl");
+            url = new URL("http://172.29.1.76/INSUREJ_BRANDNAME/SMSSendService.asmx?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

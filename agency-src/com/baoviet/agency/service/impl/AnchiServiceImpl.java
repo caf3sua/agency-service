@@ -28,7 +28,6 @@ import org.tempuri.BVACAGENCY;
 import org.tempuri.BVACAGENCYSoap;
 
 import com.baoviet.agency.domain.Anchi;
-import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AnchiDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperDTO;
 import com.baoviet.agency.dto.printedpaper.PrintedPaperTypeDTO;
@@ -72,6 +71,9 @@ public class AnchiServiceImpl implements AnchiService {
 	@Value("${spring.application.ws.printed-paper.baoviet.password}")
 	private String wsPassword;
 
+	@Value("${spring.application.ws.printed-paper.baoviet.sysCode}")
+	private String sysCode;
+	
 	@Autowired
 	private AgreementService agreementService;
 
@@ -273,9 +275,10 @@ public class AnchiServiceImpl implements AnchiService {
 		((BindingProvider) anchiService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsUrl);
 		log.debug("An chi ws url: " + wsUrl);
 
+		// Set username, password and syscode
 		Binding binding = ((BindingProvider) anchiService).getBinding();
 		List handlerChain = binding.getHandlerChain();
-		handlerChain.add(new SOAPLoggingHandler(wsUsername, wsPassword));
+		handlerChain.add(new SOAPLoggingHandler(wsUsername, wsPassword, sysCode));
 		binding.setHandlerChain(handlerChain);
 
 		return anchiService;
