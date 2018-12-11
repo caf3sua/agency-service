@@ -394,12 +394,12 @@ public class ExcelServiceImpl implements ExcelService {
 			relationShipId = AgencyConstants.RELATIONSHIP.KHACH_DOAN;	
 		}
 		
-		Relationship rEntity = relationshipRepository.findOne(relationShipId);
-		
-		if (rEntity == null) {
-			return relationShipId;
-		}
-		relationShipId = rEntity.getRelationshipId();
+//		Relationship rEntity = relationshipRepository.findOne(relationShipId);
+//		
+//		if (rEntity == null) {
+//			return relationShipId;
+//		}
+//		relationShipId = rEntity.getRelationshipId();
 		
 		return relationShipId;
 	}
