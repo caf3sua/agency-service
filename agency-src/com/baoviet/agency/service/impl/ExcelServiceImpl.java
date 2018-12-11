@@ -438,6 +438,13 @@ public class ExcelServiceImpl implements ExcelService {
 				lstErrorMessage.add(errorMessage);
 			}
 		}
+		
+		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC)) ) {
+				String errorMessage = "Người yêu cầu là tổ chức thì du lịch phải có mối quan hệ là: Khác";
+				lstErrorMessage.add(errorMessage);
+			}
+		}
 	}
 	
 	private void validateExtraInfo(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage) {
