@@ -59,6 +59,9 @@ public class ExcelServiceImpl implements ExcelService {
     
     private static final int ROW_TITLE_INDEX = 3;
     
+    public static int COUNT_BAN_THAN=0;
+    public static int COUNT_VO_CHONG=0;
+    
     private static final String CELL_TYPE_CHECK_NUMBER = "CHECK_NUMBER"; 
     private static final String CELL_TYPE_CHECK_DATE = "CHECK_DATE";
     private static final String CELL_TYPE_CHECK_DATA = "CHECK_DATA";
@@ -95,7 +98,9 @@ public class ExcelServiceImpl implements ExcelService {
 			Row rowTitle= sheet.getRow(ROW_TITLE_INDEX);
 			boolean check = false;
 			int index = 0;
-			
+			//default
+			COUNT_BAN_THAN = 0;
+			COUNT_VO_CHONG = 0;
 			for (Row row : sheet) {
 				itemDTO = new TvcAddBaseVM();
 				if (row.getRowNum() > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
@@ -408,20 +413,33 @@ public class ExcelServiceImpl implements ExcelService {
 			return;
 		}
 		
-		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
-			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC))) {
-				String errorMessage = "Người yêu cầu là tổ chức thì du lịch theo gia đình quan hệ phải là: Khác";
+//		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
+//			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC))) {
+//				String errorMessage = "Người yêu cầu là tổ chức thì du lịch theo gia đình quan hệ phải là: Khác";
+//				lstErrorMessage.add(errorMessage);
+//			}
+//		}
+		if (StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_CA_NHAN)) {
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN))) {
+				String errorMessage = "Du lịch cá nhân quan hệ phải là: Bản thân";
 				lstErrorMessage.add(errorMessage);
 			}
 		}
 		
-		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.PERSON) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
+		if (StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
 			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BO_ME))
 					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.VO_CHONG))
 					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.CON))
 					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN))) {
-				String errorMessage = "Người yêu cầu là cá nhân thì du lịch theo gia đình quan hệ phải là: Bố/mẹ, vợ chồng, con cái, bản thân";
+				String errorMessage = "Du lịch theo gia đình quan hệ phải là: Bố/mẹ, vợ chồng, con cái, bản thân";
 				lstErrorMessage.add(errorMessage);
+			}
+			
+			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.VO_CHONG)) {
+				COUNT_VO_CHONG ++;
+			}
+			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN)) {
+				COUNT_BAN_THAN ++;
 			}
 		}
 		
@@ -431,6 +449,9 @@ public class ExcelServiceImpl implements ExcelService {
 				String errorMessage = "Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân";
 				lstErrorMessage.add(errorMessage);
 			}
+			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN)) {
+				COUNT_BAN_THAN ++;
+			}
 			
 		} else {
 			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHACH_DOAN)) {
@@ -439,12 +460,22 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 		}
 		
-		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
-			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC)) ) {
-				String errorMessage = "Người yêu cầu là tổ chức thì du lịch phải có mối quan hệ là: Khác";
-				lstErrorMessage.add(errorMessage);
-			}
+		if (COUNT_BAN_THAN > 1) {
+			String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là Bản thân";
+			lstErrorMessage.add(errorMessage);
 		}
+		
+		if (COUNT_VO_CHONG > 1) {
+			String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là vợ/chồng";
+			lstErrorMessage.add(errorMessage);
+		}
+		
+//		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
+//			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC)) ) {
+//				String errorMessage = "Người yêu cầu là tổ chức thì du lịch phải có mối quan hệ là: Khác";
+//				lstErrorMessage.add(errorMessage);
+//			}
+//		}
 	}
 	
 	private void validateExtraInfo(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage) {
