@@ -661,7 +661,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			tvc.setInvoiceBuyer(obj.getInvoiceInfo().getName());
 			tvc.setInvoiceCompany(obj.getInvoiceInfo().getCompany());
 			tvc.setInvoiceTaxNo(obj.getInvoiceInfo().getTaxNo());
-			tvc.setInvoiceAddress(obj.getInvoiceInfo().getAccountNo());
+			tvc.setInvoiceAddress(obj.getInvoiceInfo().getAddress());
 			tvc.setInvoiceAccountNo(obj.getInvoiceInfo().getAccountNo());	
         }
 
