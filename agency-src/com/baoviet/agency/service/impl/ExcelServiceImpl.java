@@ -378,13 +378,27 @@ public class ExcelServiceImpl implements ExcelService {
 	
 	private String getRelationshipIdByName(String relationshipName) {
 		String relationShipId = AgencyConstants.RELATIONSHIP.KHONG_XAC_DINH;
+		if (StringUtils.equals(relationshipName, "Bản thân")) {
+			relationShipId = AgencyConstants.RELATIONSHIP.BAN_THAN;	
+		}
+		if (StringUtils.equals(relationshipName, "Vợ/Chồng")) {
+			relationShipId = AgencyConstants.RELATIONSHIP.VO_CHONG;	
+		}
+		if (StringUtils.equals(relationshipName, "Con")) {
+			relationShipId = AgencyConstants.RELATIONSHIP.CON;	
+		}
+		if (StringUtils.equals(relationshipName, "Bố/Mẹ")) {
+			relationShipId = AgencyConstants.RELATIONSHIP.BO_ME;	
+		}
+		if (StringUtils.equals(relationshipName, "Khách đoàn")) {
+			relationShipId = AgencyConstants.RELATIONSHIP.KHACH_DOAN;	
+		}
 		
-		Relationship rEntity = relationshipRepository.findTopByRelationshipName(relationshipName);
+		Relationship rEntity = relationshipRepository.findOne(relationShipId);
 		
 		if (rEntity == null) {
 			return relationShipId;
 		}
-		
 		relationShipId = rEntity.getRelationshipId();
 		
 		return relationShipId;

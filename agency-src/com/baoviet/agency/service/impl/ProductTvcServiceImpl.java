@@ -699,7 +699,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         voAg.setStandardPremium(premiumTVC.getPremiumNet()); // phí gốc sản phẩm
         double changePremium = 0.0;
         if(premiumTVC.getPremiumDiscount() != null) {
-        	changePremium = premiumTVC.getPremiumNet() - premiumTVC.getPremiumDiscount() * premiumTVC.getPremiumNet();
+        	changePremium = premiumTVC.getPremiumNet() - premiumTVC.getPremiumTvc();
         }
         voAg.setChangePremium(changePremium);
         voAg.setNetPremium(premiumTVC.getPremiumNet());
