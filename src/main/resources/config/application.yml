@@ -54,7 +54,7 @@ spring:
                     url: https://172.29.2.36:7779/BVAC02/BVAC_AGENCY.asmx
                     username: agency
                     password: 9A5459078CDFED5305E8F655F7586A36DFC1E46475ED937D53AFCDB468790C9E
-                    sysCode: agency
+                    sysCode: AGENCY
             sms:
                 url: http://172.29.1.76/INSUREJ_BRANDNAME/SMSSendService.asmx
                 username: CMCT_BVHN

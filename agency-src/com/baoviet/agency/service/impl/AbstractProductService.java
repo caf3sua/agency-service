@@ -78,9 +78,9 @@ public class AbstractProductService {
 			if (StringUtils.isEmpty(invoiceInfo.getAddress()))
 				throw new AgencyBusinessException("invoiceInfo.address", ErrorCode.NULL_OR_EMPTY, "invoiceAddress not null");
 
-			if (StringUtils.isEmpty(invoiceInfo.getAccountNo()))
-				throw new AgencyBusinessException("invoiceInfo.accountNo", ErrorCode.NULL_OR_EMPTY,
-						"invoiceAccountNo (số tài khoản) not null");
+//			if (StringUtils.isEmpty(invoiceInfo.getAccountNo()))
+//				throw new AgencyBusinessException("invoiceInfo.accountNo", ErrorCode.NULL_OR_EMPTY,
+//						"invoiceAccountNo (số tài khoản) not null");
 		} else {
 			if (invoiceInfo == null) {
 				invoiceInfo = new InvoiceInfoDTO();
