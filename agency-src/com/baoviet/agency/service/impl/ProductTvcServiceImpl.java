@@ -432,7 +432,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 				}
 				
 				if (StringUtils.isEmpty(tvcAd.getRelationship())) {
-					throw new AgencyBusinessException("relationship", ErrorCode.NULL_OR_EMPTY);
+					throw new AgencyBusinessException("relationship", ErrorCode.NULL_OR_EMPTY, "Thiếu thông tin quan hệ");
 				} else {
 					if (!tvcAd.getRelationship().equals("30") && !tvcAd.getRelationship().equals("31")
 							&& !tvcAd.getRelationship().equals("32") && !tvcAd.getRelationship().equals("33")
