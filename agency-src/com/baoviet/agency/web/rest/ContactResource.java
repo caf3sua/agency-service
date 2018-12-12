@@ -1,6 +1,7 @@
 package com.baoviet.agency.web.rest;
 
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -143,6 +144,15 @@ public class ContactResource extends AbstractAgencyResource {
 			throw new AgencyBusinessException("email", ErrorCode.INVALID, "Địa chỉ " + param.getEmail() + " đã được sử dụng!");
 		}
 		
+		// Validate ngay sinh tu 18 - 85
+		if (param.getDateOfBirth() != null) {
+			int utageYCBH = DateUtils.countYears(param.getDateOfBirth(), new Date());
+			if (utageYCBH < 18 || utageYCBH > 85) {
+				throw new AgencyBusinessException("dateOfBirth", ErrorCode.INVALID,
+						"Khách hàng phải từ 18 đến 85 tuổi");
+			}
+		}
+		
 		// Call service
 		ContactDTO data = contactService.create(getContactCreate(param), param);
 		
@@ -246,6 +256,14 @@ public class ContactResource extends AbstractAgencyResource {
 			throw new AgencyBusinessException("email", ErrorCode.INVALID, "Địa chỉ " + param.getEmail() + " đã được sử dụng!");
 		}
 		
+		// Validate ngay sinh tu 18 - 85
+		if (param.getDateOfBirth() != null) {
+			int utageYCBH = DateUtils.countYears(param.getDateOfBirth(), new Date());
+			if (utageYCBH < 18 || utageYCBH > 85) {
+				throw new AgencyBusinessException("dateOfBirth", ErrorCode.INVALID,
+						"Khách hàng phải từ 18 đến 85 tuổi");
+			}
+		}
 		
 		// Call service
 		ContactDTO data = contactService.update(param, currentAgency.getMa());

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.ContactProduct;
+import com.baoviet.agency.domain.ContactRelationship;
 import com.baoviet.agency.domain.Relationship;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
@@ -46,6 +49,9 @@ import com.baoviet.agency.utils.UEncrypt;
 import com.baoviet.agency.utils.UString;
 import com.baoviet.agency.web.rest.vm.TvcAddBaseVM;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 /**
  * Service Implementation for managing GnocCr.
@@ -59,8 +65,8 @@ public class ExcelServiceImpl implements ExcelService {
     
     private static final int ROW_TITLE_INDEX = 3;
     
-    public static int COUNT_BAN_THAN=0;
-    public static int COUNT_VO_CHONG=0;
+//    public static int COUNT_BAN_THAN=0;
+//    public static int COUNT_VO_CHONG=0;
     
     private static final String CELL_TYPE_CHECK_NUMBER = "CHECK_NUMBER"; 
     private static final String CELL_TYPE_CHECK_DATE = "CHECK_DATE";
@@ -99,13 +105,12 @@ public class ExcelServiceImpl implements ExcelService {
 			boolean check = false;
 			int index = 0;
 			//default
-			COUNT_BAN_THAN = 0;
-			COUNT_VO_CHONG = 0;
+			TvcStoreInfo storeInfo = new TvcStoreInfo();
 			for (Row row : sheet) {
 				itemDTO = new TvcAddBaseVM();
 				if (row.getRowNum() > ROW_TITLE_INDEX && !AgencyCommonUtil.isRowEmpty(row)) {
 					index++;
-					lstErrorMessage = getValueImportTVC(obj, rowTitle, row, itemDTO, lstCmnd);
+					lstErrorMessage = getValueImportTVC(obj, rowTitle, row, itemDTO, lstCmnd, storeInfo);
 					
 					if(lstErrorMessage != null && lstErrorMessage.size() > 0){
 						String errorMessageFormat = StringUtils.join(lstErrorMessage, ", ");
@@ -276,7 +281,7 @@ public class ExcelServiceImpl implements ExcelService {
 		createCellAndStyle(row, 4, relationshipName, styleText);
 	}
 	
-	private List<String> getValueImportTVC(ProductImportDTO obj, Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstCmnd) {
+	private List<String> getValueImportTVC(ProductImportDTO obj, Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstCmnd, TvcStoreInfo storeInfo) {
 		
 		// Declare variable
 		List<String> lstErrorMessage = new ArrayList<>();
@@ -302,7 +307,7 @@ public class ExcelServiceImpl implements ExcelService {
 		// Validate bat buoc nhap Cmnd hoac Ngay sinh
 		validateRequiredCmndOrDob(rowTitle, row, resultDTO, lstErrorMessage);
 		
-		validateRelationship(rowTitle, row, resultDTO, lstErrorMessage, obj);
+		validateRelationship(rowTitle, row, resultDTO, lstErrorMessage, obj, storeInfo);
 		
 		validateExtraInfo(rowTitle, row, resultDTO, lstErrorMessage);
 		
@@ -422,7 +427,8 @@ public class ExcelServiceImpl implements ExcelService {
 		}
 	}
 	
-	private void validateRelationship(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, ProductImportDTO obj) {
+	private void validateRelationship(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, ProductImportDTO obj
+			, TvcStoreInfo storeInfo) {
 		if (StringUtils.isEmpty(resultDTO.getRelationshipName())) {
 			return;
 		}
@@ -450,10 +456,21 @@ public class ExcelServiceImpl implements ExcelService {
 			}
 			
 			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.VO_CHONG)) {
-				COUNT_VO_CHONG ++;
+				storeInfo.setICountVochong(storeInfo.getICountVochong() + 1);
+				
+				if (storeInfo.getICountVochong() > 1) {
+					String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là vợ/chồng";
+					lstErrorMessage.add(errorMessage);
+				}
 			}
 			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN)) {
-				COUNT_BAN_THAN ++;
+				storeInfo.setICountBanthan(storeInfo.getICountBanthan() + 1);
+				
+				if (storeInfo.getICountBanthan() > 1) {
+					String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là Bản thân";
+					lstErrorMessage.add(errorMessage);
+				}
+				
 			}
 		}
 		
@@ -463,25 +480,11 @@ public class ExcelServiceImpl implements ExcelService {
 				String errorMessage = "Du lịch theo đoàn thì quan hệ phải là: Thành viên đoàn hoặc Bản thân";
 				lstErrorMessage.add(errorMessage);
 			}
-			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN)) {
-				COUNT_BAN_THAN ++;
-			}
-			
 		} else {
 			if (StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHACH_DOAN)) {
 				String errorMessage = "Quan hệ là: Thành viên đoàn chỉ áp dụng cho khách du lịch theo đoàn";
 				lstErrorMessage.add(errorMessage);
 			}
-		}
-		
-		if (COUNT_BAN_THAN > 1) {
-			String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là Bản thân";
-			lstErrorMessage.add(errorMessage);
-		}
-		
-		if (COUNT_VO_CHONG > 1) {
-			String errorMessage = "Danh sách NĐBH tồn tại hơn 1 người có quan hệ là vợ/chồng";
-			lstErrorMessage.add(errorMessage);
 		}
 		
 //		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
@@ -518,5 +521,12 @@ public class ExcelServiceImpl implements ExcelService {
 			lstErrorMessage.add(errorMessage);
 			return;
 		}
+	}
+	
+	@Getter
+	@Setter
+	class TvcStoreInfo {
+		private int iCountVochong;
+		private int iCountBanthan;
 	}
 }
