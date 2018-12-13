@@ -89,7 +89,10 @@ public class SOAPLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 				
 				soapHeaderElement.addChildElement(soapEnv.createName("userName", "", "http://tempuri.org/")).addTextNode(wsUsername);
 				soapHeaderElement.addChildElement(soapEnv.createName("password", "", "http://tempuri.org/")).addTextNode(wsPassword);
-				soapHeaderElement.addChildElement(soapEnv.createName("sysCode", "", "http://tempuri.org/")).addTextNode(sysCode);
+				if (StringUtils.isNotEmpty(sysCode)) {
+					soapHeaderElement.addChildElement(soapEnv.createName("sysCode", "", "http://tempuri.org/")).addTextNode(sysCode);
+				}
+				
 				soapMsg.saveChanges();
 			} catch (SOAPException e) {
 				System.err.println(e);
