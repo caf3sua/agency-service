@@ -13,7 +13,7 @@ import lombok.Setter;
 
 
 /**
- * The persistent class for the MV_AGENT_AGREEMENT database table.
+ * The persistent class for the AGENT_AGREEMENT database table.
  * 
  */
 @Entity
