@@ -42,7 +42,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 	public List<AgencyDTO> searchAgency(AdminSearchAgencyVM param, String adminId) {
 		log.debug("Request to searchAgency : AdminSearchAgencyVM {} ", param);
 
-		String expression1 = "SELECT OL.OUTLET_AMS_ID ma, OL.OUTLET_NAME ten FROM MV_CLA_OUTLET_LOCATION OL WHERE OL.PR_OUTLET_AMS_ID  IN (SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = '"+ adminId +"') AND OL.OUTLET_AMS_ID IS NOT NULL";
+		String expression1 = "SELECT OL.OUTLET_AMS_ID ma, OL.OUTLET_NAME ten FROM CLA_OUTLET_LOCATION OL WHERE OL.PR_OUTLET_AMS_ID  IN (SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = '"+ adminId +"') AND OL.OUTLET_AMS_ID IS NOT NULL";
 		
 		String expression2 = "SELECT AA.AGENT_CODE ma, AA.AGENT_NAME ten FROM MV_AGENT_AGREEMENT AA WHERE AA.DEPARTMENT_CODE IN (SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = '"+ adminId +"') AND AA.AGENT_CODE IS NOT NULL";
 		
@@ -65,7 +65,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 	
 	@Override
 	public List<DepartmentDTO> searchDepartment(String agentId) {
-		String expression1 = "SELECT OL.PR_OUTLET_AMS_ID departmentId, OL.PR_OUTLET_NAME departmentName FROM MV_CLA_OUTLET_LOCATION OL WHERE OL.OUTLET_AMS_ID = '"+ agentId +"' AND OL.PR_OUTLET_AMS_ID IS NOT NULL";
+		String expression1 = "SELECT OL.PR_OUTLET_AMS_ID departmentId, OL.PR_OUTLET_NAME departmentName FROM CLA_OUTLET_LOCATION OL WHERE OL.OUTLET_AMS_ID = '"+ agentId +"' AND OL.PR_OUTLET_AMS_ID IS NOT NULL";
 		
 		String expression2 = "SELECT AA.DEPARTMENT_CODE departmentId, AA.DEPARTMENT_NAME departmentName FROM MV_AGENT_AGREEMENT AA WHERE AA.AGENT_CODE  = '"+ agentId +"' AND AA.DEPARTMENT_CODE IS NOT NULL";
 		
