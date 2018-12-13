@@ -275,9 +275,9 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch phải lớn hơn 1");
 		}
 
-		if (!obj.getDestination().equals("2") && !obj.getDestination().equals("3")
+		if (!obj.getDestination().equals("1") && !obj.getDestination().equals("2") && !obj.getDestination().equals("3")
 				&& !obj.getDestination().equals("4")) {
-			throw new AgencyBusinessException("destination", ErrorCode.INVALID);
+			throw new AgencyBusinessException("destination", ErrorCode.INVALID, "Nơi đến không có trong danh sách");
 
 		}
 
@@ -327,7 +327,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		
 		if (!objTravel.getDestinationId().equals("1") && !objTravel.getDestinationId().equals("2")
 				&& !objTravel.getDestinationId().equals("3") && !objTravel.getDestinationId().equals("4")) {
-			throw new AgencyBusinessException("destinationId", ErrorCode.INVALID);
+			throw new AgencyBusinessException("destinationId", ErrorCode.INVALID, "Nơi đến không có trong danh sách");
 		}
 		if (!objTravel.getTravelWithId().equals("1") && !objTravel.getTravelWithId().equals("2")
 				&& !objTravel.getTravelWithId().equals("3")) {
