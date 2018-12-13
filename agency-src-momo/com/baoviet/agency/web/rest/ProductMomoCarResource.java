@@ -62,6 +62,9 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 
     private final Logger log = LoggerFactory.getLogger(ProductMomoCarResource.class);
 
+    // TCT Ban Kinh doanh bảo hiểm Phi hàng hải
+    private final static String DEPARTMENT_ID_MOMO = "A000009218";
+    
     @Autowired
     private MomoCarService momoCarService;
     
@@ -232,6 +235,8 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 				currentAgency.setTen("MOMO");
 
 				// Create policy
+				// Fix departmentID for momo
+				objGet.setDepartmentId(DEPARTMENT_ID_MOMO);
 				ProductCarVM objSave = productCARService.createOrUpdatePolicy(objGet, currentAgency);
 			
 				// update status TmpMomoCar
