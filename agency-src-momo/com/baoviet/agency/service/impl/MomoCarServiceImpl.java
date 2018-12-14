@@ -4,7 +4,6 @@ import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,7 +28,6 @@ import com.baoviet.agency.dto.TmpMomoCarDTO;
 import com.baoviet.agency.dto.momo.component.ItemOptionComponent;
 import com.baoviet.agency.dto.momo.component.MomoComponent;
 import com.baoviet.agency.dto.momo.component.SelectorComponent;
-import com.baoviet.agency.dto.momo.component.StyleComponent;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.SppCarRepository;
@@ -291,12 +289,12 @@ public class MomoCarServiceImpl implements MomoCarService {
 			
 			// CheckList: Điều khoản bổ sung
 			List<ItemOptionComponent> dieukhoanList = new ArrayList<>();
-			ItemOptionComponent dieukhoan1 = new ItemOptionComponent("Điều khoản không áp dụng mức khấu trừ", "khauTruCheck", TOOLTIP_DKBS_1);
+//			ItemOptionComponent dieukhoan1 = new ItemOptionComponent("Điều khoản không áp dụng mức khấu trừ", "khauTruCheck", TOOLTIP_DKBS_1);
 			ItemOptionComponent dieukhoan2 = new ItemOptionComponent("Điều khoản không khấu hao thay mới", "khaoHaoCheck", TOOLTIP_DKBS_2);
 			ItemOptionComponent dieukhoan3 = new ItemOptionComponent("Điều khoản mất cắp bộ phận", "matCapCheck", TOOLTIP_DKBS_3);
 			ItemOptionComponent dieukhoan4 = new ItemOptionComponent("Điều khoản ngập nước", "ngapNuocCheck", TOOLTIP_DKBS_4);
 			ItemOptionComponent dieukhoan5 = new ItemOptionComponent("Điều khoản lựa chọn garage sửa chữa", "garageCheck", TOOLTIP_DKBS_5);
-			dieukhoanList.add(dieukhoan1);
+//			dieukhoanList.add(dieukhoan1);
 			dieukhoanList.add(dieukhoan2);
 			dieukhoanList.add(dieukhoan3);
 			dieukhoanList.add(dieukhoan4);
@@ -610,9 +608,9 @@ public class MomoCarServiceImpl implements MomoCarService {
 			if (ComponentUtils.getComponentValue(form, "listDieukhoanBS") != null) {
 				List<String> option = (List<String>) ComponentUtils.getComponentValue(form, "listDieukhoanBS");
 				for (String item : option) {
-					if (item.equals("khauTruCheck")) {
-						khauTruCheck = 1;
-					}
+//					if (item.equals("khauTruCheck")) {
+//						khauTruCheck = 1;
+//					}
 					if (item.equals("khaoHaoCheck")) {
 						khaoHaoCheck = 1;
 					}
