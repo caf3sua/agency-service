@@ -231,7 +231,8 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 				
 				// Get current agency
 				AgencyDTO currentAgency = new AgencyDTO();
-				currentAgency.setMa("MOMO");
+				currentAgency.setMa("T000080696");
+				currentAgency.setId("T000080696");
 				currentAgency.setTen("MOMO");
 
 				// Create policy

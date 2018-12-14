@@ -832,7 +832,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
         		}
         	} else {
-            		expression = expression +  " AND (STATUS_POLICY_ID = '93' OR ( STATUS_POLICY_ID = '91' AND PAYMENT_METHOD != 'PAYMENT_LATER' ))";
+            		expression = expression +  " AND (STATUS_POLICY_ID = '93' OR ( STATUS_POLICY_ID = '91' AND (PAYMENT_METHOD != 'PAYMENT_LATER' OR PAYMENT_METHOD IS NULL) ))";
             }
         } else if (StringUtils.equals(caseWait, "2")) { // yêu cầu bảo hiểm khác (đơn hết hiệu lực)
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
