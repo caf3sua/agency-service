@@ -827,7 +827,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         } else if (StringUtils.equals(caseWait, "0")) {	// chờ bảo việt giải quyết
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
         		if (obj.getStatusPolicy().equals("91")) {
-        			expression = expression +  " AND STATUS_POLICY_ID = '91' AND PAYMENT_METHOD != 'PAYMENT_LATER'";
+        			expression = expression +  " AND STATUS_POLICY_ID = '91' AND (PAYMENT_METHOD != 'PAYMENT_LATER' OR PAYMENT_METHOD IS NULL)";
         		} else {
         			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
         		}
