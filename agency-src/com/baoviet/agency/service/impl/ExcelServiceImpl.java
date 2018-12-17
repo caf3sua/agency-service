@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -342,9 +343,22 @@ public class ExcelServiceImpl implements ExcelService {
 		return StringUtils.EMPTY;
 	}
 	
+	private String getCellValue(Cell cell) {
+		// Check cell type Date or other
+		String itemValue = StringUtils.EMPTY;
+		if (DateUtil.isCellDateFormatted(cell)) { // 
+			Date value = cell.getDateCellValue();
+			itemValue = DateUtils.date2Str(value);
+		} else {
+			DataFormatter formatter = new DataFormatter();
+			itemValue = formatter.formatCellValue(cell);
+		}
+		
+		return itemValue;
+	}
+	
 	private void processCellDataTVC(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage, String typeCheck, int index, boolean isRequired) {
-		DataFormatter formatter = new DataFormatter();
-		String itemValue = formatter.formatCellValue(row.getCell(index));
+		String itemValue = getCellValue(row.getCell(index));
 		String errorMessage = validateImport(typeCheck, itemValue, isRequired);
 		if(StringUtils.isNotEmpty(errorMessage)){
 			errorMessage = getRowTitle(rowTitle, index) + " " + errorMessage;
