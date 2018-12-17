@@ -343,15 +343,28 @@ public class ExcelServiceImpl implements ExcelService {
 		return StringUtils.EMPTY;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private String getCellValue(Cell cell) {
 		// Check cell type Date or other
+		DataFormatter formatter = new DataFormatter();
 		String itemValue = StringUtils.EMPTY;
-		if (DateUtil.isCellDateFormatted(cell)) { // 
-			Date value = cell.getDateCellValue();
-			itemValue = DateUtils.date2Str(value);
-		} else {
-			DataFormatter formatter = new DataFormatter();
-			itemValue = formatter.formatCellValue(cell);
+		
+		CellType cellType = cell.getCellTypeEnum();
+
+		switch(cellType) {
+		    case NUMERIC:
+		    	if (DateUtil.isCellDateFormatted(cell)) { // 
+					Date value = cell.getDateCellValue();
+					itemValue = DateUtils.date2Str(value);
+				} else {
+					itemValue = formatter.formatCellValue(cell);
+				}
+		        break;
+		    case STRING:
+		    	itemValue = formatter.formatCellValue(cell);
+		        break;
+		    default:
+		    	break;
 		}
 		
 		return itemValue;
