@@ -1677,7 +1677,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 			voAg.setLineName("Bảo hiểm du lịch Việt Nam");
 			break;
 		case "TVC":
-			voAg.setLineName("Bảo hiểm du lịch Quốc Tế");
+			voAg.setLineName("Bảo hiểm du lịch Flexi");
 			break;
 		default:
 			break;

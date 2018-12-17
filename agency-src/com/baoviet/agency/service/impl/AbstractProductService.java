@@ -373,7 +373,7 @@ public class AbstractProductService {
 				voAg.setLineName("Bảo hiểm du lịch Việt Nam");
 				break;
 			case "TVC":
-				voAg.setLineName("Bảo hiểm du lịch Quốc Tế");
+				voAg.setLineName("Bảo hiểm du lịch Flexi");
 				break;
 			default:
 				break;
