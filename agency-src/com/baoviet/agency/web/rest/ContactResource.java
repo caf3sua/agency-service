@@ -257,12 +257,14 @@ public class ContactResource extends AbstractAgencyResource {
 		}
 		
 		// Validate ngay sinh tu 18 - 85
-		if (param.getDateOfBirth() != null) {
-			int utageYCBH = DateUtils.countYears(param.getDateOfBirth(), new Date());
-			if (utageYCBH < 18 || utageYCBH > 85) {
-				throw new AgencyBusinessException("dateOfBirth", ErrorCode.INVALID,
-						"Khách hàng phải từ 18 đến 85 tuổi");
-			}
+		if (StringUtils.equals(param.getCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.PERSON)){
+			if (param.getDateOfBirth() != null) {
+				int utageYCBH = DateUtils.countYears(param.getDateOfBirth(), new Date());
+				if (utageYCBH < 18 || utageYCBH > 85) {
+					throw new AgencyBusinessException("dateOfBirth", ErrorCode.INVALID,
+							"Khách hàng phải từ 18 đến 85 tuổi");
+				}
+			}	
 		}
 		
 		// Call service
