@@ -313,7 +313,7 @@ public class AbstractProductService {
 		
 		// LOẠI THANH TOÁN
 		voAg.setPaymentMethod("");
-		if (lineId.equals("CAR") && currentAgency.getMa().equals("MOMO")) {
+		if (lineId.equals("CAR") && currentAgency.getMa().equals("T000080696")) {
 			voAg.setPaymentGateway("MOMO");
 		}
 		voAg.setCreateType(0); 	// phân biệt 0: onl, 1: off, 2: anchi
