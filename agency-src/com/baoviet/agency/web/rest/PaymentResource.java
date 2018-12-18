@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.domain.Agreement;
+import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.PaymentMsbDTO;
@@ -48,11 +49,11 @@ import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.PaymentGateway;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayViettelPay;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayVnPay;
+import com.baoviet.agency.repository.PayActionRepository;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.PaymentService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.web.rest.vm.NotifyPaymentVM;
-import com.baoviet.agency.web.rest.vm.OrderCancelVM;
 import com.baoviet.agency.web.rest.vm.PaymentATCSVM;
 import com.baoviet.agency.web.rest.vm.PaymentBanksReponseVM;
 import com.baoviet.agency.web.rest.vm.PaymentGiftCodeRequestVM;
@@ -84,6 +85,9 @@ public class PaymentResource extends AbstractAgencyResource {
 	
 	@Autowired
 	protected ApplicationProperties applicationProperties;
+	
+	@Autowired
+	private PayActionRepository payActionRepository;
 
 	/// <summary>
 	/// Service cập nhật trạng thái (STATUS_POLICY_ID) đơn ATCS
@@ -464,8 +468,21 @@ public class PaymentResource extends AbstractAgencyResource {
 				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
+				agreement.setCancelPolicySupport3(1d);	 // gửi mail
+				agreement.setCancelPolicyCommision3(1d); // gửi sms
 				
 				AgreementDTO agreementUpdate = agreementService.save(agreement);
+				
+				// update pay_action
+				// thay đổi trạng thái trong PayAction
+				if (!StringUtils.isEmpty(agreementUpdate.getMciAddId())) {
+					PayAction payAction = payActionRepository.findByMciAddId(agreementUpdate.getMciAddId());
+					if (payAction != null) {
+						payAction.setStatus(91); // thành công
+						payActionRepository.save(payAction);
+					}
+				}
+				
 			}
 		}
 		
