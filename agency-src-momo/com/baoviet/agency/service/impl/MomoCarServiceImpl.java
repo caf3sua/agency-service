@@ -766,7 +766,7 @@ public class MomoCarServiceImpl implements MomoCarService {
 		ProductCarVM obj = new ProductCarVM();
 
     	if (!StringUtils.isEmpty(dto.getContactPhonenumber())) {
-    		ContactDTO contactDTO = contactService.findOneByPhoneAndType(dto.getContactPhonenumber(), "MOMO");
+    		ContactDTO contactDTO = contactService.findOneByPhoneAndType(dto.getContactPhonenumber(), "T000080696");
     		if (contactDTO != null) {
     			obj.setContactCode(contactDTO.getContactCode());
     		} else {
@@ -788,7 +788,7 @@ public class MomoCarServiceImpl implements MomoCarService {
     				objContact.setPhone(dto.getContactPhonenumber());
     				contactCreateVM.setPhone(dto.getContactPhonenumber());
     	    	}
-    			String contactCode = contactService.generateContactCode("MOMO");
+    			String contactCode = contactService.generateContactCode("T000080696");
     			objContact.setContactCode(contactCode);
     			objContact.setType("MOMO");
     			ContactDTO data = contactService.create(objContact, contactCreateVM);
