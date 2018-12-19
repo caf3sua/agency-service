@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +33,6 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.config.AgencyConstants;
-import com.baoviet.agency.domain.ContactProduct;
-import com.baoviet.agency.domain.ContactRelationship;
 import com.baoviet.agency.domain.Relationship;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
@@ -65,9 +62,6 @@ public class ExcelServiceImpl implements ExcelService {
     private final Logger log = LoggerFactory.getLogger(ExcelServiceImpl.class);
     
     private static final int ROW_TITLE_INDEX = 3;
-    
-//    public static int COUNT_BAN_THAN=0;
-//    public static int COUNT_VO_CHONG=0;
     
     private static final String CELL_TYPE_CHECK_NUMBER = "CHECK_NUMBER"; 
     private static final String CELL_TYPE_CHECK_DATE = "CHECK_DATE";
@@ -139,7 +133,6 @@ public class ExcelServiceImpl implements ExcelService {
 				dataImportDTO.setData(data);
 			}
 			
-			
 			workbook.close();
 			file.close();
 			return dataImportDTO;
@@ -171,7 +164,7 @@ public class ExcelServiceImpl implements ExcelService {
 		
 		if (StringUtils.equals(travelWithId, AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
 			if (total > 6) {
-				message = "Số người đi du lịch theo gia đình phải nhỏ hơn hoặc bằng 6";
+				message = "Số người đi du lịch theo gia đình phải nhỏ hơn hoặc bằng 5";
 			}
 		}
 		
@@ -460,15 +453,12 @@ public class ExcelServiceImpl implements ExcelService {
 			return;
 		}
 		
-//		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION) && StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_GIA_DINH)) {
-//			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC))) {
-//				String errorMessage = "Người yêu cầu là tổ chức thì du lịch theo gia đình quan hệ phải là: Khác";
-//				lstErrorMessage.add(errorMessage);
-//			}
-//		}
 		if (StringUtils.equals(obj.getTravelWithId(), AgencyConstants.TVC.PACKAGE_CA_NHAN)) {
-			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN))) {
-				String errorMessage = "Du lịch cá nhân quan hệ phải là: Bản thân";
+			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BO_ME))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.VO_CHONG))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.CON))
+					&& !(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.BAN_THAN))) {
+				String errorMessage = "Du lịch cá nhân quan hệ phải là: Bố/mẹ, vợ chồng, con cái, bản thân";
 				lstErrorMessage.add(errorMessage);
 			}
 		}
@@ -513,13 +503,6 @@ public class ExcelServiceImpl implements ExcelService {
 				lstErrorMessage.add(errorMessage);
 			}
 		}
-		
-//		if (StringUtils.equals(obj.getContactCategoryType(), AgencyConstants.CONTACT_CATEGORY_TYPE.ORGANIZATION)) {
-//			if (!(StringUtils.equals(resultDTO.getRelationship(), AgencyConstants.RELATIONSHIP.KHAC)) ) {
-//				String errorMessage = "Người yêu cầu là tổ chức thì du lịch phải có mối quan hệ là: Khác";
-//				lstErrorMessage.add(errorMessage);
-//			}
-//		}
 	}
 	
 	private void validateExtraInfo(Row rowTitle, Row row, TvcAddBaseVM resultDTO, List<String> lstErrorMessage) {

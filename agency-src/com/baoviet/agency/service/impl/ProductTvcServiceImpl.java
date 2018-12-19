@@ -286,12 +286,12 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		}
 
 		if (obj.getPremiumPackage().equals("3")) {
-			if (obj.getNumberOfPerson() < 2) { // || obj.getNumberOfPerson() > 20) {
+			if (obj.getNumberOfPerson() < 1) { // || obj.getNumberOfPerson() > 20) {
 				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo đoàn phải lớn hơn 1");
 			}
 		} else if (obj.getPremiumPackage().equals("2")) {
-			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 6) {
-				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
+			if (obj.getNumberOfPerson() < 2 || obj.getNumberOfPerson() > 5) {
+				throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-5 người");
 			}
 		} else if (obj.getPremiumPackage().equals("1")) {
 			if (obj.getNumberOfPerson() > 1) {
@@ -345,15 +345,15 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 6) {
-					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
+				if (objTravel.getSoNguoiThamGia() < 2 || objTravel.getSoNguoiThamGia() > 5) {
+					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-5 người");
 				}
 			}
 			// Khach doan
 			if (objTravel.getTravelWithId().equals("3")) {
-				if (objTravel.getSoNguoiThamGia() < 2) { // || objTravel.getSoNguoiThamGia() > 20) {
+				if (objTravel.getSoNguoiThamGia() < 1) { // || objTravel.getSoNguoiThamGia() > 20) {
 					throw new AgencyBusinessException("numberOfPerson", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 người");
+							"Số người tham gia phải từ 1 người");
 				}
 			}
 		}
@@ -384,9 +384,6 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			throw new AgencyBusinessException("expiredDate", ErrorCode.INVALID, "Thời gian du lịch quá 180 ngày");
 		}
 
-//		if (!objTravel.getLoaitien().equals("USD") && !objTravel.getLoaitien().equals("EUR")) {
-//			throw new AgencyBusinessException("loaitien", ErrorCode.INVALID);
-//		}
 		if (!objTravel.getPlanId().equals("1") && !objTravel.getPlanId().equals("2") && !objTravel.getPlanId().equals("3")
 				&& !objTravel.getPlanId().equals("4")) {
 			throw new AgencyBusinessException("planId", ErrorCode.INVALID);
@@ -406,15 +403,15 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 			// Gia dinh
 			if (objTravel.getTravelWithId().equals("2")) {
-				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 6) {
-					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-6 người");
+				if (objTravel.getListTvcAddBaseVM().size() < 2 || objTravel.getListTvcAddBaseVM().size() > 5) {
+					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID, "Số người đi du lịch theo gia đình phải từ 2-5 người");
 				}
 			}
 			// Khach doanh
 			if (objTravel.getTravelWithId().equals("3")) {
-				if (objTravel.getListTvcAddBaseVM().size() < 2) { // || objTravel.getListTvcAddBaseVM().size() > 20) {
+				if (objTravel.getListTvcAddBaseVM().size() < 1) { // || objTravel.getListTvcAddBaseVM().size() > 20) {
 					throw new AgencyBusinessException("listTvcAddBaseVM", ErrorCode.INVALID,
-							"Số người tham gia phải từ 2 người");
+							"Số người tham gia phải từ 1 người");
 				}
 			}
 			int banthan = 0;
@@ -456,9 +453,12 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 									"Du lịch theo gia đình chỉ có 4 mối quan hệ : Bố/mẹ, vợ chồng, con cái, bản thân");
 						}
 					} else if (objTravel.getTravelWithId().equals("1")) {
-						if (!tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BAN_THAN) ) {
+						if (!tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BAN_THAN) 
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.VO_CHONG)
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.CON)
+								&& !tvcAd.getRelationship().equals(AgencyConstants.RELATIONSHIP.BO_ME) ) {
 							throw new AgencyBusinessException("relationship", ErrorCode.INVALID,
-									"Du lịch cá nhân chỉ có mối quan hệ : bản thân");
+									"Du lịch cá nhân chỉ có 4 mối quan hệ : Bố/mẹ, vợ chồng, con cái, bản thân");
 						}
 					} else {
 						if (tvcAd.getRelationship().equals("39")) {
