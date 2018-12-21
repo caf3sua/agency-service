@@ -175,4 +175,6 @@ public class TravelcareDTO implements Serializable {
 	private String userId = AgencyConstants.DEFAULT_STRING_VALUE;
 
 	private String userName = AgencyConstants.DEFAULT_STRING_VALUE;
+	
+	private Integer version = AgencyConstants.DEFAULT_INTEGER_VALUE;
 }

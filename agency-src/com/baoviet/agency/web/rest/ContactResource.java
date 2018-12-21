@@ -206,6 +206,9 @@ public class ContactResource extends AbstractAgencyResource {
 		
 		pa.setHomeAddress(param.getHomeAddress());
 		pa.setPhone(param.getPhone());
+		if(!StringUtils.isEmpty(param.getHandPhone())) {
+			pa.setHandPhone(param.getHandPhone());
+		}
 		pa.setEmail(param.getEmail());
 		pa.setIdNumber(param.getIdNumber());
 		pa.setType(currentAgency.getMa());

@@ -312,6 +312,7 @@ public class ContactServiceImpl implements ContactService {
 		contact.setDateOfBirth(param.getDateOfBirth());
 		contact.setHomeAddress(param.getHomeAddress());
 		contact.setPhone(param.getPhone());
+		contact.setHandPhone(param.getHandPhone());
 		contact.setEmail(param.getEmail());
 		contact.setIdNumber(param.getIdNumber());
 		contact.setOccupation(param.getOccupation());
@@ -454,6 +455,9 @@ public class ContactServiceImpl implements ContactService {
 		}
 		if (!StringUtils.isEmpty(co.getCategoryType())) {
 			contact.setCategoryType(co.getCategoryType());
+		}
+		if (!StringUtils.isEmpty(co.getHandPhone())) {
+			contact.setHandPhone(co.getHandPhone());
 		}
 
 		// Get listRelationship by contactId

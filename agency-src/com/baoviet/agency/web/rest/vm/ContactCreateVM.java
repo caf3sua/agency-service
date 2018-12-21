@@ -72,4 +72,7 @@ public class ContactCreateVM implements Serializable {
 	
 	@ApiModelProperty(value = "Link Facebook")
 	private String facebookId;
+	
+	@ApiModelProperty(value = "Điện thoại bàn")
+	private String handPhone;
 }
