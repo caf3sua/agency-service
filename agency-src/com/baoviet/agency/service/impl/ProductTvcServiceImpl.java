@@ -558,10 +558,13 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			AgreementDTO data = agreementService.findById(obj.getAgreementId());
 			if (StringUtils.equals(AgencyConstants.PAYMENT_METHOD_LATER, data.getPaymentMethod()) && data.getStatusPolicyId().equals(AgencyConstants.AgreementStatus.DA_THANH_TOAN)) {
 				TravelcareDTO travelcare = travelcareService.getById(obj.getGycbhId());
-				if (travelcare.getVersion() != null) {
-					tvc.setVersion(travelcare.getVersion() + 1);
+				if (!StringUtils.isEmpty(travelcare.getVersion())) {
+					String version = travelcare.getVersion();
+					int number = Integer.parseInt(version.substring(1, version.length())) + 1;
+					String versionNext = "E" + String.valueOf(number);
+					tvc.setVersion(versionNext);
 				} else {
-					tvc.setVersion(1);
+					tvc.setVersion("E1");
 				}
 			}
 		} else {

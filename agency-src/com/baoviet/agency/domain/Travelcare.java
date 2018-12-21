@@ -245,5 +245,5 @@ public class Travelcare implements Serializable {
 	private String userName;
 	
 	@Column(name="VERSION")
-	private Integer version;
+	private String version;
 }
