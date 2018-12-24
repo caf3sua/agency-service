@@ -89,4 +89,7 @@ public class ProductTvcVM extends ProductBaseVM {
     
     private String agreementId;
     private Integer travelCareId;
+    
+    @ApiModelProperty(value = "Nơi đến nhập text")
+    private String destinationDetail;
 }

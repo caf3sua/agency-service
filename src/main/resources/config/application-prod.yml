@@ -29,9 +29,9 @@ spring:
         #username: bikt_dw
         #password: Viettel#123
         #url: jdbc:oracle:thin:@10.29.83.159:1521:TRADEOLDEV
-        url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.83.159)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=TRADEOLDEV)))
-        username: tradeol
-        password: tradeol
+        url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.83.159)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbagency)))
+        username: agencyuat
+        password: agencyuat
         hikari:
             minimum-idle: 5
             maximum-pool-size: 40

@@ -246,4 +246,7 @@ public class Travelcare implements Serializable {
 	
 	@Column(name="VERSION")
 	private String version;
+	
+	@Column(name="DESTINATION_DETAIL")
+	private String destinationDetail;
 }

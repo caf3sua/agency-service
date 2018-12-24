@@ -32,10 +32,10 @@ spring:
         #password: Viettel#123
         #url: jdbc:oracle:thin:@10.29.83.159:1521:TRADEOLDEV
         #url: jdbc:oracle:thin:@10.29.18.20:1521:pdbbv4u
-        url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.83.159)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=TRADEOLDEV)))
+        url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.83.159)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbagency)))
         #url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.18.20)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbbv4u)))
-        username: tradeol
-        password: tradeol
+        username: agencyuat
+        password: agencyuat
         hikari:
             minimum-idle: 5
             maximum-pool-size: 40

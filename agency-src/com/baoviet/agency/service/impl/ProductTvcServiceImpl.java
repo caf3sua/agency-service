@@ -644,6 +644,10 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			break;
 		}
 
+		if (!StringUtils.isEmpty(obj.getDestinationDetail())) {
+			tvc.setDestinationDetail(obj.getDestinationDetail());
+		}
+		
 		tvc.setPropserName(obj.getPropserName());
 		tvc.setPropserCellphone(obj.getPropserCellphone());
 		tvc.setPropserNgaysinh(DateUtils.str2Date(obj.getPropserNgaysinh()));

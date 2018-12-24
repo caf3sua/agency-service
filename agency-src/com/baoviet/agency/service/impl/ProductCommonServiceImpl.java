@@ -1493,6 +1493,9 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		if (!StringUtils.isEmpty(tvcObj.getBankId())) {
 			tvc.setLoaitien(tvcObj.getBankId());
 		}
+		if (!StringUtils.isEmpty(tvcObj.getDestinationDetail())) {
+			tvc.setDestinationDetail(tvcObj.getDestinationDetail());
+		}
 		// tvcPackage để = travelWithId
 		if (!StringUtils.isEmpty(tvcObj.getTravelWithId())) {
 			tvc.setTvcPackage(tvcObj.getTravelWithId());
