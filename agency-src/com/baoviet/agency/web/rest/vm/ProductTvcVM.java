@@ -87,7 +87,10 @@ public class ProductTvcVM extends ProductBaseVM {
     @ApiModelProperty(value = "Danh sách người được bảo hiểm/List of the insured")
     private List<TvcAddBaseVM> listTvcAddBaseVM;
     
+    @ApiModelProperty(value = "Id dùng cho TH update")
     private String agreementId;
+    
+    @ApiModelProperty(value = "Id dùng cho TH update")
     private Integer travelCareId;
     
     @ApiModelProperty(value = "Nơi đến nhập text")
