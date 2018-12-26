@@ -123,7 +123,11 @@ public class AbstractProductService {
 			}
 			
 			// save SMS
-			smsSendService.sendSMS(agreement, contact, phonenumber, content);	
+			smsSendService.sendSMS(agreement, contact, phonenumber, content);
+			
+			// gửi sms xong thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
+			agreement.setCancelPolicySupport3(1.0);
+	     	agreementService.save(agreement);
 		}
 		
 		log.debug("Request to savePayActionInfo : payActionId {}", payActionId);
