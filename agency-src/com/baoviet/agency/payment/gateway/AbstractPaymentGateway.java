@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import com.baoviet.agency.common.ProductType;
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.config.GateWay123PayConfig;
 import com.baoviet.agency.config.GateWayMomoConfig;
 import com.baoviet.agency.config.GateWayViettelPayConfig;
 import com.baoviet.agency.config.GateWayVnPayConfig;
 import com.baoviet.agency.config.PaymentConfig;
+import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.Anchi;
 import com.baoviet.agency.domain.Bvp;
@@ -656,8 +658,10 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				if (data.getStatusGycbhId().equals(GycbhStatus.PENDING.name())) {
 					data.setStatusGycbhId("");
 					data.setPayDiscount(0d);
+					data.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
+					data.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
 
-					double totalPremium = data.getNetPremium();
+//					double totalPremium = data.getNetPremium();
 
 					// 12/09/2018: Đơn hàng false đang thấy đoạn này ko ý nghĩa vì cập nhật lại giá
 //					if (data.getLineId().equals(ProductType.CAR.name())) {
@@ -669,21 +673,21 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 //					}
 
 					// Cập nhật lại phí trước khi thanh toán
-					if (data.getLineId().equals(ProductType.BVP.name())) {
-						data.setTotalPremium(data.getNetPremium());
-					} else if (data.getLineId().equals(ProductType.CAR.name())) {
-						Car car = carRepository.findOne(data.getGycbhId());
-						totalPremium = car.getTotalPremium();
-						data.setTotalPremium(totalPremium);
-						data.setNetPremium(totalPremium);
-					} else if (data.getLineId().equals(ProductType.MOT.name())) {
-						Moto moto = motoRepository.findOne(data.getGycbhId());
-						totalPremium = moto.getTongPhi();
-						data.setTotalPremium(totalPremium);
-						data.setNetPremium(totalPremium);
-					} else {
-						data.setTotalPremium(data.getNetPremium() - totalPremium * data.getChangePremium());
-					}
+//					if (data.getLineId().equals(ProductType.BVP.name())) {
+//						data.setTotalPremium(data.getNetPremium());
+//					} else if (data.getLineId().equals(ProductType.CAR.name())) {
+//						Car car = carRepository.findOne(data.getGycbhId());
+//						totalPremium = car.getTotalPremium();
+//						data.setTotalPremium(totalPremium);
+//						data.setNetPremium(totalPremium);
+//					} else if (data.getLineId().equals(ProductType.MOT.name())) {
+//						Moto moto = motoRepository.findOne(data.getGycbhId());
+//						totalPremium = moto.getTongPhi();
+//						data.setTotalPremium(totalPremium);
+//						data.setNetPremium(totalPremium);
+//					} else {
+//						data.setTotalPremium(data.getNetPremium() - totalPremium * data.getChangePremium());
+//					}
 				}
 				data.setPaymentTransactionId(transactionID);
 			}
@@ -692,9 +696,11 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			// Gửi email thông báo thanh toán không thành công
 
 			PayOrder payOrder = payOrderRepository.findByMciAddId(mciAddId);
-			if (payOrder.getPolicyStatusId() == GycbhStatus.PENDING.name()) {
-				payOrder.setPolicyStatusId("");
-				payOrderRepository.save(payOrder);
+			if (payOrder != null) {
+				if (payOrder.getPolicyStatusId() == GycbhStatus.PENDING.name()) {
+					payOrder.setPolicyStatusId("");
+					payOrderRepository.save(payOrder);
+				}	
 			}
 		}
 	}
