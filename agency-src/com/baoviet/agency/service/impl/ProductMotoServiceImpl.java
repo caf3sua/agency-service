@@ -11,13 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.CodeManagementDTO;
+import com.baoviet.agency.dto.ContactDTO;
 import com.baoviet.agency.dto.MotoDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.ContactRepository;
+import com.baoviet.agency.service.CodeManagementService;
+import com.baoviet.agency.service.ContactService;
 import com.baoviet.agency.service.MotoService;
 import com.baoviet.agency.service.ProductMotoService;
 import com.baoviet.agency.utils.AppConstants;
@@ -38,15 +43,32 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 
 	private final Logger log = LoggerFactory.getLogger(ProductMotoServiceImpl.class);
 
+	// TCT Ban Kinh doanh bảo hiểm Phi hàng hải
+    private final static String DEPARTMENT_ID_MOMO = "A000009218";
+    private final static String AGENT_ID_MOMO = "T000080696";
+	
 	@Autowired
 	private ContactRepository contactRepository;
+	
+	@Autowired
+	private CodeManagementService codeManagementService;
 
 	@Autowired
 	private MotoService motoService;
 	
+	@Autowired
+    private ContactService contactService;
+	
 	@Override
 	public ProductMotoVM createOrUpdatePolicy(ProductMotoVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
 		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
+		
+		// TH dùng cho MOMO
+		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
+			validateAndSetValueContactMOMO(obj, currentAgency);
+			
+		}
+		
 		// ValidGycbhNumber : Không dùng trong TH update
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
 			validateGycbhNumber(obj.getGycbhNumber(), currentAgency.getMa());	
@@ -310,6 +332,85 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 		}
 
 	}
+	
+	private void validateAndSetValueContactMOMO(ProductMotoVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
+		log.debug("REST request to validateAndSetValueContactMOMO : {}", obj);
+
+		if (StringUtils.isEmpty(obj.getContactPhone())) {
+			throw new AgencyBusinessException("contactPhone", ErrorCode.NULL_OR_EMPTY, "Số điện thoại khách hàng không được để trống");
+		} else {
+			// kiem tra dinh dang so dien thoai
+			if (!ValidateUtils.isPhone(obj.getContactPhone())) {
+				throw new AgencyBusinessException("contactPhone", ErrorCode.INVALID, "Số điện thoại không đúng định dạng");
+			}	
+		}
+		
+		Contact contactTmp = contactRepository.findOneByPhoneAndType(obj.getContactPhone(), currentAgency.getMa());
+
+		if (contactTmp != null) {
+			obj.setContactCode(contactTmp.getContactCode());
+		} else {
+			if (StringUtils.isEmpty(obj.getContactName())) {
+				throw new AgencyBusinessException("contactName", ErrorCode.NULL_OR_EMPTY, "Tên khách hàng không được để trống");
+			}
+			if (StringUtils.isEmpty(obj.getContactIdNumber())) {
+				throw new AgencyBusinessException("contactIdNumber", ErrorCode.NULL_OR_EMPTY, "CMT khách hàng không được để trống");
+			}
+			if (StringUtils.isEmpty(obj.getContactEmail())) {
+				throw new AgencyBusinessException("contactEmail", ErrorCode.NULL_OR_EMPTY, "Email khách hàng không được để trống");
+			}
+			if (StringUtils.isEmpty(obj.getContactDob())) {
+				throw new AgencyBusinessException("contactDob", ErrorCode.NULL_OR_EMPTY, "Ngày sinh khách hàng không được để trống");
+			} else {
+				// Validate ngay sinh tu 18 - 85
+				if (obj.getContactDob() != null) {
+					int utageYCBH = DateUtils.countYears(DateUtils.str2Date(obj.getContactDob()), new Date());
+					if (utageYCBH < 18 || utageYCBH > 85) {
+						throw new AgencyBusinessException("dateOfBirth", ErrorCode.INVALID,
+								"Khách hàng phải từ 18 đến 85 tuổi");
+					}
+				}
+			}
+			if (StringUtils.isEmpty(obj.getContactAddress())) {
+				throw new AgencyBusinessException("contactAddress", ErrorCode.NULL_OR_EMPTY, "Địa chỉ khách hàng không được để trống");
+			}
+			
+			ContactDTO data = contactService.create(getContactCreate(obj, currentAgency), null);
+			if (data != null) {
+				obj.setContactCode(data.getContactCode());
+			}
+		}
+		CodeManagementDTO codeManagementDTO = codeManagementService.getCodeManagement("MOT");
+		obj.setGycbhNumber(codeManagementDTO.getIssueNumber());
+		obj.setDepartmentId(DEPARTMENT_ID_MOMO);
+	}
+	
+	private ContactDTO getContactCreate(ProductMotoVM param, AgencyDTO currentAgency) throws AgencyBusinessException {
+    	// Get current agency
+		String contactCode = contactService.generateContactCode(currentAgency.getMa());
+		
+    	ContactDTO pa = new ContactDTO();
+		pa.setContactName(param.getContactName());
+		pa.setContactCode(contactCode);
+		pa.setContactSex("1");// mặc định
+		if (param.getContactDob() != null) {
+			pa.setDateOfBirth(DateUtils.str2Date(param.getContactDob()));	
+		} else {
+			pa.setDateOfBirth(DateUtils.str2Date("01/01/0001"));
+		}
+		
+		pa.setHomeAddress(param.getContactAddress());
+		pa.setPhone(param.getContactPhone());
+		pa.setEmail(param.getContactEmail());
+		pa.setIdNumber(param.getContactIdNumber());
+		pa.setType(currentAgency.getMa());
+		// khi thêm mới mặc định là KH tiềm năng không cho truyền loại khách hàng vào
+		pa.setGroupType(AgencyConstants.CONTACT_GROUP_TYPE.POTENTIAL);
+		// Category : PERSON/ORGANIZATION. Tạm thời mặc định MOMO là cá nhân
+		pa.setCategoryType(AgencyConstants.CONTACT_CATEGORY_TYPE.PERSON);
+		
+		return pa;
+    }
 
 	private PremiumMotoVM calculate(PremiumMotoVM obj) throws AgencyBusinessException {
 		log.debug("REST request to calculate : {}", obj);
