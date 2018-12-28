@@ -378,6 +378,23 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 			ContactDTO data = contactService.create(getContactCreate(obj, currentAgency), null);
 			if (data != null) {
 				obj.setContactCode(data.getContactCode());
+				if (!StringUtils.isEmpty(obj.getContactName())) {
+					data.setContactName(obj.getContactName());
+				}
+				if (!StringUtils.isEmpty(obj.getContactIdNumber())) {
+					data.setIdNumber(obj.getContactIdNumber());
+				}
+				if (!StringUtils.isEmpty(obj.getContactEmail())) {
+					data.setEmail(obj.getContactEmail());
+				}
+				if (!StringUtils.isEmpty(obj.getContactDob())) {
+					data.setDateOfBirth(DateUtils.str2Date(obj.getContactDob()));
+				}
+				if (!StringUtils.isEmpty(obj.getContactAddress())) {
+					data.setHomeAddress(obj.getContactAddress());
+				}
+				// update contact
+				contactService.save(data);
 			}
 		}
 		CodeManagementDTO codeManagementDTO = codeManagementService.getCodeManagement("MOT");
