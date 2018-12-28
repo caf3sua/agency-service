@@ -1,30 +1,39 @@
 package com.baoviet.agency;
 
-import io.github.jhipster.config.JHipsterConstants;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.*;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.env.Environment;
-
-import com.baoviet.agency.config.GateWay123PayConfig;
-import com.baoviet.agency.config.GateWayMomoConfig;
-import com.baoviet.agency.config.GateWayViettelPayConfig;
-import com.baoviet.agency.config.GateWayVnPayConfig;
-import com.baoviet.agency.config.ApplicationProperties;
-import com.baoviet.agency.config.DefaultProfileUtil;
-
-import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
+
+import com.baoviet.agency.config.ApplicationProperties;
+import com.baoviet.agency.config.DefaultProfileUtil;
+import com.baoviet.agency.config.GateWay123PayConfig;
+import com.baoviet.agency.config.GateWayMomoConfig;
+import com.baoviet.agency.config.GateWayViettelPayConfig;
+import com.baoviet.agency.config.GateWayVnPayConfig;
+
+import io.github.jhipster.config.JHipsterConstants;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
@@ -94,4 +103,39 @@ public class AgencyApp {
             env.getProperty("server.port"),
             env.getActiveProfiles());
     }
+    
+//    @Bean
+//    public EmbeddedServletContainerFactory servletContainer() {
+//      TomcatEmbeddedServletContainerFactory tomcat =
+//          new TomcatEmbeddedServletContainerFactory() {
+//
+//            @Override
+//            protected void postProcessContext(Context context) {
+//              SecurityConstraint securityConstraint = new SecurityConstraint();
+//              securityConstraint.setUserConstraint("CONFIDENTIAL");
+//              SecurityCollection collection = new SecurityCollection();
+//              collection.addPattern("/*");
+//              securityConstraint.addCollection(collection);
+//              context.addConstraint(securityConstraint);
+//            }
+//          };
+//      tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+//      return tomcat;
+//    }
+//
+//    @Value("${server.http.port}")
+//    private int serverPortHttp;
+//
+//    @Value("${server.port}")
+//    private int serverPortHttps;
+//
+//    private Connector createHttpConnector() {
+//      Connector connector =
+//          new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//      connector.setScheme("http");
+//      connector.setSecure(false);
+//      connector.setPort(serverPortHttp);
+//      connector.setRedirectPort(serverPortHttps);
+//      return connector;
+//    }
 }
