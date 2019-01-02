@@ -371,4 +371,7 @@ public class Agency implements Serializable {
 	
 	@Column
 	private Integer paymentMethod;
+	
+	@Column(name="BAOVIET_WORKPLACE")
+	private String baovietWorkplace;
 }
