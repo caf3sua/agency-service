@@ -293,6 +293,18 @@ public class AgreementDTO implements Serializable {
 	
 	private Boolean checkPaymentLater;
 	
+	private String urnContact;
+	
+	private String urnDaily;
+	
+	private String urnDepartmentId;
+	
+	private Integer sendSms;
+	
+	private Integer sendEmail;
+	
+	private Integer sendWorkplace;
+	
 	@Override
 	public String toString() {
 		return "AgreementDTO [agencyId=" + agencyId + ", agentId=" + agentId + ", agentName=" + agentName

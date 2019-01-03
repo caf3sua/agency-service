@@ -406,6 +406,7 @@ public class AgreementResource extends AbstractAgencyResource {
 		// chỉ cho gửi lại email với các TH đã thanh toán : 91
 		if (agreement.getStatusPolicyId().equals("91") || agreement.getStatusPolicyId().equals("92") || agreement.getStatusPolicyId().equals("100")) {
 			agreement.setCancelPolicySupport3(1d);	// = 1 để gửi email. sau khi gửi xong sẽ = 0
+			agreement.setSendEmail(1);
 			AgreementDTO agreementSave = agreementService.save(agreement);
 			// Return data
 			return new ResponseEntity<>(agreementSave, HttpStatus.OK);

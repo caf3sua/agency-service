@@ -127,6 +127,7 @@ public class AbstractProductService {
 			
 			// gửi sms xong thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
 			agreement.setCancelPolicySupport3(1.0);
+			agreement.setSendEmail(1);
 	     	agreementService.save(agreement);
 		}
 		
@@ -246,6 +247,8 @@ public class AbstractProductService {
 		voAg.setCancelPolicyPremium3(0.0);
 		voAg.setCancelPolicyCommision3(0.0);
 		voAg.setCancelPolicySupport3(0.0);
+		voAg.setSendEmail(0);
+		voAg.setSendSms(0);
 		voAg.setCouponsCode("");
 		voAg.setCouponsValue(0.0);
 		voAg.setFeeReceive(0.0);
@@ -285,15 +288,27 @@ public class AbstractProductService {
 			throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Không tồn tại Id phòng ban: " + obj.getDepartmentId());
 		} else {
 			if (lstmvClaOutletLocation != null && lstmvClaOutletLocation.size() > 0) {
+				voAg.setUrnDaily(lstmvClaOutletLocation.get(0).getUrn());
 				voAg.setBaovietDepartmentId(obj.getDepartmentId());
 				voAg.setBaovietDepartmentName(lstmvClaOutletLocation.get(0).getPrOutletName());
 			} else if (listMvAgentAgreement != null && listMvAgentAgreement.size() > 0) {
+				voAg.setUrnDaily(listMvAgentAgreement.get(0).getAgentUrn());
 				voAg.setBaovietDepartmentId(obj.getDepartmentId());
 				voAg.setBaovietDepartmentName(listMvAgentAgreement.get(0).getDepartmentName());	
 			} else {
+				voAg.setUrnDaily("");
 				voAg.setBaovietDepartmentId("");
 				voAg.setBaovietDepartmentName("");
 			}
+		}
+		
+		List<MvClaOutletLocation> lstOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(obj.getDepartmentId());
+		if (lstOutletLocation != null && lstOutletLocation.size() > 0) {
+			voAg.setUrnDepartmentId(lstOutletLocation.get(0).getUrn());
+			voAg.setBaovietCompanyId(lstOutletLocation.get(0).getPrOutletAmsId());
+			voAg.setBaovietCompanyName(lstOutletLocation.get(0).getPrOutletName());
+		} else {
+			throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Không tồn tại Id phòng ban: " + obj.getDepartmentId());
 		}
 		
 		voAg.setTeamId("");

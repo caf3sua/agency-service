@@ -396,4 +396,22 @@ public class Agreement implements Serializable {
 	
 	@Column
 	private Integer createType;
+	
+	@Column
+	private String urnContact;
+	
+	@Column
+	private String urnDaily;
+	
+	@Column
+	private String urnDepartmentId;
+	
+	@Column
+	private Integer sendSms;
+	
+	@Column
+	private Integer sendEmail;
+	
+	@Column
+	private Integer sendWorkplace;
 }
