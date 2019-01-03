@@ -88,10 +88,10 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				AgreementDTO agreementSave = agreementService.save(agreementInfo);
 				log.debug("Result of saveAgrement, {}", agreementSave.getAgreementId());
 				obj.setAgreementId(agreementSave.getAgreementId());
-			}
 			
-			// pay_action
-			sendSmsAndSavePayActionInfo(co, agreementInfo);
+				// pay_action
+				sendSmsAndSavePayActionInfo(co, agreementSave);
+			}
 		}
 		
 		return obj;
