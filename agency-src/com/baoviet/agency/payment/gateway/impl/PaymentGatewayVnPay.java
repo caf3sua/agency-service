@@ -69,6 +69,8 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		StringBuffer redirectUrl = new StringBuffer(config.getServiceUrl());
 		redirectUrl.append("?");
 		try {
+			String vnpTmnCode = getVnpTmnCode();//config.getTmnCode();
+			
 			redirectUrl.append("vnp_Amount=");
 			redirectUrl.append(URLEncoder.encode(String.valueOf(param.getPaymentFee().longValue()), "UTF-8"));
 			redirectUrl.append("&");
@@ -100,7 +102,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			redirectUrl.append(URLEncoder.encode(config.getReturnUrl(), "UTF-8"));
 			redirectUrl.append("&");
 			redirectUrl.append("vnp_TmnCode=");
-			redirectUrl.append(URLEncoder.encode(config.getTmnCode(), "UTF-8"));
+			redirectUrl.append(URLEncoder.encode(vnpTmnCode, "UTF-8"));
 			redirectUrl.append("&");
 			redirectUrl.append("vnp_TxnRef=");
 			redirectUrl.append(URLEncoder.encode(payAction.getMciAddId(), "UTF-8"));
@@ -130,6 +132,8 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 	private String getSecureHash(PayAction payAction, PaymentProcessRequestVM param, Date now) {
 		StringBuffer requestData = new StringBuffer();
 		try {
+			String vnpTmnCode = config.getTmnCode();
+			
 			requestData.append("vnp_Amount=");
 			requestData.append(String.valueOf(param.getPaymentFee().longValue()));
 			requestData.append("&");
@@ -161,7 +165,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			requestData.append(config.getReturnUrl());
 			requestData.append("&");
 			requestData.append("vnp_TmnCode=");
-			requestData.append(config.getTmnCode());
+			requestData.append(vnpTmnCode);
 			requestData.append("&");
 			requestData.append("vnp_TxnRef=");
 			requestData.append(payAction.getMciAddId());
@@ -405,5 +409,9 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	private String getVnpTmnCode() {
+		return "";
 	}
 }
