@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
@@ -15,7 +16,7 @@ public interface PaymentGateway {
 	
 	public List<PaymentBank> getBanksByPaymentCode(String paymentCode); 
 	
-	public PaymentResult processReturn(Map<String, String> paramMap);
+	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) throws AgencyBusinessException;
 	
 	public PaymentResponseType checkGiftCode(String giftCode, String email, List<Agreement> agreements);
 }

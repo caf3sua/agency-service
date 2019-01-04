@@ -30,7 +30,7 @@ public class PaymentGatewayCommon extends AbstractPaymentGateway {
 	}
 
 	@Override
-	public PaymentResult processReturn(Map<String, String> paramMap) {
+	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) {
 		return null;
 	}
 }

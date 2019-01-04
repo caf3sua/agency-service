@@ -12,6 +12,7 @@ import com.baoviet.agency.config.GateWay123PayConfig;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.common.PaymentType;
 import com.baoviet.agency.payment.dto.PaymentResult;
@@ -54,9 +55,7 @@ public class PaymentGateway123Pay extends AbstractPaymentGateway {
 	}
 
 	@Override
-	public PaymentResult processReturn(Map<String, String> paramMap) {
-		// TODO Auto-generated method stub
+	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) {
 		return null;
 	}
-
 }

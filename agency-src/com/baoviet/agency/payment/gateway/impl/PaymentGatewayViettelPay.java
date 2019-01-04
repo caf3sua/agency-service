@@ -140,7 +140,7 @@ public class PaymentGatewayViettelPay extends AbstractPaymentGateway {
 	}
 
 	@Override
-	public PaymentResult processReturn(Map<String, String> paramMap) {
+	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) {
 		String redirectUrl = applicationProperties.getPaymentReturnPage();
 		PaymentResult result = new PaymentResult();
 		String data = config.getAccessCode() + paramMap.get(Constants.VIETTEL_PAY_PARAM_AMOUNT) + paramMap.get(Constants.VIETTEL_PAY_PARAM_COMMAND)

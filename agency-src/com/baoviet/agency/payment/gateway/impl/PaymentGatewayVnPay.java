@@ -2,6 +2,7 @@ package com.baoviet.agency.payment.gateway.impl;
 
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,9 +24,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.config.GateWayVnPayConfig;
+import com.baoviet.agency.domain.AdminBuSeal;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.payment.common.Constants;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.common.PaymentStatus;
@@ -34,6 +38,7 @@ import com.baoviet.agency.payment.common.VnPayOrderStatus;
 import com.baoviet.agency.payment.dto.PaymentResult;
 import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
+import com.baoviet.agency.repository.AdminBuSealRepository;
 import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
 
 @Service
@@ -42,6 +47,9 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 
 	@Autowired
 	private GateWayVnPayConfig config;
+	
+	@Autowired
+	private AdminBuSealRepository adminBuSealRepository;
 
 	@Override
 	public PaymentResult processPayment(AgencyDTO currentAgency, PaymentProcessRequestVM param,
@@ -69,7 +77,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		StringBuffer redirectUrl = new StringBuffer(config.getServiceUrl());
 		redirectUrl.append("?");
 		try {
-			String vnpTmnCode = getVnpTmnCode();//config.getTmnCode();
+			String vnpTmnCode = getVnpTmnCode(agreements.get(0).getBaovietCompanyId());
 			
 			redirectUrl.append("vnp_Amount=");
 			redirectUrl.append(URLEncoder.encode(String.valueOf(param.getPaymentFee().longValue()), "UTF-8"));
@@ -111,7 +119,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			redirectUrl.append(URLEncoder.encode(config.getVersion(), "UTF-8"));
 			redirectUrl.append("&");
 
-			String secureHash = getSecureHash(payAction, param, now);
+			String secureHash = getSecureHash(payAction, param, now, vnpTmnCode);
 			redirectUrl.append("vnp_SecureHash=");
 			redirectUrl.append(secureHash);
 		} catch (Exception e) {
@@ -129,11 +137,9 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		return result;
 	}
 
-	private String getSecureHash(PayAction payAction, PaymentProcessRequestVM param, Date now) {
+	private String getSecureHash(PayAction payAction, PaymentProcessRequestVM param, Date now, String vnpTmnCode) {
 		StringBuffer requestData = new StringBuffer();
 		try {
-			String vnpTmnCode = config.getTmnCode();
-			
 			requestData.append("vnp_Amount=");
 			requestData.append(String.valueOf(param.getPaymentFee().longValue()));
 			requestData.append("&");
@@ -183,7 +189,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		}
 	}
 
-	private String getSecureHash(Map<String, String> paramMap) {
+	private String getSecureHash(Map<String, String> paramMap, String vnpTmnCode) {
 		StringBuffer requestData = new StringBuffer();
 		try {
 			requestData.append("vnp_Command=");
@@ -203,7 +209,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 					.append("Call api lay thong tin don hang voi ma = " + paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
 			requestData.append("&");
 			requestData.append("vnp_TmnCode=");
-			requestData.append(config.getTmnCode());
+			requestData.append(vnpTmnCode);
 			requestData.append("&");
 			requestData.append("vnp_TransDate=");
 			requestData.append(paramMap.get(Constants.VNPAY_PARAM_TRANS_DATE));
@@ -225,14 +231,14 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 	}
 
 	@Override
-	public PaymentResult processReturn(Map<String, String> paramMap) {
+	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) throws AgencyBusinessException {
 		String redirectUrl = applicationProperties.getPaymentReturnPage();
 		PaymentResult result = new PaymentResult();
 		if (validateSignature(paramMap)) {
 			// Cap nhat trang thai
 			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
 			if (payAction != null && payAction.getPayEndDate() == null) {
-				boolean orderResult = processOrder(payAction, paramMap);
+				boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
 
 				if (!orderResult) {
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
@@ -254,7 +260,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		return result;
 	}
 
-	public VnPayOrderStatusResponse processVnPayOrder(Map<String, String> paramMap) {
+	public VnPayOrderStatusResponse processVnPayOrder(Map<String, String> paramMap, String vnpTmnCode) {
 		VnPayOrderStatusResponse orderStatusResponse = new VnPayOrderStatusResponse();
 		if (validateSignature(paramMap)) {
 			// Cap nhat trang thai
@@ -267,7 +273,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 					orderStatusResponse.setRspCode(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getCode());
 					orderStatusResponse.setMessage(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getMessage());
 				} else {
-					boolean orderResult = processOrder(payAction, paramMap);
+					boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
 					if (!orderResult) {
 						orderStatusResponse.setRspCode(VnPayOrderStatus.SUCCESSFUL.getCode());
 						orderStatusResponse.setMessage(VnPayOrderStatus.SUCCESSFUL.getMessage());
@@ -289,7 +295,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		return orderStatusResponse;
 	}
 
-	private boolean processOrder(PayAction payAction, Map<String, String> paramMap) {
+	private boolean processOrder(PayAction payAction, Map<String, String> paramMap, String vnpTmnCode) {
 		Date now = new Date();
 		String createdDate = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
 		String transDate = new SimpleDateFormat("yyyyMMddHHmmss").format(payAction.getPayStartDate());
@@ -317,7 +323,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 					"UTF-8"));
 			checkOrderUrl.append("&");
 			checkOrderUrl.append("vnp_TmnCode=");
-			checkOrderUrl.append(URLEncoder.encode(config.getTmnCode(), "UTF-8"));
+			checkOrderUrl.append(URLEncoder.encode(vnpTmnCode, "UTF-8"));
 			checkOrderUrl.append("&");
 			checkOrderUrl.append("vnp_TransDate=");
 			checkOrderUrl.append(transDate);
@@ -329,7 +335,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			checkOrderUrl.append(URLEncoder.encode(config.getVersion(), "UTF-8"));
 			checkOrderUrl.append("&");
 
-			String secureHash = getSecureHash(paramMap);
+			String secureHash = getSecureHash(paramMap, vnpTmnCode);
 			checkOrderUrl.append("vnp_SecureHash=");
 			checkOrderUrl.append(secureHash);
 
@@ -411,7 +417,18 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		}
 	}
 	
-	private String getVnpTmnCode() {
-		return "";
+	private String getVnpTmnCode(String baovietCompanyId) throws AgencyBusinessException{
+//		return "BAOVIET1";
+		if (StringUtils.isNotEmpty(baovietCompanyId)) {
+			AdminBuSeal adminBuSeal = adminBuSealRepository.findOne(baovietCompanyId);
+			if (adminBuSeal != null) {
+				return adminBuSeal.getTerminalCode();
+			} else {
+				throw new AgencyBusinessException("baovietCompanyId", ErrorCode.PAYMENT_ERROR, "Không tồn tại công ty");
+			}
+		} else {
+			throw new AgencyBusinessException("baovietCompanyId", ErrorCode.PAYMENT_ERROR, "Không tồn tại công ty");
+		}
 	}
+	
 }

@@ -298,7 +298,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.MOMO_PARAM_SIGNATURE, URLDecoder.decode(signature, "UTF-8"));
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.Momo);
-		PaymentResult paymentResult = paymentGateway.processReturn(paramMap);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create(getRedirectUrl(device)));
@@ -331,7 +331,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
-		PaymentResult paymentResult = paymentGateway.processReturn(paramMap);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create(getRedirectUrl(device)));
@@ -364,7 +364,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
 
 		PaymentGatewayVnPay paymentGateway = (PaymentGatewayVnPay) paymentFactory.getPaymentGateway(PaymentType.VnPay);
-		VnPayOrderStatusResponse orderStatusResponse = paymentGateway.processVnPayOrder(paramMap);
+		VnPayOrderStatusResponse orderStatusResponse = paymentGateway.processVnPayOrder(paramMap, vnpTmnCode);
 
 		// Return data
 		return new ResponseEntity<>(orderStatusResponse, HttpStatus.OK);
@@ -390,7 +390,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.VIETTEL_PAY_PARAM_SECURE_HASH, secureHash);
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.ViettelPay);
-		PaymentResult paymentResult = paymentGateway.processReturn(paramMap);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create(getRedirectUrl(device)));
