@@ -98,9 +98,15 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 			// luu agreement
 			AgreementDTO agreementDTOSave = agreementService.save(pAGREEMENT);
 			log.debug("Result of save agreement, {}", agreementDTOSave);
-			obj.setAgreementId(agreementDTOSave.getAgreementId());
-			// pay_action
-			sendSmsAndSavePayActionInfo(co, agreementDTOSave);
+			
+			// check TH thêm mới: 0, update: 1 để gửi sms
+	        if (StringUtils.isEmpty(obj.getAgreementId())) {
+	        	// pay_action
+	         	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
+	        } else {
+	        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
+	        }
+	        obj.setAgreementId(agreementDTOSave.getAgreementId());
 		}
 
 		return obj;

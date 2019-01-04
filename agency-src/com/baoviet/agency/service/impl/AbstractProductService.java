@@ -99,7 +99,7 @@ public class AbstractProductService {
 		}
 	}
 	
-	protected void sendSmsAndSavePayActionInfo(Contact contact, AgreementDTO agreement) throws AgencyBusinessException {
+	protected void sendSmsAndSavePayActionInfo(Contact contact, AgreementDTO agreement, String type) throws AgencyBusinessException {
 		PayAction payAction = setPayAction(contact, agreement);
 	    
 		String payActionId = payActionService.save(payAction);
@@ -113,7 +113,12 @@ public class AbstractProductService {
 		
 		// gui sms
 		if (!StringUtils.isEmpty(agreement.getOtp())) {
-			String content = "Ma xac nhan YCBH " + agreement.getGycbhNumber() + " la: " + agreement.getOtp();
+			String content = "";
+			if (type.equals("0")) {
+				content = "Ma xac nhan YCBH <" + agreement.getGycbhNumber() + "> la: " + agreement.getOtp();	
+			} else {
+				content = "Ma xac nhan sua doi YCBH <" + agreement.getGycbhNumber() + "> la: " + agreement.getOtp();	
+			}
 			content += ". Bang viec cung cap ma xac nhan, Quy khach da dong y va chap nhan Quy tac Bao Hiem. Chi tiet xem tai email";
 			String phonenumber = StringUtils.EMPTY;
 			if (!StringUtils.isEmpty(contact.getPhone())) {

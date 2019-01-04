@@ -106,9 +106,13 @@ public class ProductHHVCServiceImpl extends AbstractProductService implements Pr
 				// Session["customerinfo"] = co;
 				//
 				// return result;
-				
-				// pay_action
-				sendSmsAndSavePayActionInfo(co, agreementDTOSave);
+				// check TH thêm mới: 0, update: 1 để gửi sms
+		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+		        	// pay_action
+		         	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
+		        } else {
+		        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
+		        }
 			}
 			return obj;
 		}

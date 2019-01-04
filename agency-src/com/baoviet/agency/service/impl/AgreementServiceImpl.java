@@ -779,7 +779,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		String anchiId = anchiService.save(anchi);
 		agrement.setGycbhId(anchiId);
 		AgreementDTO agrementSave = save(agrement);
-		obj.setAgreementId(agrementSave.getAgreementId());
+		
 		
 		// 3. save file
 		// xóa trước khi update file
@@ -793,10 +793,15 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		if (obj.getImgGycbhs() != null && obj.getImgGycbhs().size() > 0) {
 			saveFileContent(obj.getImgGycbhs(), currentAgency, anchiId, AgencyConstants.ATTACHMENT_GROUP_TYPE.ANCHI_TAI_LIEU_KHAC);
 		}
-
-		// pay_action
-		sendSmsAndSavePayActionInfo(co, agrementSave);
+		// check TH thêm mới: 0, update: 1 để gửi sms
+        if (StringUtils.isEmpty(obj.getAgreementId())) {
+        	// pay_action
+         	sendSmsAndSavePayActionInfo(co, agrementSave, "0");	
+        } else {
+        	sendSmsAndSavePayActionInfo(co, agrementSave, "1");
+        }
 		
+		obj.setAgreementId(agrementSave.getAgreementId());
 		// 3. Call service
 //		anchiService.wsUpdateAnChi(obj);	//07.08.2018 comment
 

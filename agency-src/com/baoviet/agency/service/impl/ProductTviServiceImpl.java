@@ -144,9 +144,15 @@ public class ProductTviServiceImpl extends AbstractProductService implements Pro
 		log.debug("Result of save agreement, {}", agreementDTOSave);
 		voAg.setAgreementId(agreementDTOSave.getAgreementId());
 
+		// check TH thêm mới: 0, update: 1 để gửi sms
+        if (StringUtils.isEmpty(objTVI.getAgreementId())) {
+        	// pay_action
+         	sendSmsAndSavePayActionInfo(contact, agreementDTOSave, "0");	
+        } else {
+        	sendSmsAndSavePayActionInfo(contact, agreementDTOSave, "1");
+        }
+		
 		objTVI.setAgreementId(agreementDTOSave.getAgreementId());
-		// pay_action
-		sendSmsAndSavePayActionInfo(contact, agreementDTOSave);
 		
 		return objTVI;
 	}

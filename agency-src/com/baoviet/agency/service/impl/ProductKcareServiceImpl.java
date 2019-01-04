@@ -142,7 +142,7 @@ public class ProductKcareServiceImpl extends AbstractProductService implements P
 			// luu agreement
 			voAg.setGycbhId(kcareDTOResult.getKId());
 			AgreementDTO voAgSave = agreementService.save(voAg);
-			kcare.setAgreementId(voAgSave.getAgreementId());
+			
 			if (StringUtils.isNotEmpty(kcare.getGycbhId())) {
 				if (kcare.getLstTinhtrangSKs() != null && kcare.getLstTinhtrangSKs().size() > 0) {
 					// xóa tình trạng sức khỏe khi update
@@ -161,8 +161,15 @@ public class ProductKcareServiceImpl extends AbstractProductService implements P
 					tinhtrangSkService.save(sk);
 				}
 			}
-			// pay_action
-			sendSmsAndSavePayActionInfo(co, voAgSave);
+			
+			// check TH thêm mới: 0, update: 1 để gửi sms
+	        if (StringUtils.isEmpty(kcare.getAgreementId())) {
+	        	// pay_action
+	         	sendSmsAndSavePayActionInfo(co, voAgSave, "0");	
+	        } else {
+	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
+	        }
+	        kcare.setAgreementId(voAgSave.getAgreementId());
 		}
 		return kcare;
 	}

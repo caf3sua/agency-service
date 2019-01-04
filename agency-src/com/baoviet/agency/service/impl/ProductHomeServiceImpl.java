@@ -75,10 +75,17 @@ public class ProductHomeServiceImpl extends AbstractProductService implements Pr
 			AgreementDTO voAg = getObjectAgreement(obj, contact, currentAgency);
 			voAg.setGycbhId(String.valueOf(idHome));
 			AgreementDTO agreementDTOSave = agreementService.save(voAg);
-			obj.setAgreementId(agreementDTOSave.getAgreementId());
+			
 			log.debug("Result of save agreement, {}", agreementDTOSave);
-			// pay_action
-			sendSmsAndSavePayActionInfo(contact, agreementDTOSave);
+			
+			// check TH thêm mới: 0, update: 1 để gửi sms
+	        if (StringUtils.isEmpty(obj.getAgreementId())) {
+	        	// pay_action
+	         	sendSmsAndSavePayActionInfo(contact, agreementDTOSave, "0");	
+	        } else {
+	        	sendSmsAndSavePayActionInfo(contact, agreementDTOSave, "1");
+	        }
+	        obj.setAgreementId(agreementDTOSave.getAgreementId());
 		}
 		return obj;
 	}

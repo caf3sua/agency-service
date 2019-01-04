@@ -175,9 +175,13 @@ public class ProductTvcPlaneServiceImpl extends AbstractProductService implement
 				ad.setEmailAdress("");
 				tvcPlaneAddService.insert(ad);
 			}
-			
-			// pay_action
-			sendSmsAndSavePayActionInfo(co, voAgSave);
+			// check TH thêm mới: 0, update: 1 để gửi sms
+	        if (StringUtils.isEmpty(obj.getAgreementId())) {
+	        	// pay_action
+	         	sendSmsAndSavePayActionInfo(co, voAgSave, "0");	
+	        } else {
+	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
+	        }
 		}
 
 		return obj;

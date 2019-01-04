@@ -180,9 +180,13 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
             int tvcAddId =  travelCareAddService.insertTravelCareAdd(tvcad);
             lstTravelCareAddDTO.add(tvcAddId);
         }
-        
-        // pay_action
-     	sendSmsAndSavePayActionInfo(co, agreementDTOSave);
+        // check TH thêm mới: 0, update: 1 để gửi sms
+        if (StringUtils.isEmpty(tvcBase.getAgreementId())) {
+        	// pay_action
+         	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
+        } else {
+        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
+        }
         
         tvcBase.setNetPremium(voAg.getNetPremium());
         tvcBase.setPremium(voAg.getStandardPremium());

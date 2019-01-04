@@ -123,7 +123,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				
 				agreement.setGycbhId(bvpId);
 				agreement = agreementService.save(agreement);
-				obj.setAgreementId(agreement.getAgreementId());
+				
 				if (StringUtils.isNotEmpty(obj.getGycbhId())) {
 					if (obj.getLstAdd() != null && obj.getLstAdd().size() > 0) {
 						// xóa tình trạng sức khỏe
@@ -156,9 +156,14 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 						}
 					}
 				}
-
-				// pay_action
-				sendSmsAndSavePayActionInfo(co, agreement);
+				// check TH thêm mới: 0, update: 1 để gửi sms
+		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+		        	// pay_action
+		         	sendSmsAndSavePayActionInfo(co, agreement, "0");	
+		        } else {
+		        	sendSmsAndSavePayActionInfo(co, agreement, "1");
+		        }
+		        obj.setAgreementId(agreement.getAgreementId());
 			}
 
 		}
@@ -337,9 +342,13 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 						tinhtrangSkService.save(skInfo);
 					}
 				}
-
-				// pay_action
-				sendSmsAndSavePayActionInfo(co, agreement);
+				// check TH thêm mới: 0, update: 1 để gửi sms
+		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+		        	// pay_action
+		         	sendSmsAndSavePayActionInfo(co, agreement, "0");	
+		        } else {
+		        	sendSmsAndSavePayActionInfo(co, agreement, "1");
+		        }
 			}
 
 		}

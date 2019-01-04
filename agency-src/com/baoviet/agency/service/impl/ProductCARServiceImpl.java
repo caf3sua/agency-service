@@ -87,10 +87,15 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				agreementInfo.setGycbhId(carId);
 				AgreementDTO agreementSave = agreementService.save(agreementInfo);
 				log.debug("Result of saveAgrement, {}", agreementSave.getAgreementId());
-				obj.setAgreementId(agreementSave.getAgreementId());
 			
-				// pay_action
-				sendSmsAndSavePayActionInfo(co, agreementSave);
+				// check TH thêm mới: 0, update: 1 để gửi sms
+		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+		        	// pay_action
+		         	sendSmsAndSavePayActionInfo(co, agreementSave, "0");	
+		        } else {
+		        	sendSmsAndSavePayActionInfo(co, agreementSave, "1");
+		        }
+		        obj.setAgreementId(agreementSave.getAgreementId());
 			}
 		}
 		
