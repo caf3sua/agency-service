@@ -213,7 +213,7 @@ public class AbstractProductService {
 				voAg.setOtpStartTime(DateUtils.date2Str(new Date()));
 				// gửi sms thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
 				voAg.setCancelPolicySupport3(1.0);
-				voAg.setSendEmail(1);
+				voAg.setSendEmailOtp(1);
 				
 				voAg.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_OTP);
 				voAg.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);

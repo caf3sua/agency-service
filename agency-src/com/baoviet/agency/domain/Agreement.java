@@ -414,4 +414,7 @@ public class Agreement implements Serializable {
 	
 	@Column
 	private Integer sendWorkplace;
+	
+	@Column
+	private Integer sendEmailOtp;
 }

@@ -305,6 +305,8 @@ public class AgreementDTO implements Serializable {
 	
 	private Integer sendWorkplace;
 	
+	private Integer sendEmailOtp;
+	
 	@Override
 	public String toString() {
 		return "AgreementDTO [agencyId=" + agencyId + ", agentId=" + agentId + ", agentName=" + agentName
