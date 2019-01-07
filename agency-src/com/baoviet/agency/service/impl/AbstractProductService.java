@@ -15,7 +15,6 @@ import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
-import com.baoviet.agency.dto.SmsSendDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.ContactRepository;
@@ -129,11 +128,6 @@ public class AbstractProductService {
 			
 			// save SMS
 			smsSendService.sendSMS(agreement, contact, phonenumber, content);
-			
-			// gửi sms xong thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
-			agreement.setCancelPolicySupport3(1.0);
-			agreement.setSendEmail(1);
-	     	agreementService.save(agreement);
 		}
 		
 		log.debug("Request to savePayActionInfo : payActionId {}", payActionId);
@@ -161,6 +155,49 @@ public class AbstractProductService {
 		// Insert policy status
 		setPolicyStatus(lineId, voAg);
 		
+		voAg.setCancelPolicySupport3(0.0);
+		voAg.setSendEmail(0);
+		voAg.setSendSms(0);
+		voAg.setAgencyId("");
+		voAg.setAgencyName("");
+		voAg.setCommision(0.0);
+		voAg.setCommisionSupport(0.0);
+		voAg.setCancelPolicyPremium(0.0);
+		voAg.setCancelPolicyCommision(0.0);
+		voAg.setCancelPolicySupport(0.0);
+		voAg.setCancelPolicyPremium2(0.0);
+		voAg.setCancelPolicyCommision2(0.0);
+		voAg.setCancelPolicySupport2(0.0);
+		voAg.setCancelPolicyPremium3(0.0);
+		voAg.setCancelPolicyCommision3(0.0);
+		voAg.setCouponsCode("");
+		voAg.setCouponsValue(0.0);
+		voAg.setFeeReceive(0.0);
+		voAg.setRenewalsReason("");
+        voAg.setRenewalsRate(0.0);
+        voAg.setRenewalsPremium(0.0);
+        voAg.setRenewalsChoice("");
+        voAg.setRenewalsSi(0.0);
+        voAg.setRenewalsRate1(0.0);
+        voAg.setRenewalsRate2(0.0);
+        voAg.setRenewalsPremium1(0.0);
+        voAg.setRenewalsPremium2(0.0);
+        voAg.setRenewalsDes2("");
+        voAg.setRenewalsDes1("");
+        voAg.setClaimRate(0.0);
+		voAg.setClaimRate1(0.0);
+		voAg.setClaimRate2(0.0);
+		voAg.setStatusRenewalsId("");
+        voAg.setStatusRenewalsName("");
+        voAg.setStatusRenewalsId1("");
+        voAg.setStatusRenewalsName1("");
+        voAg.setStatusRenewalsId2("");
+        voAg.setStatusRenewalsName2("");
+		voAg.setOldPolicyStatusId("");
+		voAg.setOldPolicyStatusName("");
+		voAg.setBaovietCompanyId("");
+		voAg.setBaovietCompanyName("");
+		
 		// TH nút đang soạn
 		if (StringUtils.equals(obj.getStatusPolicy(), AppConstants.STATUS_POLICY_ID_DANGSOAN)) {
 			voAg.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_DANGSOAN);
@@ -174,6 +211,9 @@ public class AbstractProductService {
 				voAg.setOtp(otp);
 				voAg.setOtpStatus(AppConstants.STATUS_OTP_0); // 0: timeout
 				voAg.setOtpStartTime(DateUtils.date2Str(new Date()));
+				// gửi sms thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
+				voAg.setCancelPolicySupport3(1.0);
+				voAg.setSendEmail(1);
 				
 				voAg.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_OTP);
 				voAg.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);
@@ -238,49 +278,6 @@ public class AbstractProductService {
 		voAg.setReceiveMethod(obj.getReceiveMethod());
 		voAg.setAgentId(currentAgency.getMa());
 		voAg.setAgentName(currentAgency.getTen());// agency.TEN;
-		
-		voAg.setAgencyId("");
-		voAg.setAgencyName("");
-		voAg.setCommision(0.0);
-		voAg.setCommisionSupport(0.0);
-		voAg.setCancelPolicyPremium(0.0);
-		voAg.setCancelPolicyCommision(0.0);
-		voAg.setCancelPolicySupport(0.0);
-		voAg.setCancelPolicyPremium2(0.0);
-		voAg.setCancelPolicyCommision2(0.0);
-		voAg.setCancelPolicySupport2(0.0);
-		voAg.setCancelPolicyPremium3(0.0);
-		voAg.setCancelPolicyCommision3(0.0);
-		voAg.setCancelPolicySupport3(0.0);
-		voAg.setSendEmail(0);
-		voAg.setSendSms(0);
-		voAg.setCouponsCode("");
-		voAg.setCouponsValue(0.0);
-		voAg.setFeeReceive(0.0);
-		voAg.setRenewalsReason("");
-        voAg.setRenewalsRate(0.0);
-        voAg.setRenewalsPremium(0.0);
-        voAg.setRenewalsChoice("");
-        voAg.setRenewalsSi(0.0);
-        voAg.setRenewalsRate1(0.0);
-        voAg.setRenewalsRate2(0.0);
-        voAg.setRenewalsPremium1(0.0);
-        voAg.setRenewalsPremium2(0.0);
-        voAg.setRenewalsDes2("");
-        voAg.setRenewalsDes1("");
-        voAg.setClaimRate(0.0);
-		voAg.setClaimRate1(0.0);
-		voAg.setClaimRate2(0.0);
-		voAg.setStatusRenewalsId("");
-        voAg.setStatusRenewalsName("");
-        voAg.setStatusRenewalsId1("");
-        voAg.setStatusRenewalsName1("");
-        voAg.setStatusRenewalsId2("");
-        voAg.setStatusRenewalsName2("");
-		voAg.setOldPolicyStatusId("");
-		voAg.setOldPolicyStatusName("");
-		voAg.setBaovietCompanyId("");
-		voAg.setBaovietCompanyName("");
 		
 		// phong ban
 		if (StringUtils.isEmpty(obj.getDepartmentId())) {

@@ -604,6 +604,8 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				agreement.setPaymentMethod("1");
 				agreement.setCancelPolicySupport3(1d);
 				agreement.setCancelPolicyCommision3(1d);
+				agreement.setSendEmail(1);
+				agreement.setSendSms(1);
 				agreement.setDateOfPayment(new Date());
 				agreement.setPaymentTransactionId(transactionID);
 				if (agreement.getChangePremium() != null && agreement.getChangePremium() > 0) {
