@@ -82,7 +82,7 @@ public class AgencyUtils {
         }
     }
 	
-	public String toKhongDau(String str) {
+	public static String toKhongDau(String str) {
 	    try {
 	        String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
 	        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

@@ -530,7 +530,7 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 			for (Agreement data : agreements) {
 				if (data.getGycbhId() != null) {	// check vì đơn offline ko có gycbhId duclm add 04/12/2018
 					// Forward to company
-					forwardPolicyToCompany(data);
+					// forwardPolicyToCompany(data);
 
 					switch (ProductType.valueOf(data.getLineId())) {
 					case HOM:

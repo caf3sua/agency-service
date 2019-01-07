@@ -2,7 +2,6 @@ package com.baoviet.agency.payment.gateway.impl;
 
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -39,6 +38,7 @@ import com.baoviet.agency.payment.dto.PaymentResult;
 import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
 import com.baoviet.agency.repository.AdminBuSealRepository;
+import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
 
 @Service
@@ -79,6 +79,8 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		try {
 			String vnpTmnCode = getVnpTmnCode(agreements.get(0).getBaovietCompanyId());
 			
+			String vnpOrderInfo = getVnpOrderInfo(currentAgency, agreements);
+			
 			redirectUrl.append("vnp_Amount=");
 			redirectUrl.append(URLEncoder.encode(String.valueOf(param.getPaymentFee().longValue()), "UTF-8"));
 			redirectUrl.append("&");
@@ -101,7 +103,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			redirectUrl.append(URLEncoder.encode("vn", "UTF-8"));
 			redirectUrl.append("&");
 			redirectUrl.append("vnp_OrderInfo=");
-			redirectUrl.append(URLEncoder.encode(payAction.getMciAddId(), "UTF-8"));
+			redirectUrl.append(URLEncoder.encode(vnpOrderInfo, "UTF-8"));
 			redirectUrl.append("&");
 			redirectUrl.append("vnp_OrderType=");
 			redirectUrl.append(URLEncoder.encode(param.getBankCode(), "UTF-8"));
@@ -119,7 +121,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			redirectUrl.append(URLEncoder.encode(config.getVersion(), "UTF-8"));
 			redirectUrl.append("&");
 
-			String secureHash = getSecureHash(payAction, param, now, vnpTmnCode);
+			String secureHash = getSecureHash(payAction, param, now, vnpTmnCode, vnpOrderInfo);
 			redirectUrl.append("vnp_SecureHash=");
 			redirectUrl.append(secureHash);
 		} catch (Exception e) {
@@ -137,7 +139,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		return result;
 	}
 
-	private String getSecureHash(PayAction payAction, PaymentProcessRequestVM param, Date now, String vnpTmnCode) {
+	private String getSecureHash(PayAction payAction, PaymentProcessRequestVM param, Date now, String vnpTmnCode, String vnpOrderInfo) {
 		StringBuffer requestData = new StringBuffer();
 		try {
 			requestData.append("vnp_Amount=");
@@ -162,7 +164,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			requestData.append("vn");
 			requestData.append("&");
 			requestData.append("vnp_OrderInfo=");
-			requestData.append(payAction.getMciAddId());
+			requestData.append(vnpOrderInfo);
 			requestData.append("&");
 			requestData.append("vnp_OrderType=");
 			requestData.append(param.getBankCode());
@@ -429,6 +431,28 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		} else {
 			throw new AgencyBusinessException("baovietCompanyId", ErrorCode.PAYMENT_ERROR, "Không tồn tại công ty");
 		}
+	}
+	
+	private String getVnpOrderInfo(AgencyDTO currentAgency,	List<Agreement> agreements) {
+		String vnpOrderInfo = "";
+		String gycbhNumber = "";
+		String agencyName = "";
+		for (Agreement agreement : agreements) {
+			gycbhNumber += agreement.getGycbhNumber() + ";";
+		}
+		vnpOrderInfo = gycbhNumber.substring(0, gycbhNumber.length() -1);
+		if (StringUtils.isNotEmpty(currentAgency.getTen())) {
+			agencyName = AgencyUtils.toKhongDau(currentAgency.getTen());
+			vnpOrderInfo += "_" + agencyName;
+		}
+		if (StringUtils.isNotEmpty(currentAgency.getDienThoai())) {
+			vnpOrderInfo += "_" + currentAgency.getDienThoai();
+		}
+		vnpOrderInfo += "_" + currentAgency.getEmail();
+		if (vnpOrderInfo.length() > 255) {
+			vnpOrderInfo = vnpOrderInfo.substring(0, 255);
+		}
+		return vnpOrderInfo;	
 	}
 	
 }
