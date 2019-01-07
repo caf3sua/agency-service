@@ -838,7 +838,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
        			expression = expression +  " AND STATUS_POLICY_ID ='" + obj.getStatusPolicy() + "'";	
         	} else {
-        		expression = expression +  " AND STATUS_POLICY_ID IN ('89','99')";
+        		expression = expression +  " AND STATUS_POLICY_ID IN ('89','99','84')";
         	}
         } else if (StringUtils.equals(caseWait, "3")) { // admin màn hình giỏ hàng bảo việt
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
