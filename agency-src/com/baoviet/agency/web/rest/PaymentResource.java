@@ -472,7 +472,7 @@ public class PaymentResource extends AbstractAgencyResource {
 				agreement.setCancelPolicyCommision3(1d); // gửi sms
 				agreement.setSendEmail(1);
 				agreement.setSendSms(1);
-				
+				agreement.setPaymentGateway("ThanhToanSau");
 				AgreementDTO agreementUpdate = agreementService.save(agreement);
 				
 				// update pay_action
