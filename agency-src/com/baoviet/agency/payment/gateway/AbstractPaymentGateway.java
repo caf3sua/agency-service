@@ -582,18 +582,6 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				}
 			}
 			
-//			// Update agreement
-//			// duclm add 04/12/2018: Đối với những đơn offline không hiểu sao đơn hàng được tự động chuyển lên trạng thái 100. Nên khi tìm kiếm cần tìm kiếm theo status = 100. Hoặc có thể sửa chỉ tìm theo MciAddId
-//			// khi thanh toán bằng viettel pay thì chưa biết sao trạng thái thành 91
-//			Agreement agreement = new Agreement();
-//			agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "90");
-//			if (agreement == null) {
-//				agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "100");
-//				 if (agreement == null) {
-//					 agreement = agreementRepository.findByMciAddIdAndStatusPolicyId(mciAddId, "91");
-//				 }
-//			}
-			
 			// add 19/12/2018: thanh toán thành công chỉ cần set lại cái list được tìm trên kia. 
 			// Update agreement
 			for (Agreement agreement : agreements) {
@@ -602,10 +590,10 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
 				agreement.setPaymentMethod("1");
-				agreement.setCancelPolicySupport3(1d);
-				agreement.setCancelPolicyCommision3(1d);
-				agreement.setSendEmail(1);
-				agreement.setSendSms(1);
+//				agreement.setCancelPolicySupport3(1d);
+//				agreement.setCancelPolicyCommision3(1d);
+//				agreement.setSendEmail(1);
+//				agreement.setSendSms(1);
 				agreement.setDateOfPayment(new Date());
 				agreement.setPaymentTransactionId(transactionID);
 				if (agreement.getChangePremium() != null && agreement.getChangePremium() > 0) {

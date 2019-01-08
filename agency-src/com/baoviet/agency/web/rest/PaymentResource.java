@@ -468,10 +468,10 @@ public class PaymentResource extends AbstractAgencyResource {
 				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
-				agreement.setCancelPolicySupport3(1d);	 // gửi mail
-				agreement.setCancelPolicyCommision3(1d); // gửi sms
-				agreement.setSendEmail(1);
-				agreement.setSendSms(1);
+//				agreement.setCancelPolicySupport3(1d);	 // gửi mail
+//				agreement.setCancelPolicyCommision3(1d); // gửi sms
+//				agreement.setSendEmail(1);
+//				agreement.setSendSms(1);
 				agreement.setPaymentGateway("ThanhToanSau");
 				AgreementDTO agreementUpdate = agreementService.save(agreement);
 				
