@@ -584,7 +584,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			
 			if (data != null) {
 				tvc.setSoGycbh(data.getGycbhNumber());
-				tvc.setPolicyNumber(data.getGycbhNumber());
+				tvc.setPolicyNumber(data.getPolicyNumber());
 			}
 		}
 		
@@ -704,6 +704,10 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		AgreementDTO voAg = new AgreementDTO();
         // Insert common data
      	insertAgreementCommonInfo("TVC", voAg, objContact, currentAgency, obj);
+     
+     	if (StringUtils.isNotEmpty(obj.getUrlPolicy())) {
+     		voAg.setUrlPolicy(obj.getUrlPolicy());
+     	}
      	
         voAg.setInceptionDate(DateUtils.str2Date(obj.getInceptionDate()));
         voAg.setExpiredDate(DateUtils.str2Date(obj.getExpiredDate()));

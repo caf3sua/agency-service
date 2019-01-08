@@ -235,7 +235,7 @@ public class AbstractProductService {
 			AgreementDTO data = agreementService.findById(obj.getAgreementId());
 			if (data != null) {
 				voAg.setGycbhNumber(data.getGycbhNumber());
-				voAg.setPolicyNumber(data.getGycbhNumber());
+				voAg.setPolicyNumber(data.getPolicyNumber());
 				voAg.setAgreementId(obj.getAgreementId());
 			}
 		}

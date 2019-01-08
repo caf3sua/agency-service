@@ -1410,7 +1410,10 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		}
 		if (!StringUtils.isEmpty(dto.getInvoiceAccountNo())) {
 			invoiceInfo.setAccountNo(dto.getInvoiceAccountNo());
-		} 
+		}
+		if (!StringUtils.isEmpty(dto.getUrlPolicy())) {
+			tvc.setUrlPolicy(dto.getUrlPolicy());
+		}
 		tvc.setInvoiceInfo(invoiceInfo);
 		
 		ReceiverUserInfoDTO receiverUser = new ReceiverUserInfoDTO();

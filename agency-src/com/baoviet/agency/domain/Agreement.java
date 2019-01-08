@@ -417,4 +417,7 @@ public class Agreement implements Serializable {
 	
 	@Column
 	private Integer sendEmailOtp;
+	
+	@Column
+	private String urlPolicy;
 }

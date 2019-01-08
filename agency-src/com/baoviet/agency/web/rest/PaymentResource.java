@@ -337,6 +337,38 @@ public class PaymentResource extends AbstractAgencyResource {
 		headers.setLocation(URI.create(getRedirectUrl(device)));
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
+	
+	@GetMapping("/notify-returnVnPay")
+	@Timed
+	@ApiOperation(value = "returnVnPay", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
+	public ResponseEntity<HttpHeaders> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
+			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
+			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
+			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
+			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
+			@RequestParam("vnp_TxnRef") String vnpTxnRef, @RequestParam("vnp_SecureHash") String vnpSecureHash)
+			throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to returnVnPay, {}");
+
+		Map<String, String> paramMap = new LinkedHashMap<>();
+		paramMap.put(Constants.VNPAY_PARAM_AMOUNT, vnpAmount);
+		paramMap.put(Constants.VNPAY_PARAM_BANK_CODE, vnpBankCode);
+		paramMap.put(Constants.VNPAY_PARAM_BANK_TRAN_NO, vnpBankTranNo);
+		paramMap.put(Constants.VNPAY_PARAM_CARD_TYPE, vnpCardType);
+		paramMap.put(Constants.VNPAY_PARAM_ORDER_INFO, vnpOrderInfo);
+		paramMap.put(Constants.VNPAY_PARAM_PAY_DATE, vnpPayDate);
+		paramMap.put(Constants.VNPAY_PARAM_RESPONSE_CODE, vnpResponseCode);
+		paramMap.put(Constants.VNPAY_PARAM_TMN_CODE, vnpTmnCode);
+		paramMap.put(Constants.VNPAY_PARAM_TRANSACTION_NO, vnpTransactionNo);
+		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
+		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
+
+		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
+
+		HttpHeaders headers = new HttpHeaders();
+		return new ResponseEntity<>(headers, HttpStatus.OK);
+	}
 
 	@GetMapping("/checkVnPayOrderInfo")
 	@Timed
@@ -468,10 +500,12 @@ public class PaymentResource extends AbstractAgencyResource {
 				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
-//				agreement.setCancelPolicySupport3(1d);	 // gửi mail
-//				agreement.setCancelPolicyCommision3(1d); // gửi sms
-//				agreement.setSendEmail(1);
-//				agreement.setSendSms(1);
+				
+				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
+					agreement.setSendEmail(1);
+					agreement.setSendSms(1);					
+				}
+
 				agreement.setPaymentGateway("ThanhToanSau");
 				AgreementDTO agreementUpdate = agreementService.save(agreement);
 				

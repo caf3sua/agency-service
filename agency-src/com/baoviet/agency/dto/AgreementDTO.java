@@ -307,6 +307,8 @@ public class AgreementDTO implements Serializable {
 	
 	private Integer sendEmailOtp;
 	
+	private String urlPolicy;
+	
 	@Override
 	public String toString() {
 		return "AgreementDTO [agencyId=" + agencyId + ", agentId=" + agentId + ", agentName=" + agentName

@@ -73,4 +73,6 @@ public abstract class ProductBaseVM {
 	
 	@ApiModelProperty(value = "CMT/MST - dùng trong trường hợp cập nhật")
 	private String contactIdNumber;
+	
+	private String urlPolicy;
 }
