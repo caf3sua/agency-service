@@ -16,4 +16,6 @@ public class PaymentResult {
 	PaymentResponseType responseType;
 	
 	String redirectUrl;
+	
+	String code;
 }

@@ -590,10 +590,6 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
 				agreement.setPaymentMethod("1");
-//				agreement.setCancelPolicySupport3(1d);
-//				agreement.setCancelPolicyCommision3(1d);
-//				agreement.setSendEmail(1);
-//				agreement.setSendSms(1);
 				
 				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
 					agreement.setSendEmail(1);
@@ -657,33 +653,6 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 					data.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
 					data.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
 
-//					double totalPremium = data.getNetPremium();
-
-					// 12/09/2018: Đơn hàng false đang thấy đoạn này ko ý nghĩa vì cập nhật lại giá
-//					if (data.getLineId().equals(ProductType.CAR.name())) {
-//						Car car = carRepository.findOne(data.getGycbhId());
-//						totalPremium -= car.getThirdPartyPremium();	
-//					} else if (data.getLineId().equals(ProductType.MOT.name())) {
-//						Moto moto = motoRepository.findOne(data.getGycbhId());
-//						totalPremium -= moto.getTndsBbPhi();
-//					}
-
-					// Cập nhật lại phí trước khi thanh toán
-//					if (data.getLineId().equals(ProductType.BVP.name())) {
-//						data.setTotalPremium(data.getNetPremium());
-//					} else if (data.getLineId().equals(ProductType.CAR.name())) {
-//						Car car = carRepository.findOne(data.getGycbhId());
-//						totalPremium = car.getTotalPremium();
-//						data.setTotalPremium(totalPremium);
-//						data.setNetPremium(totalPremium);
-//					} else if (data.getLineId().equals(ProductType.MOT.name())) {
-//						Moto moto = motoRepository.findOne(data.getGycbhId());
-//						totalPremium = moto.getTongPhi();
-//						data.setTotalPremium(totalPremium);
-//						data.setNetPremium(totalPremium);
-//					} else {
-//						data.setTotalPremium(data.getNetPremium() - totalPremium * data.getChangePremium());
-//					}
 				}
 				data.setPaymentTransactionId(transactionID);
 			}

@@ -243,19 +243,23 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
 
 				if (!orderResult) {
+					result.setCode("0");
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 					result.setResponseType(PaymentResponseType.ERROR);
 				}
 			}
 
 			if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+				result.setCode("3");
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
 				result.setResponseType(PaymentResponseType.SUCCESS);
 			} else {
+				result.setCode("0");
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} else {
+			result.setCode("0");
 			result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}

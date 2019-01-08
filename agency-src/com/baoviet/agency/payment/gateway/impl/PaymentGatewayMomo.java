@@ -168,6 +168,7 @@ public class PaymentGatewayMomo extends AbstractPaymentGateway {
 				PayAction payAction = payActionRepository.findByMciAddId(orderId);
 				if(payAction == null) {
 					log.warn("ReturnMomo: Không tồn tại đơn hàng với mã :"+ orderId);
+					result.setCode("0");
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 					result.setResponseType(PaymentResponseType.ERROR);
 				} else if(!paramMap.get(Constants.MOMO_PARAM_ERROR_CODE).equals(Constants.PAYMENT_MOMO_STATUS_SUCCESS)) {
@@ -175,6 +176,7 @@ public class PaymentGatewayMomo extends AbstractPaymentGateway {
 						updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), transId, payAction);
 						updateStatusSaleCode(payAction, now, transId, 90);
 					}
+					result.setCode("0");
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 					result.setResponseType(PaymentResponseType.ERROR);
 				} else {
@@ -182,16 +184,19 @@ public class PaymentGatewayMomo extends AbstractPaymentGateway {
 						updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), transId, payAction);
 						updateStatusSaleCode(payAction, now, transId, 91);
 					}
+					result.setCode("3");
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
 					result.setResponseType(PaymentResponseType.SUCCESS);
 				}
 			} else {
 				log.warn("ReturnMomo: Không có mã đơn hàng trả về");
+				result.setCode("0");
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} else {
 			log.warn("ReturnMomo: Dữ liệu không khớp");
+			result.setCode("0");
 			result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}

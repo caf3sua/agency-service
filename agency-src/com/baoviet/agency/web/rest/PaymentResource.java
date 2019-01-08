@@ -301,7 +301,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(URI.create(getRedirectUrl(device)));
+		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
 
@@ -334,7 +334,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(URI.create(getRedirectUrl(device)));
+		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
 	
@@ -425,11 +425,11 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(URI.create(getRedirectUrl(device)));
+		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
 
-	private String getRedirectUrl(Device device) {
+	private String getRedirectUrl(Device device, PaymentResult paymentResult) {
 		// TODO : mobile : /landing
 		// web : /cart
 		boolean isMobile = false;
@@ -442,6 +442,9 @@ public class PaymentResource extends AbstractAgencyResource {
 		if(isMobile) {
 			redirectUrl = applicationProperties.getPaymentMobileReturnPage();
 		}
+		
+		// Append status code
+		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getCode();
 		
 		return redirectUrl;
 	}
