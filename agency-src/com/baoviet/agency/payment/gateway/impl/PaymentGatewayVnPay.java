@@ -243,7 +243,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
 
 				if (!orderResult) {
-					result.setCode("0");
+					result.setRspCode("0");
 					result.setMciAddId(payAction.getMciAddId());
 					result.setPolicyNumber(payAction.getPolicyNumbers());
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
@@ -251,25 +251,31 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				}
 			}
 
-			if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-				result.setCode("3");
-				if (payAction != null) {
-					result.setMciAddId(payAction.getMciAddId());
-					result.setPolicyNumber(payAction.getPolicyNumbers());	
+			if (payAction != null) {
+				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+					result.setRspCode("3");
+					if (payAction != null) {
+						result.setMciAddId(payAction.getMciAddId());
+						result.setPolicyNumber(payAction.getPolicyNumbers());	
+					}
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
+					result.setResponseType(PaymentResponseType.SUCCESS);
+				} else {
+					result.setRspCode("0");
+					if (payAction != null) {
+						result.setMciAddId(payAction.getMciAddId());
+						result.setPolicyNumber(payAction.getPolicyNumbers());	
+					}
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
+					result.setResponseType(PaymentResponseType.ERROR);
 				}
-				result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
-				result.setResponseType(PaymentResponseType.SUCCESS);
 			} else {
-				result.setCode("0");
-				if (payAction != null) {
-					result.setMciAddId(payAction.getMciAddId());
-					result.setPolicyNumber(payAction.getPolicyNumbers());	
-				}
-				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
+				result.setRspCode("01");
+				result.setMessage("Order not found");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} else {
-			result.setCode("0");
+			result.setRspCode("0");
 			result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}

@@ -13,19 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import com.baoviet.agency.common.ProductType;
-import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.config.GateWay123PayConfig;
 import com.baoviet.agency.config.GateWayMomoConfig;
 import com.baoviet.agency.config.GateWayViettelPayConfig;
 import com.baoviet.agency.config.GateWayVnPayConfig;
 import com.baoviet.agency.config.PaymentConfig;
-import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.Anchi;
 import com.baoviet.agency.domain.Bvp;
 import com.baoviet.agency.domain.Car;
 import com.baoviet.agency.domain.Contact;
+import com.baoviet.agency.domain.GhiInsurej;
 import com.baoviet.agency.domain.GrabGiftCode;
 import com.baoviet.agency.domain.Home;
 import com.baoviet.agency.domain.Kcare;
@@ -56,6 +55,7 @@ import com.baoviet.agency.repository.AnchiRepository;
 import com.baoviet.agency.repository.BVPRepository;
 import com.baoviet.agency.repository.CarRepository;
 import com.baoviet.agency.repository.ContactRepository;
+import com.baoviet.agency.repository.GhiInsurejRepository;
 import com.baoviet.agency.repository.GiftCodeRepository;
 import com.baoviet.agency.repository.GrabGiftCodeRepository;
 import com.baoviet.agency.repository.HomeRepository;
@@ -145,6 +145,9 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 	
 	@Autowired
 	private ContactRepository contactRepository;
+	
+	@Autowired
+	private GhiInsurejRepository ghiInsurejRepository;
 
 	@Override
 	public List<PaymentBank> getBanksByPaymentCode(String paymentCode) {
@@ -590,6 +593,17 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
 				agreement.setPaymentMethod("1");
+				
+				GhiInsurej ghiInsurej = ghiInsurejRepository.findByLineId(agreement.getLineId());
+				if (ghiInsurej != null) {
+					if (ghiInsurej.getGhiInsurej() != null && ghiInsurej.getGhiInsurej() > 0) {
+						agreement.setSendEmail(0);
+						agreement.setSendSms(0);
+					} else {
+						agreement.setSendEmail(1);
+						agreement.setSendSms(1);
+					}
+				}
 				
 				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
 					agreement.setSendEmail(1);

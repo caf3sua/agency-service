@@ -150,7 +150,7 @@ public class PaymentGatewayViettelPay extends AbstractPaymentGateway {
 			String hashData = calculateRFC2104HMAC(data, config.getHashKey());
 			
 			if(!hashData.equals(paramMap.get(Constants.VIETTEL_PAY_PARAM_SECURE_HASH))) {
-				result.setCode("0");
+				result.setRspCode("0");
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 				result.setResponseType(PaymentResponseType.ERROR);
 				return result;
@@ -184,33 +184,33 @@ public class PaymentGatewayViettelPay extends AbstractPaymentGateway {
 					hashData = calculateRFC2104HMAC(data, config.getHashKey());
 				
 					if(!hashData.equals(viettelResponseDTO.getSecureHash())) {
-						result.setCode("0");
+						result.setRspCode("0");
 						result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 						result.setResponseType(PaymentResponseType.ERROR);
 					} else if(viettelResponseDTO.getStatus().equals(Constants.PAYMENT_VIETTEL_STATUS_SUCCESS)) {
 						updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), viettelResponseDTO.getVtTransactionId(), payAction);
 						// Update PayActionStatus
 						updatePayActionStatus(payAction, 91);
-						result.setCode("3");
+						result.setRspCode("3");
 						result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
 						result.setResponseType(PaymentResponseType.SUCCESS);
 					} else {
 						updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), viettelResponseDTO.getVtTransactionId(), payAction);
 						// Update PayActionStatus
 						updatePayActionStatus(payAction, 90);
-						result.setCode("0");
+						result.setRspCode("0");
 						result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 						result.setResponseType(PaymentResponseType.ERROR);
 					}
 				}
 			} else {
-				result.setCode("0");
+				result.setRspCode("0");
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} catch (Exception e) {
 			log.info("Error: " + e.getMessage());
-			result.setCode("0");
+			result.setRspCode("0");
 			result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}

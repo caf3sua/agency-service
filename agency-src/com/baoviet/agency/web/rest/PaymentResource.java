@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.domain.Agreement;
+import com.baoviet.agency.domain.GhiInsurej;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
@@ -49,6 +50,7 @@ import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.PaymentGateway;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayViettelPay;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayVnPay;
+import com.baoviet.agency.repository.GhiInsurejRepository;
 import com.baoviet.agency.repository.PayActionRepository;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.PaymentService;
@@ -89,6 +91,9 @@ public class PaymentResource extends AbstractAgencyResource {
 	@Autowired
 	private PayActionRepository payActionRepository;
 
+	@Autowired
+	private GhiInsurejRepository ghiInsurejRepository;
+	
 	/// <summary>
 	/// Service cập nhật trạng thái (STATUS_POLICY_ID) đơn ATCS
 	/// - Cập nhật trạng thái trong bảng AGREMENT
@@ -341,7 +346,7 @@ public class PaymentResource extends AbstractAgencyResource {
 	@GetMapping("/notify-returnVnPay")
 	@Timed
 	@ApiOperation(value = "returnVnPay", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
-	public ResponseEntity<HttpHeaders> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
+	public ResponseEntity<PaymentResult> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
 			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
 			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
 			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
@@ -366,8 +371,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
 
-		HttpHeaders headers = new HttpHeaders();
-		return new ResponseEntity<>(headers, HttpStatus.OK);
+		return new ResponseEntity<>(paymentResult, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkVnPayOrderInfo")
@@ -444,7 +448,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		}
 		
 		// Append status code
-		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getCode();
+		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getRspCode();
 		if (StringUtils.isNotEmpty(paymentResult.getMciAddId())) {
 			redirectUrl = redirectUrl + "&paymentPay=" + paymentResult.getMciAddId();	
 		}
@@ -509,6 +513,17 @@ public class PaymentResource extends AbstractAgencyResource {
 				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
 				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
 				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_THANH_TOAN_SAU);
+				
+				GhiInsurej ghiInsurej = ghiInsurejRepository.findByLineId(agreement.getLineId());
+				if (ghiInsurej != null) {
+					if (ghiInsurej.getGhiInsurej() != null && ghiInsurej.getGhiInsurej() > 0) {
+						agreement.setSendEmail(0);
+						agreement.setSendSms(0);
+					} else {
+						agreement.setSendEmail(1);
+						agreement.setSendSms(1);
+					}
+				}
 				
 				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
 					agreement.setSendEmail(1);

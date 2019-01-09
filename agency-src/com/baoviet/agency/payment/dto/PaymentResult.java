@@ -1,6 +1,8 @@
 package com.baoviet.agency.payment.dto;
 
 import com.baoviet.agency.payment.common.PaymentResponseType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,14 +14,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonInclude(Include.NON_EMPTY)
 public class PaymentResult {
 	PaymentResponseType responseType;
 	
 	String redirectUrl;
 	
-	String code;
-	
 	String mciAddId;
 	
 	String policyNumber;
+	
+	String rspCode;
+	
+	String message;
 }
