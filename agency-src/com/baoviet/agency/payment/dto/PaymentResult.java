@@ -18,4 +18,8 @@ public class PaymentResult {
 	String redirectUrl;
 	
 	String code;
+	
+	String mciAddId;
+	
+	String policyNumber;
 }

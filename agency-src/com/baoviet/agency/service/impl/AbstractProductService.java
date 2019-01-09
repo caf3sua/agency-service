@@ -197,6 +197,7 @@ public class AbstractProductService {
 		voAg.setOldPolicyStatusName("");
 		voAg.setBaovietCompanyId("");
 		voAg.setBaovietCompanyName("");
+		voAg.setUrlPolicy("");
 		
 		// TH nút đang soạn
 		if (StringUtils.equals(obj.getStatusPolicy(), AppConstants.STATUS_POLICY_ID_DANGSOAN)) {
@@ -238,6 +239,9 @@ public class AbstractProductService {
 				voAg.setPolicyNumber(data.getPolicyNumber());
 				voAg.setAgreementId(obj.getAgreementId());
 			}
+			if (StringUtils.isNotEmpty(obj.getUrlPolicy())) {
+	     		voAg.setUrlPolicy(obj.getUrlPolicy());
+	     	}
 		}
 		// Insert invoiceInfo & receiver
 		voAg.setReceiverName(obj.getReceiverUser().getName());

@@ -445,6 +445,12 @@ public class PaymentResource extends AbstractAgencyResource {
 		
 		// Append status code
 		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getCode();
+		if (StringUtils.isNotEmpty(paymentResult.getMciAddId())) {
+			redirectUrl = redirectUrl + "&paymentPay=" + paymentResult.getMciAddId();	
+		}
+		if (StringUtils.isNotEmpty(paymentResult.getPolicyNumber())) {
+			redirectUrl = redirectUrl + "&paymentPolicy=" + paymentResult.getPolicyNumber();	
+		}
 		
 		return redirectUrl;
 	}

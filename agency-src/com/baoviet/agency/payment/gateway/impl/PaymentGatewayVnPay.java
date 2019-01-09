@@ -244,6 +244,8 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 
 				if (!orderResult) {
 					result.setCode("0");
+					result.setMciAddId(payAction.getMciAddId());
+					result.setPolicyNumber(payAction.getPolicyNumbers());
 					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 					result.setResponseType(PaymentResponseType.ERROR);
 				}
@@ -251,10 +253,18 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 
 			if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
 				result.setCode("3");
+				if (payAction != null) {
+					result.setMciAddId(payAction.getMciAddId());
+					result.setPolicyNumber(payAction.getPolicyNumbers());	
+				}
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
 				result.setResponseType(PaymentResponseType.SUCCESS);
 			} else {
 				result.setCode("0");
+				if (payAction != null) {
+					result.setMciAddId(payAction.getMciAddId());
+					result.setPolicyNumber(payAction.getPolicyNumbers());	
+				}
 				result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}

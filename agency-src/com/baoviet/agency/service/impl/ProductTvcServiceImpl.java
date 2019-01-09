@@ -556,7 +556,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 	private TravelcareDTO getObjectProduct(ProductTvcVM obj, Contact co, AgencyDTO currentAgency) {
 		log.debug("request to getObjectProduct, ProductTvcVM {}, Contact{} ", obj, co);
 		TravelcareDTO tvc = new TravelcareDTO();
-		if (StringUtils.isNotEmpty(obj.getGycbhId())) {
+		if (StringUtils.isNotEmpty(obj.getGycbhId()) && StringUtils.isNotEmpty(obj.getAgreementId())) {
 			tvc.setTravelcareId(obj.getGycbhId());
 			// update version nếu là thanh toán sau
 			AgreementDTO data = agreementService.findById(obj.getAgreementId());
@@ -573,10 +573,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			}
 		} else {
 			tvc.setTravelcareId("");
+			tvc.setVersion("");
 		}
 		
 		// khi update thì không update gycbhNumber
-		if (StringUtils.isEmpty(tvc.getTravelcareId())) {
+		if (StringUtils.isEmpty(obj.getAgreementId())) {
 			tvc.setSoGycbh(obj.getGycbhNumber());
 			tvc.setPolicyNumber(obj.getGycbhNumber());
 		} else {
@@ -704,10 +705,6 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 		AgreementDTO voAg = new AgreementDTO();
         // Insert common data
      	insertAgreementCommonInfo("TVC", voAg, objContact, currentAgency, obj);
-     
-     	if (StringUtils.isNotEmpty(obj.getUrlPolicy())) {
-     		voAg.setUrlPolicy(obj.getUrlPolicy());
-     	}
      	
         voAg.setInceptionDate(DateUtils.str2Date(obj.getInceptionDate()));
         voAg.setExpiredDate(DateUtils.str2Date(obj.getExpiredDate()));
