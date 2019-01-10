@@ -3,7 +3,7 @@ package com.baoviet.agency.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.baoviet.agency.domain.BenifitHome;
+import com.baoviet.agency.domain.AdminBuSeal;
 
 
 /**
@@ -11,6 +11,5 @@ import com.baoviet.agency.domain.BenifitHome;
  */
 
 @Repository
-public interface BenifitHomeRepository extends JpaRepository<BenifitHome, String> {
-	
+public interface AdminBuSealRepository extends JpaRepository<AdminBuSeal, String> {
 }
