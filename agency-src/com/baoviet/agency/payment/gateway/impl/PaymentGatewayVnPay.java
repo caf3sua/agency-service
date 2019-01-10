@@ -243,40 +243,46 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
 
 				if (!orderResult) {
-					result.setRspCode("0");
+					result.setRspCode("99");
 					result.setMciAddId(payAction.getMciAddId());
 					result.setPolicyNumber(payAction.getPolicyNumbers());
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
 					result.setResponseType(PaymentResponseType.ERROR);
 				}
-			}
-
-			if (payAction != null) {
+				
 				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-					result.setRspCode("3");
+					result.setRspCode("00");
+					result.setMessage("Confirm Success");
 					if (payAction != null) {
 						result.setMciAddId(payAction.getMciAddId());
 						result.setPolicyNumber(payAction.getPolicyNumbers());	
 					}
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=3");
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=00");
 					result.setResponseType(PaymentResponseType.SUCCESS);
 				} else {
-					result.setRspCode("0");
-					if (payAction != null) {
-						result.setMciAddId(payAction.getMciAddId());
-						result.setPolicyNumber(payAction.getPolicyNumbers());	
-					}
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
+					result.setRspCode("99");
+					result.setMciAddId(payAction.getMciAddId());
+					result.setPolicyNumber(payAction.getPolicyNumbers());	
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
 					result.setResponseType(PaymentResponseType.ERROR);
 				}
+			} else if (payAction != null && payAction.getPayEndDate() != null) {
+				result.setRspCode("02");
+				result.setMessage("Order already confirmed");
+				result.setMciAddId(payAction.getMciAddId());
+				result.setPolicyNumber(payAction.getPolicyNumbers());	
+				result.setRedirectUrl(redirectUrl + "?paymentStatus=02");
+				result.setResponseType(PaymentResponseType.ERROR);
+				return result;
 			} else {
 				result.setRspCode("01");
 				result.setMessage("Order not found");
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} else {
-			result.setRspCode("0");
-			result.setRedirectUrl(redirectUrl + "?paymentStatus=0");
+			result.setRspCode("97");
+			result.setMessage("Chu ky khong hop le");
+			result.setRedirectUrl(redirectUrl + "?paymentStatus=97");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}
 		return result;
