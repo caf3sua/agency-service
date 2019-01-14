@@ -157,12 +157,12 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 					}
 				}
 				// check TH thêm mới: 0, update: 1 để gửi sms
-		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+//		        if (StringUtils.isEmpty(obj.getAgreementId())) {
 		        	// pay_action
 		         	sendSmsAndSavePayActionInfo(co, agreement, "0");	
-		        } else {
-		        	sendSmsAndSavePayActionInfo(co, agreement, "1");
-		        }
+//		        } else {
+//		        	sendSmsAndSavePayActionInfo(co, agreement, "1");
+//		        }
 		        obj.setAgreementId(agreement.getAgreementId());
 			}
 

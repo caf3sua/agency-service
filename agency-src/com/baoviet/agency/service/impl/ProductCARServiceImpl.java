@@ -89,12 +89,12 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				log.debug("Result of saveAgrement, {}", agreementSave.getAgreementId());
 			
 				// check TH thêm mới: 0, update: 1 để gửi sms
-		        if (StringUtils.isEmpty(obj.getAgreementId())) {
+//		        if (StringUtils.isEmpty(obj.getAgreementId())) {
 		        	// pay_action
 		         	sendSmsAndSavePayActionInfo(co, agreementSave, "0");	
-		        } else {
-		        	sendSmsAndSavePayActionInfo(co, agreementSave, "1");
-		        }
+//		        } else {
+//		        	sendSmsAndSavePayActionInfo(co, agreementSave, "1");
+//		        }
 		        obj.setAgreementId(agreementSave.getAgreementId());
 			}
 		}

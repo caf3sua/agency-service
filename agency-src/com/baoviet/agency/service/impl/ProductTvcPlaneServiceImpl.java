@@ -176,12 +176,12 @@ public class ProductTvcPlaneServiceImpl extends AbstractProductService implement
 				tvcPlaneAddService.insert(ad);
 			}
 			// check TH thêm mới: 0, update: 1 để gửi sms
-	        if (StringUtils.isEmpty(obj.getAgreementId())) {
+//	        if (StringUtils.isEmpty(obj.getAgreementId())) {
 	        	// pay_action
 	         	sendSmsAndSavePayActionInfo(co, voAgSave, "0");	
-	        } else {
-	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
-	        }
+//	        } else {
+//	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
+//	        }
 		}
 
 		return obj;

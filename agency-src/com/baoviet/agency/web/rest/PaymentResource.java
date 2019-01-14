@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.GhiInsurej;
 import com.baoviet.agency.domain.PayAction;
+import com.baoviet.agency.domain.Travelcare;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.PaymentMsbDTO;
@@ -42,6 +44,7 @@ import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.common.PaymentType;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
+import com.baoviet.agency.payment.dto.PaymentResultVnPay;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoRequest;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoResponse;
 import com.baoviet.agency.payment.dto.ViettelUpdateOrderStatusRequest;
@@ -52,6 +55,7 @@ import com.baoviet.agency.payment.gateway.impl.PaymentGatewayViettelPay;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayVnPay;
 import com.baoviet.agency.repository.GhiInsurejRepository;
 import com.baoviet.agency.repository.PayActionRepository;
+import com.baoviet.agency.repository.TravelcareRepository;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.PaymentService;
 import com.baoviet.agency.utils.AppConstants;
@@ -93,6 +97,9 @@ public class PaymentResource extends AbstractAgencyResource {
 
 	@Autowired
 	private GhiInsurejRepository ghiInsurejRepository;
+	
+	@Autowired
+	private TravelcareRepository travelcareRepository;
 	
 	/// <summary>
 	/// Service cập nhật trạng thái (STATUS_POLICY_ID) đơn ATCS
@@ -346,7 +353,7 @@ public class PaymentResource extends AbstractAgencyResource {
 	@GetMapping("/notify-returnVnPay")
 	@Timed
 	@ApiOperation(value = "returnVnPay", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
-	public ResponseEntity<PaymentResult> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
+	public ResponseEntity<PaymentResultVnPay> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
 			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
 			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
 			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
@@ -370,8 +377,12 @@ public class PaymentResource extends AbstractAgencyResource {
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
+		
+		PaymentResultVnPay result = new PaymentResultVnPay();
+		result.setMessage(paymentResult.getMessage());
+		result.setRspCode(paymentResult.getRspCode());
 
-		return new ResponseEntity<>(paymentResult, HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@GetMapping("/checkVnPayOrderInfo")
@@ -532,6 +543,17 @@ public class PaymentResource extends AbstractAgencyResource {
 
 				agreement.setPaymentGateway("ThanhToanSau");
 				AgreementDTO agreementUpdate = agreementService.save(agreement);
+				
+				// update ngay Travelcare
+				if (agreement.getLineId().equals("TVC")) {
+					if (agreement.getGycbhId() != null) {
+						Travelcare travelcare = travelcareRepository.findOne(agreement.getGycbhId());
+						if (travelcare != null) {
+							travelcare.setPolicyDeliver(new Date());	// ngay cap
+							travelcareRepository.save(travelcare);
+						}
+					}
+				}
 				
 				// update pay_action
 				// thay đổi trạng thái trong PayAction

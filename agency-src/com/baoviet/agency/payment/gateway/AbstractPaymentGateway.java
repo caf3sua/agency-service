@@ -544,6 +544,7 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 					case TVC:
 						Travelcare travelcare = travelcareRepository.findOne(data.getGycbhId());
 						travelcare.setDateOfPayment(now);
+						travelcare.setPolicyDeliver(now);	// ngay cap
 						travelcareRepository.save(travelcare);
 						break;
 					case TVI:

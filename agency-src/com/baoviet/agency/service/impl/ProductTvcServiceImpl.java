@@ -181,7 +181,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
             lstTravelCareAddDTO.add(tvcAddId);
         }
         // check TH thêm mới: 0, update: 1 để gửi sms
-        if (StringUtils.isEmpty(tvcBase.getAgreementId())) {
+        if (StringUtils.isEmpty(pTRAVELCARE.getVersion())) {
         	// pay_action
          	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
         } else {
@@ -560,8 +560,9 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 			tvc.setTravelcareId(obj.getGycbhId());
 			// update version nếu là thanh toán sau
 			AgreementDTO data = agreementService.findById(obj.getAgreementId());
+			
+			TravelcareDTO travelcare = travelcareService.getById(obj.getGycbhId());
 			if (StringUtils.equals(AgencyConstants.PAYMENT_METHOD_LATER, data.getPaymentMethod()) && data.getStatusPolicyId().equals(AgencyConstants.AgreementStatus.DA_THANH_TOAN)) {
-				TravelcareDTO travelcare = travelcareService.getById(obj.getGycbhId());
 				if (!StringUtils.isEmpty(travelcare.getVersion())) {
 					String version = travelcare.getVersion();
 					int number = Integer.parseInt(version.substring(1, version.length())) + 1;
@@ -570,11 +571,14 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
 				} else {
 					tvc.setVersion("E1");
 				}
+			} else {
+				tvc.setVersion(travelcare.getVersion());
 			}
 		} else {
 			tvc.setTravelcareId("");
 			tvc.setVersion("");
 		}
+	
 		
 		// khi update thì không update gycbhNumber
 		if (StringUtils.isEmpty(obj.getAgreementId())) {

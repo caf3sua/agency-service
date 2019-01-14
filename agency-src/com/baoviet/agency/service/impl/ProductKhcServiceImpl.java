@@ -184,12 +184,12 @@ public class ProductKhcServiceImpl extends AbstractProductService implements Pro
 		log.debug("Result of save agreement, {}", agreementDTOSave);
 
 		// check TH thêm mới: 0, update: 1 để gửi sms
-        if (StringUtils.isEmpty(objKHC.getAgreementId())) {
+//        if (StringUtils.isEmpty(objKHC.getAgreementId())) {
         	// pay_action
          	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
-        } else {
-        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
-        }
+//        } else {
+//        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
+//        }
 		
 		KhcResultVM objResultKhc = new KhcResultVM();
 		objResultKhc.setTlDTO(khc);

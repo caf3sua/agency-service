@@ -112,12 +112,12 @@ public class ProductTncServiceImpl extends AbstractProductService implements Pro
 		agreeInfo.setAgreementId(agreeSave.getAgreementId());
 
 		// check TH thêm mới: 0, update: 1 để gửi sms
-        if (StringUtils.isEmpty(obj.getAgreementId())) {
+//        if (StringUtils.isEmpty(obj.getAgreementId())) {
         	// pay_action
          	sendSmsAndSavePayActionInfo(co, agreeSave, "0");	
-        } else {
-        	sendSmsAndSavePayActionInfo(co, agreeSave, "1");
-        }
+//        } else {
+//        	sendSmsAndSavePayActionInfo(co, agreeSave, "1");
+//        }
 		
 		HastableTNC has = new HastableTNC();
 		has.setPa(painfo);

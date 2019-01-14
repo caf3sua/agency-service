@@ -163,12 +163,12 @@ public class ProductKcareServiceImpl extends AbstractProductService implements P
 			}
 			
 			// check TH thêm mới: 0, update: 1 để gửi sms
-	        if (StringUtils.isEmpty(kcare.getAgreementId())) {
+//	        if (StringUtils.isEmpty(kcare.getAgreementId())) {
 	        	// pay_action
 	         	sendSmsAndSavePayActionInfo(co, voAgSave, "0");	
-	        } else {
-	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
-	        }
+//	        } else {
+//	        	sendSmsAndSavePayActionInfo(co, voAgSave, "1");
+//	        }
 	        kcare.setAgreementId(voAgSave.getAgreementId());
 		}
 		return kcare;
