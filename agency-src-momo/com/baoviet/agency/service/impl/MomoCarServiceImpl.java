@@ -135,15 +135,15 @@ public class MomoCarServiceImpl implements MomoCarService {
 		ItemOptionComponent bh1 = new ItemOptionComponent("Bảo hiểm trách nhiệm dân sự bắt buộc", "tndsbbCheck", TOOLTIP_VIEW_1);
 		ItemOptionComponent bh2 = new ItemOptionComponent("Bảo hiểm trách nhiệm dân sự tự nguyện", "tndstnCheck", TOOLTIP_VIEW_1);
 		ItemOptionComponent bh3 = new ItemOptionComponent("Bảo hiểm tai nạn người ngồi trên xe", "nntxCheck", TOOLTIP_VIEW_2);
-		ItemOptionComponent bh4 = new ItemOptionComponent("Bảo hiểm vật chất xe", "vcxCheck", TOOLTIP_VIEW_3);
+//		ItemOptionComponent bh4 = new ItemOptionComponent("Bảo hiểm vật chất xe", "vcxCheck", TOOLTIP_VIEW_3);
 		baohiemList.add(bh1);
 		baohiemList.add(bh2);
 		baohiemList.add(bh3);
-		baohiemList.add(bh4);
+//		baohiemList.add(bh4);
 		List<Object> list = new ArrayList<Object>();
 		list.add("tndsbbCheck");
 		list.add("tndstnCheck");
-		list.add("vcxCheck");
+//		list.add("vcxCheck");
 		ComponentUtils.createCheckListInput(form, "listBaoHiem", "Phạm vi bảo hiểm", baohiemList, "1", list);
 		
 		// button
@@ -512,9 +512,9 @@ public class MomoCarServiceImpl implements MomoCarService {
 				if (item.equals("nntxCheck")) {
 					nntxCheck = 1;
 				}
-				if (item.equals("vcxCheck")) {
-					vcxCheck = 1;
-				}
+//				if (item.equals("vcxCheck")) {
+//					vcxCheck = 1;
+//				}
 			}
 		}
 		

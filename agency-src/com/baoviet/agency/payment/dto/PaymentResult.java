@@ -27,4 +27,8 @@ public class PaymentResult {
 	String rspCode;
 	
 	String message;
+	
+	String linkValidateTransaction;
+	
+	String transRef;
 }

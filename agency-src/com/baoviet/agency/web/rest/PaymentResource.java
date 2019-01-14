@@ -45,6 +45,7 @@ import com.baoviet.agency.payment.common.PaymentType;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
 import com.baoviet.agency.payment.dto.PaymentResultVnPay;
+import com.baoviet.agency.payment.dto.PaymentValidateResult;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoRequest;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoResponse;
 import com.baoviet.agency.payment.dto.ViettelUpdateOrderStatusRequest;
@@ -320,8 +321,8 @@ public class PaymentResource extends AbstractAgencyResource {
 	@GetMapping("/returnVnPay")
 	@Timed
 	@ApiOperation(value = "returnVnPay", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
-	public ResponseEntity<HttpHeaders> returnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
-			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
+	public ResponseEntity<HttpHeaders> returnVnPay(Device device, @RequestParam(value = "vnp_Amount", required=false) String vnpAmount,
+			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam(value = "vnp_BankTranNo", required=false) String vnpBankTranNo,
 			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
 			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
 			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
@@ -347,7 +348,27 @@ public class PaymentResource extends AbstractAgencyResource {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
+//        headers.add("X-Total-Count", Long.toString(page.getTotalElements()));
+		headers.add("X-Validate-Transaction-Link", paymentResult.getLinkValidateTransaction());
+		
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+	}
+	
+	@PostMapping("/update-status-vnpay")
+	@Timed
+	public ResponseEntity<PaymentValidateResult> updateStatusVnPay(@Valid @RequestBody PaymentValidateResult param)
+			throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to updateStatusVnPay, {}");
+		
+		String transRef = param.getTransRef();
+		String responseString = param.getResponseString();
+		
+		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
+		Boolean result = paymentGateway.updateStatus(transRef, responseString);
+
+		param.setResult(result);
+		
+		return new ResponseEntity<>(param, HttpStatus.MOVED_PERMANENTLY);
 	}
 	
 	@GetMapping("/notify-returnVnPay")
@@ -385,37 +406,37 @@ public class PaymentResource extends AbstractAgencyResource {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@GetMapping("/checkVnPayOrderInfo")
-	@Timed
-	@ApiOperation(value = "checkVnPayOrderInfo", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
-	public ResponseEntity<VnPayOrderStatusResponse> checkvVnPayOrderInfo(@RequestParam("vnp_Amount") String vnpAmount,
-			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
-			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
-			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
-			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
-			@RequestParam("vnp_TxnRef") String vnpTxnRef, @RequestParam("vnp_SecureHash") String vnpSecureHash)
-			throws URISyntaxException, AgencyBusinessException {
-		log.info("START REST request to checkvVnPayOrderInfo, {}");
-
-		Map<String, String> paramMap = new LinkedHashMap<>();
-		paramMap.put(Constants.VNPAY_PARAM_AMOUNT, vnpAmount);
-		paramMap.put(Constants.VNPAY_PARAM_BANK_CODE, vnpBankCode);
-		paramMap.put(Constants.VNPAY_PARAM_BANK_TRAN_NO, vnpBankTranNo);
-		paramMap.put(Constants.VNPAY_PARAM_CARD_TYPE, vnpCardType);
-		paramMap.put(Constants.VNPAY_PARAM_ORDER_INFO, vnpOrderInfo);
-		paramMap.put(Constants.VNPAY_PARAM_PAY_DATE, vnpPayDate);
-		paramMap.put(Constants.VNPAY_PARAM_RESPONSE_CODE, vnpResponseCode);
-		paramMap.put(Constants.VNPAY_PARAM_TMN_CODE, vnpTmnCode);
-		paramMap.put(Constants.VNPAY_PARAM_TRANSACTION_NO, vnpTransactionNo);
-		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
-		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
-
-		PaymentGatewayVnPay paymentGateway = (PaymentGatewayVnPay) paymentFactory.getPaymentGateway(PaymentType.VnPay);
-		VnPayOrderStatusResponse orderStatusResponse = paymentGateway.processVnPayOrder(paramMap, vnpTmnCode);
-
-		// Return data
-		return new ResponseEntity<>(orderStatusResponse, HttpStatus.OK);
-	}
+//	@GetMapping("/checkVnPayOrderInfo")
+//	@Timed
+//	@ApiOperation(value = "checkVnPayOrderInfo", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
+//	public ResponseEntity<VnPayOrderStatusResponse> checkvVnPayOrderInfo(@RequestParam("vnp_Amount") String vnpAmount,
+//			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam("vnp_BankTranNo") String vnpBankTranNo,
+//			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
+//			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
+//			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
+//			@RequestParam("vnp_TxnRef") String vnpTxnRef, @RequestParam("vnp_SecureHash") String vnpSecureHash)
+//			throws URISyntaxException, AgencyBusinessException {
+//		log.info("START REST request to checkvVnPayOrderInfo, {}");
+//
+//		Map<String, String> paramMap = new LinkedHashMap<>();
+//		paramMap.put(Constants.VNPAY_PARAM_AMOUNT, vnpAmount);
+//		paramMap.put(Constants.VNPAY_PARAM_BANK_CODE, vnpBankCode);
+//		paramMap.put(Constants.VNPAY_PARAM_BANK_TRAN_NO, vnpBankTranNo);
+//		paramMap.put(Constants.VNPAY_PARAM_CARD_TYPE, vnpCardType);
+//		paramMap.put(Constants.VNPAY_PARAM_ORDER_INFO, vnpOrderInfo);
+//		paramMap.put(Constants.VNPAY_PARAM_PAY_DATE, vnpPayDate);
+//		paramMap.put(Constants.VNPAY_PARAM_RESPONSE_CODE, vnpResponseCode);
+//		paramMap.put(Constants.VNPAY_PARAM_TMN_CODE, vnpTmnCode);
+//		paramMap.put(Constants.VNPAY_PARAM_TRANSACTION_NO, vnpTransactionNo);
+//		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
+//		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
+//
+//		PaymentGatewayVnPay paymentGateway = (PaymentGatewayVnPay) paymentFactory.getPaymentGateway(PaymentType.VnPay);
+//		VnPayOrderStatusResponse orderStatusResponse = paymentGateway.processVnPayOrder(paramMap, vnpTmnCode);
+//
+//		// Return data
+//		return new ResponseEntity<>(orderStatusResponse, HttpStatus.OK);
+//	}
 
 	@GetMapping("/returnViettelPay")
 	@Timed
@@ -459,12 +480,20 @@ public class PaymentResource extends AbstractAgencyResource {
 		}
 		
 		// Append status code
-		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getRspCode();
+		redirectUrl = redirectUrl + "?paymentStatus=" + paymentResult.getResponseType();
 		if (StringUtils.isNotEmpty(paymentResult.getMciAddId())) {
 			redirectUrl = redirectUrl + "&paymentPay=" + paymentResult.getMciAddId();	
 		}
 		if (StringUtils.isNotEmpty(paymentResult.getPolicyNumber())) {
 			redirectUrl = redirectUrl + "&paymentPolicy=" + paymentResult.getPolicyNumber();	
+		}
+		
+		// NamNH
+		if (StringUtils.isNotEmpty(paymentResult.getLinkValidateTransaction())) {
+			redirectUrl = redirectUrl + "&validateTransactionLink=" + paymentResult.getLinkValidateTransaction();	
+		}
+		if (StringUtils.isNotEmpty(paymentResult.getTransRef())) {
+			redirectUrl = redirectUrl + "&transRef=" + paymentResult.getTransRef();	
 		}
 		
 		return redirectUrl;
@@ -547,9 +576,11 @@ public class PaymentResource extends AbstractAgencyResource {
 				// update ngay Travelcare
 				if (agreement.getLineId().equals("TVC")) {
 					if (agreement.getGycbhId() != null) {
+						Date dateNow = new Date();
 						Travelcare travelcare = travelcareRepository.findOne(agreement.getGycbhId());
 						if (travelcare != null) {
-							travelcare.setPolicyDeliver(new Date());	// ngay cap
+							travelcare.setPolicyDeliver(dateNow);	// ngay cap
+							travelcare.setDateOfPayment(dateNow);
 							travelcareRepository.save(travelcare);
 						}
 					}

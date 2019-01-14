@@ -22,9 +22,12 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.bean.FileContentDTO;
+import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.config.GateWayVnPayConfig;
 import com.baoviet.agency.domain.AdminBuSeal;
 import com.baoviet.agency.domain.Agreement;
+import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
@@ -40,6 +43,8 @@ import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
 import com.baoviet.agency.repository.AdminBuSealRepository;
 import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
+
+import sun.misc.BASE64Encoder;
 
 @Service
 public class PaymentGatewayVnPay extends AbstractPaymentGateway {
@@ -240,32 +245,10 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			// Cap nhat trang thai
 			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
 			if (payAction != null && payAction.getPayEndDate() == null) {
-				boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
-
-				if (!orderResult) {
-					result.setRspCode("99");
-					result.setMciAddId(payAction.getMciAddId());
-					result.setPolicyNumber(payAction.getPolicyNumbers());
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
-					result.setResponseType(PaymentResponseType.ERROR);
-				}
+				// NamNH : 14/1/2019
+				processOrder(result, payAction, paramMap, vnpTmnCode);
+				result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
 				
-				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-					result.setRspCode("00");
-					result.setMessage("Confirm Success");
-					if (payAction != null) {
-						result.setMciAddId(payAction.getMciAddId());
-						result.setPolicyNumber(payAction.getPolicyNumbers());	
-					}
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=00");
-					result.setResponseType(PaymentResponseType.SUCCESS);
-				} else {
-					result.setRspCode("99");
-					result.setMciAddId(payAction.getMciAddId());
-					result.setPolicyNumber(payAction.getPolicyNumbers());	
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
-					result.setResponseType(PaymentResponseType.ERROR);
-				}
 			} else if (payAction != null && payAction.getPayEndDate() != null) {
 				result.setRspCode("02");
 				result.setMessage("Order already confirmed");
@@ -280,6 +263,11 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				result.setResponseType(PaymentResponseType.ERROR);
 			}
 		} else {
+			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
+			if (payAction != null) {
+				result.setMciAddId(payAction.getMciAddId());
+				result.setPolicyNumber(payAction.getPolicyNumbers());
+			}
 			result.setRspCode("97");
 			result.setMessage("Chu ky khong hop le");
 			result.setRedirectUrl(redirectUrl + "?paymentStatus=97");
@@ -287,43 +275,87 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		}
 		return result;
 	}
-
-	public VnPayOrderStatusResponse processVnPayOrder(Map<String, String> paramMap, String vnpTmnCode) {
-		VnPayOrderStatusResponse orderStatusResponse = new VnPayOrderStatusResponse();
-		if (validateSignature(paramMap)) {
-			// Cap nhat trang thai
-			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
-			if (payAction == null) {
-				orderStatusResponse.setRspCode(VnPayOrderStatus.ORDER_NOT_FOUND.getCode());
-				orderStatusResponse.setMessage(VnPayOrderStatus.ORDER_NOT_FOUND.getMessage());
-			} else {
-				if (payAction.getPayEndDate() != null) {
-					orderStatusResponse.setRspCode(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getCode());
-					orderStatusResponse.setMessage(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getMessage());
-				} else {
-					boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
-					if (!orderResult) {
-						orderStatusResponse.setRspCode(VnPayOrderStatus.SUCCESSFUL.getCode());
-						orderStatusResponse.setMessage(VnPayOrderStatus.SUCCESSFUL.getMessage());
-					}
-				}
-			}
-
-			if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-				log.info("Thanh toán thành công, OrderId=" + paramMap.get(Constants.VNPAY_PARAM_TXN_REF)
-						+ ", VNPAY TranId=" + paramMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
-			} else {
-				log.info("Thanh toán lỗi, OrderId=" + paramMap.get(Constants.VNPAY_PARAM_TXN_REF) + ", VNPAY TranId="
-						+ paramMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
-			}
-		} else {
-			orderStatusResponse.setRspCode(VnPayOrderStatus.INVALID_SIGNATURE.getCode());
-			orderStatusResponse.setMessage(VnPayOrderStatus.INVALID_SIGNATURE.getMessage());
+	
+	@Override
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
+		PayAction payAction = payActionRepository.findByMciAddId(transRef);
+		
+		String[] dataArr = responseString.split("&");
+		Map<String, String> dataMap = new HashMap<>();
+		for (String data : dataArr) {
+			String[] dataPair = data.split("=");
+			dataMap.put(dataPair[0], dataPair[1]);
 		}
-		return orderStatusResponse;
+
+		if (dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE) != null
+				&& !dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).isEmpty()) {
+			
+			String transactionStatus = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS);
+			String transactionNo = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO);
+			payAction.setPayEndDate(new Date());
+
+			if (dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS) != null
+					&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS).isEmpty()
+					&& dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO) != null
+					&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO).isEmpty()) {
+				payAction.setTransactionId(dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
+				payAction.setPayLog("\\n[Response]: " + responseString);
+
+				if (transactionStatus.equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+					payAction.setStatus(91);
+					updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), transactionNo,
+							payAction);
+				} else {
+					payAction.setStatus(90);
+					updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), transactionNo, payAction);
+				}
+			} else {
+				payAction.setStatus(90);
+				updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), "", payAction);
+			}
+
+			payActionRepository.save(payAction);
+		}
+		
+		return true;
 	}
 
-	private boolean processOrder(PayAction payAction, Map<String, String> paramMap, String vnpTmnCode) {
+//	public VnPayOrderStatusResponse processVnPayOrder(Map<String, String> paramMap, String vnpTmnCode) {
+//		VnPayOrderStatusResponse orderStatusResponse = new VnPayOrderStatusResponse();
+//		if (validateSignature(paramMap)) {
+//			// Cap nhat trang thai
+//			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
+//			if (payAction == null) {
+//				orderStatusResponse.setRspCode(VnPayOrderStatus.ORDER_NOT_FOUND.getCode());
+//				orderStatusResponse.setMessage(VnPayOrderStatus.ORDER_NOT_FOUND.getMessage());
+//			} else {
+//				if (payAction.getPayEndDate() != null) {
+//					orderStatusResponse.setRspCode(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getCode());
+//					orderStatusResponse.setMessage(VnPayOrderStatus.ORDER_ALREADY_CONFIRMED.getMessage());
+//				} else {
+//					boolean orderResult = processOrder(payAction, paramMap, vnpTmnCode);
+//					if (!orderResult) {
+//						orderStatusResponse.setRspCode(VnPayOrderStatus.SUCCESSFUL.getCode());
+//						orderStatusResponse.setMessage(VnPayOrderStatus.SUCCESSFUL.getMessage());
+//					}
+//				}
+//			}
+//
+//			if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+//				log.info("Thanh toán thành công, OrderId=" + paramMap.get(Constants.VNPAY_PARAM_TXN_REF)
+//						+ ", VNPAY TranId=" + paramMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
+//			} else {
+//				log.info("Thanh toán lỗi, OrderId=" + paramMap.get(Constants.VNPAY_PARAM_TXN_REF) + ", VNPAY TranId="
+//						+ paramMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
+//			}
+//		} else {
+//			orderStatusResponse.setRspCode(VnPayOrderStatus.INVALID_SIGNATURE.getCode());
+//			orderStatusResponse.setMessage(VnPayOrderStatus.INVALID_SIGNATURE.getMessage());
+//		}
+//		return orderStatusResponse;
+//	}
+
+	private void processOrder(PaymentResult result, PayAction payAction, Map<String, String> paramMap, String vnpTmnCode) {
 		Date now = new Date();
 		String createdDate = new SimpleDateFormat("yyyyMMddHHmmss").format(now);
 		String transDate = new SimpleDateFormat("yyyyMMddHHmmss").format(payAction.getPayStartDate());
@@ -332,85 +364,53 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 
 		StringBuffer checkOrderUrl = new StringBuffer(config.getQuerydr());
 		checkOrderUrl.append("?");
+		String joinChar = "@@@";
 		try {
 			checkOrderUrl.append("vnp_Command=");
 			checkOrderUrl.append(URLEncoder.encode("querydr", "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_CreateDate=");
 			checkOrderUrl.append(createdDate);
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_IpAddr=");
 			checkOrderUrl.append(URLEncoder.encode("::1", "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_Merchant=");
 			checkOrderUrl.append(URLEncoder.encode("VNPAY", "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_OrderInfo=");
 			checkOrderUrl.append(URLEncoder.encode(
 					"Call api lay thong tin don hang voi ma = " + paramMap.get(Constants.VNPAY_PARAM_TXN_REF),
 					"UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_TmnCode=");
 			checkOrderUrl.append(URLEncoder.encode(vnpTmnCode, "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_TransDate=");
 			checkOrderUrl.append(transDate);
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_TxnRef=");
 			checkOrderUrl.append(URLEncoder.encode(paramMap.get(Constants.VNPAY_PARAM_TXN_REF), "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 			checkOrderUrl.append("vnp_Version=");
 			checkOrderUrl.append(URLEncoder.encode(config.getVersion(), "UTF-8"));
-			checkOrderUrl.append("&");
+			checkOrderUrl.append(joinChar);
 
 			String secureHash = getSecureHash(paramMap, vnpTmnCode);
 			checkOrderUrl.append("vnp_SecureHash=");
 			checkOrderUrl.append(secureHash);
-
-			RequestEntity<?> requestEntity = new RequestEntity<>(HttpMethod.GET, URI.create(checkOrderUrl.toString()));
-			ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-			String responseString = responseEntity.getBody();
-			String[] dataArr = responseString.split("&");
-			Map<String, String> dataMap = new HashMap<>();
-			for (String data : dataArr) {
-				String[] dataPair = data.split("=");
-				dataMap.put(dataPair[0], dataPair[1]);
+			
+			// Base64
+			result.setLinkValidateTransaction(checkOrderUrl.toString());
+			result.setTransRef(URLEncoder.encode(paramMap.get(Constants.VNPAY_PARAM_TXN_REF), "UTF-8"));
+			if (payAction != null) {
+				result.setPolicyNumber(payAction.getPolicyNumbers());	
 			}
+			
 
-			if (dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE) != null
-					&& !dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).isEmpty()) {
-				
-				String transactionStatus = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS);
-				String transactionNo = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO);
-				payAction.setPayEndDate(new Date());
-
-				if (dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS) != null
-						&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS).isEmpty()
-						&& dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO) != null
-						&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO).isEmpty()) {
-					payAction.setTransactionId(dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
-					payAction.setPayLog("\\n[Response]: " + responseString);
-
-					if (transactionStatus.equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-						payAction.setStatus(91);
-						updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), transactionNo,
-								payAction);
-					} else {
-						payAction.setStatus(90);
-						updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), transactionNo, payAction);
-					}
-				} else {
-					payAction.setStatus(90);
-					updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), "", payAction);
-				}
-
-				payActionRepository.save(payAction);
-			}
-
-			return true;
 		} catch (Exception e) {
 			log.info("Error: " + e.getMessage());
-			return false;
+			return;
 		}
 	}
 

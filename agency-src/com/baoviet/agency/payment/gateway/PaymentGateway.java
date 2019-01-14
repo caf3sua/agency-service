@@ -19,4 +19,6 @@ public interface PaymentGateway {
 	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) throws AgencyBusinessException;
 	
 	public PaymentResponseType checkGiftCode(String giftCode, String email, List<Agreement> agreements);
+	
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException;
 }

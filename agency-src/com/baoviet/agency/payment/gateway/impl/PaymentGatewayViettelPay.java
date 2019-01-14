@@ -27,6 +27,7 @@ import com.baoviet.agency.config.GateWayViettelPayConfig;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.common.Constants;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.common.PaymentStatus;
@@ -331,5 +332,11 @@ public class PaymentGatewayViettelPay extends AbstractPaymentGateway {
 		payAction.setBankcode("VIETTELPAY");
 		payAction.setStatus(status);
 		payActionRepository.save(payAction);
+	}
+
+	@Override
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

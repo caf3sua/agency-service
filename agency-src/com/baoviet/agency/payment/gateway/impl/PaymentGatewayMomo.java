@@ -31,6 +31,7 @@ import com.baoviet.agency.config.GateWayMomoConfig;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.common.Constants;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.common.PaymentStatus;
@@ -235,5 +236,11 @@ public class PaymentGatewayMomo extends AbstractPaymentGateway {
 			log.info("Error: " + e.getMessage());
 			return false;
 		}
+	}
+
+	@Override
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

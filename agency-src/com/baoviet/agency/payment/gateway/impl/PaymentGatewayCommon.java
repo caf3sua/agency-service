@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
 import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
@@ -32,5 +33,11 @@ public class PaymentGatewayCommon extends AbstractPaymentGateway {
 	@Override
 	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) {
 		return null;
+	}
+
+	@Override
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

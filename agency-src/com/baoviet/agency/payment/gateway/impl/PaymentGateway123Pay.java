@@ -58,4 +58,10 @@ public class PaymentGateway123Pay extends AbstractPaymentGateway {
 	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) {
 		return null;
 	}
+
+	@Override
+	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
