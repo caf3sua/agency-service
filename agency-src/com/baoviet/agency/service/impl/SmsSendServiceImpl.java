@@ -8,6 +8,9 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.tempuri.ReceiveMT;
+import org.tempuri.ReceiveMTSoap;
 
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.SmsSend;
@@ -23,11 +28,9 @@ import com.baoviet.agency.dto.SmsSendDTO;
 import com.baoviet.agency.repository.SmsSendRepository;
 import com.baoviet.agency.service.SmsSendService;
 import com.baoviet.agency.service.mapper.SmsSendMapper;
+import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.logging.SOAPLoggingHandler;
 import com.baoviet.agency.web.rest.ProductHomeResource;
-
-import vn.bluezone.w2m.SMS;
-import vn.bluezone.w2m.SMSSoap;
 
 /**
  * Service Implementation for managing SmsSend.
@@ -55,6 +58,24 @@ public class SmsSendServiceImpl implements SmsSendService {
 
 	@Value("${spring.application.ws.sms.password}")
 	private String wsPassword;
+	
+	@Value("${spring.application.ws.sms.requestid}")
+	private String wsRequestid;
+	
+	@Value("${spring.application.ws.sms.typemt}")
+	private String wsTypemt;
+	
+	@Value("${spring.application.ws.sms.pkCorp}")
+	private String wsPkCorp;
+	
+	@Value("${spring.application.ws.sms.deptcode1}")
+	private String wsDeptcode1;
+	
+	@Value("${spring.application.ws.sms.deptcode2}")
+	private String wsDeptcode2;
+	
+	private static final Integer INPUT_TYPE = 117;
+	private static final Integer MESS_TYPE = 0;
 
 	@Override
 	public String save(SmsSendDTO info) {
@@ -77,17 +98,44 @@ public class SmsSendServiceImpl implements SmsSendService {
 	// 1 , 2: success; 0: error
 	public void sendSMS(AgreementDTO voAg, Contact contact, String phone, String content) {
 		log.debug("Request to sendSMS, phone {}, content {}", phone, content);
-		String status = getService().sendMT(phone, content, "", "", wsUsername, wsPassword);
+		
+		String pkServiceid = voAg.getAgreementId() + "_" + DateUtils.date2StrHHMMSS(new Date());
+		
+		String result = getService().inputMT(INPUT_TYPE, MESS_TYPE, phone, content, wsRequestid, wsTypemt, "", wsUsername, wsPassword, wsPkCorp, pkServiceid, "", wsDeptcode1, wsDeptcode2);
+		
+        JSONArray arr;
+        String status = "";
+		try {
+			JSONObject obj = new JSONObject(result);
+			arr = obj.getJSONArray("results");
+			for (int i = 0; i < arr.length(); i++) {
+	            status = arr.getJSONObject(i).getString("error");
+	        }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		int iStatus = Integer.parseInt(status);
 		
 		// Save
 		insertSmsSend(voAg, contact, phone, iStatus);
 	}
 	
+	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private SMSSoap getService() {
-		SMS smsSoap = new SMS();
-		SMSSoap smsService = smsSoap.getSMSSoap();
+	private ReceiveMTSoap getService() {
+//		SMS smsSoap = new SMS();
+//		SMSSoap smsService = smsSoap.getSMSSoap();
+//
+//		// Set url ws
+//		((BindingProvider) smsService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsUrl);
+//
+//		Binding binding = ((BindingProvider) smsService).getBinding();
+//		List handlerChain = binding.getHandlerChain();
+//		handlerChain.add(new SOAPLoggingHandler(wsUsername, wsPassword));
+//		binding.setHandlerChain(handlerChain);
+		
+		ReceiveMT smsSoap = new ReceiveMT();
+		ReceiveMTSoap smsService = smsSoap.getReceiveMTSoap();
 
 		// Set url ws
 		((BindingProvider) smsService).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, wsUrl);
@@ -96,6 +144,7 @@ public class SmsSendServiceImpl implements SmsSendService {
 		List handlerChain = binding.getHandlerChain();
 		handlerChain.add(new SOAPLoggingHandler(wsUsername, wsPassword));
 		binding.setHandlerChain(handlerChain);
+
 
 		return smsService;
 	}

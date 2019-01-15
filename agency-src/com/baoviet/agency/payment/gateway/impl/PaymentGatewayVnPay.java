@@ -248,6 +248,25 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				// NamNH : 14/1/2019
 				processOrder(result, payAction, paramMap, vnpTmnCode);
 				result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
+				result.setRspCode("00");
+				result.setMessage("Confirm Success");
+				
+				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+					result.setRspCode("00");
+					result.setMessage("Confirm Success");
+					if (payAction != null) {
+						result.setMciAddId(payAction.getMciAddId());
+						result.setPolicyNumber(payAction.getPolicyNumbers());	
+					}
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=00");
+					result.setResponseType(PaymentResponseType.SUCCESS);
+				} else {
+					result.setRspCode("99");
+					result.setMciAddId(payAction.getMciAddId());
+					result.setPolicyNumber(payAction.getPolicyNumbers());	
+					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
+					result.setResponseType(PaymentResponseType.ERROR);
+				}
 				
 			} else if (payAction != null && payAction.getPayEndDate() != null) {
 				result.setRspCode("02");

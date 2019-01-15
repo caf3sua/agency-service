@@ -56,9 +56,14 @@ spring:
                     password: 9A5459078CDFED5305E8F655F7586A36DFC1E46475ED937D53AFCDB468790C9E
                     sysCode: AGENCY
             sms:
-                url: http://172.29.1.76/INSUREJ_BRANDNAME/SMSSendService.asmx
-                username: CMCT_BVHN
-                password: cmctelecom
+                url: https://smsc.baoviet.com.vn/ReceiveMT/WebServices/ReceiveMT.asmx
+                username: baoviet
+                password: test123
+                requestid: VMGtest
+                typemt: Br
+                pkCorp: 1003
+                deptcode1: Z
+                deptcode2: Z
             eclaim:
                 url: https://172.29.13.13:8080/api/manager/getClaimInformation
     profiles:

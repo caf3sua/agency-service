@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _AuthTokenKeyHeader_QNAME = new QName("http://tempuri.org/", "AuthTokenKeyHeader");
+    private final static QName _String_QNAME = new QName("http://tempuri.org/", "string");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.tempuri
@@ -34,68 +34,28 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetDMLoaiAnChi }
+     * Create an instance of {@link InputMT }
      * 
      */
-    public GetDMLoaiAnChi createGetDMLoaiAnChi() {
-        return new GetDMLoaiAnChi();
+    public InputMT createInputMT() {
+        return new InputMT();
     }
 
     /**
-     * Create an instance of {@link GetDMLoaiAnChiResponse }
+     * Create an instance of {@link InputMTResponse }
      * 
      */
-    public GetDMLoaiAnChiResponse createGetDMLoaiAnChiResponse() {
-        return new GetDMLoaiAnChiResponse();
+    public InputMTResponse createInputMTResponse() {
+        return new InputMTResponse();
     }
 
     /**
-     * Create an instance of {@link GetAnChiByAgencyResponse }
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
-    public GetAnChiByAgencyResponse createGetAnChiByAgencyResponse() {
-        return new GetAnChiByAgencyResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetAnChiByAgency }
-     * 
-     */
-    public GetAnChiByAgency createGetAnChiByAgency() {
-        return new GetAnChiByAgency();
-    }
-
-    /**
-     * Create an instance of {@link UpdateListAnChiResponse }
-     * 
-     */
-    public UpdateListAnChiResponse createUpdateListAnChiResponse() {
-        return new UpdateListAnChiResponse();
-    }
-
-    /**
-     * Create an instance of {@link AuthTokenKeyHeader }
-     * 
-     */
-    public AuthTokenKeyHeader createAuthTokenKeyHeader() {
-        return new AuthTokenKeyHeader();
-    }
-
-    /**
-     * Create an instance of {@link UpdateListAnChi }
-     * 
-     */
-    public UpdateListAnChi createUpdateListAnChi() {
-        return new UpdateListAnChi();
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AuthTokenKeyHeader }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://tempuri.org/", name = "AuthTokenKeyHeader")
-    public JAXBElement<AuthTokenKeyHeader> createAuthTokenKeyHeader(AuthTokenKeyHeader value) {
-        return new JAXBElement<AuthTokenKeyHeader>(_AuthTokenKeyHeader_QNAME, AuthTokenKeyHeader.class, null, value);
+    @XmlElementDecl(namespace = "http://tempuri.org/", name = "string")
+    public JAXBElement<String> createString(String value) {
+        return new JAXBElement<String>(_String_QNAME, String.class, null, value);
     }
 
 }
