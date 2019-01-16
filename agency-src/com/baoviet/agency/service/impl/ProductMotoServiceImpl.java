@@ -28,6 +28,7 @@ import com.baoviet.agency.service.ProductMotoService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.ValidateUtils;
+import com.baoviet.agency.web.rest.vm.ContactCreateVM;
 import com.baoviet.agency.web.rest.vm.PremiumMotoVM;
 import com.baoviet.agency.web.rest.vm.ProductMotoVM;
 
@@ -63,11 +64,11 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 	public ProductMotoVM createOrUpdatePolicy(ProductMotoVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
 		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
 		
-		// TH dùng cho MOMO
-		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
-			validateAndSetValueContactMOMO(obj, currentAgency);
-			
-		}
+//		// TH dùng cho MOMO
+//		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
+//			validateAndSetValueContactMOMO(obj, currentAgency);
+//			
+//		}
 		
 		// ValidGycbhNumber : Không dùng trong TH update
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
@@ -381,7 +382,8 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 				throw new AgencyBusinessException("contactAddress", ErrorCode.NULL_OR_EMPTY, "Địa chỉ khách hàng không được để trống");
 			}
 			
-			ContactDTO data = contactService.create(getContactCreate(obj, currentAgency), null);
+			ContactCreateVM param = new ContactCreateVM();
+			ContactDTO data = contactService.create(getContactCreate(obj, currentAgency), param);
 			if (data != null) {
 				obj.setContactCode(data.getContactCode());
 				if (!StringUtils.isEmpty(obj.getContactName())) {

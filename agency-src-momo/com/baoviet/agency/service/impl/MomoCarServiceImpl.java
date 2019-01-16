@@ -788,9 +788,11 @@ public class MomoCarServiceImpl implements MomoCarService {
     				objContact.setPhone(dto.getContactPhonenumber());
     				contactCreateVM.setPhone(dto.getContactPhonenumber());
     	    	}
+    			objContact.setGroupType("POTENTIAL");
+    			objContact.setCategoryType("PERSON");
     			String contactCode = contactService.generateContactCode("T000080696");
     			objContact.setContactCode(contactCode);
-    			objContact.setType("MOMO");
+    			objContact.setType("T000080696");
     			ContactDTO data = contactService.create(objContact, contactCreateVM);
     			if(data != null) {
     				obj.setContactCode(data.getContactCode());	
