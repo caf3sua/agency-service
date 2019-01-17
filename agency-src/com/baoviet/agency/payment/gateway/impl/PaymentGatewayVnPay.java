@@ -38,6 +38,7 @@ import com.baoviet.agency.payment.common.PaymentStatus;
 import com.baoviet.agency.payment.common.PaymentType;
 import com.baoviet.agency.payment.common.VnPayOrderStatus;
 import com.baoviet.agency.payment.dto.PaymentResult;
+import com.baoviet.agency.payment.dto.PaymentResultVnPay;
 import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
 import com.baoviet.agency.repository.AdminBuSealRepository;
@@ -248,9 +249,7 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				// NamNH : 14/1/2019
 				processOrder(result, payAction, paramMap, vnpTmnCode);
 				result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
-				result.setRspCode("00");
-				result.setMessage("Confirm Success");
-				
+		
 				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
 					result.setRspCode("00");
 					result.setMessage("Confirm Success");
@@ -258,13 +257,11 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 						result.setMciAddId(payAction.getMciAddId());
 						result.setPolicyNumber(payAction.getPolicyNumbers());	
 					}
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=00");
-					result.setResponseType(PaymentResponseType.SUCCESS);
+					result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
 				} else {
 					result.setRspCode("99");
 					result.setMciAddId(payAction.getMciAddId());
 					result.setPolicyNumber(payAction.getPolicyNumbers());	
-					result.setRedirectUrl(redirectUrl + "?paymentStatus=99");
 					result.setResponseType(PaymentResponseType.ERROR);
 				}
 				
@@ -273,7 +270,6 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				result.setMessage("Order already confirmed");
 				result.setMciAddId(payAction.getMciAddId());
 				result.setPolicyNumber(payAction.getPolicyNumbers());	
-				result.setRedirectUrl(redirectUrl + "?paymentStatus=02");
 				result.setResponseType(PaymentResponseType.ERROR);
 				return result;
 			} else {
@@ -289,7 +285,6 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			}
 			result.setRspCode("97");
 			result.setMessage("Chu ky khong hop le");
-			result.setRedirectUrl(redirectUrl + "?paymentStatus=97");
 			result.setResponseType(PaymentResponseType.ERROR);
 		}
 		return result;
@@ -337,6 +332,71 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public PaymentResultVnPay updateStatusWebVnPay(String transRef, String responseString) throws AgencyBusinessException {
+		PaymentResultVnPay result = new PaymentResultVnPay();
+		
+		PayAction payAction = payActionRepository.findByMciAddId(transRef);
+		
+		String[] dataArr = responseString.split("&");
+		Map<String, String> dataMap = new HashMap<>();
+		for (String data : dataArr) {
+			String[] dataPair = data.split("=");
+			dataMap.put(dataPair[0], dataPair[1]);
+		}
+		
+		if (payAction != null && payAction.getPayEndDate() == null) {
+			if (dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+				result.setRspCode("00");
+				result.setMessage("Confirm Success");
+			} else {
+				result.setRspCode("99");
+			}
+		} else if (payAction != null && payAction.getPayEndDate() != null) {
+			result.setRspCode("02");
+			result.setMessage("Order already confirmed");
+			return result;
+		} else {
+			result.setRspCode("01");
+			result.setMessage("Order not found");
+			return result;
+		}
+
+		if (dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE) != null && !dataMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).isEmpty()) {
+			
+			String transactionStatus = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS);
+			String transactionNo = dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO);
+			payAction.setPayEndDate(new Date());
+
+			if (dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS) != null
+					&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_STATUS).isEmpty()
+					&& dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO) != null
+					&& !dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO).isEmpty()) {
+				payAction.setTransactionId(dataMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO));
+				payAction.setPayLog("\\n[Response]: " + responseString);
+
+				if (transactionStatus.equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+					payAction.setStatus(91);
+					updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), transactionNo, payAction);
+				} else {
+					payAction.setStatus(90);
+					updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), transactionNo, payAction);
+					result.setRspCode("99");
+					result.setMessage("");
+				}
+			} else {
+				payAction.setStatus(90);
+				updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), "", payAction);
+				result.setRspCode("99");
+				result.setMessage("");
+			}
+
+			payActionRepository.save(payAction);
+		}
+		
+		return result;
 	}
 
 //	public VnPayOrderStatusResponse processVnPayOrder(Map<String, String> paramMap, String vnpTmnCode) {

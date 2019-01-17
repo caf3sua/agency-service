@@ -9,6 +9,7 @@ import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.common.PaymentResponseType;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
+import com.baoviet.agency.payment.dto.PaymentResultVnPay;
 import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
 
 public interface PaymentGateway {
@@ -21,4 +22,6 @@ public interface PaymentGateway {
 	public PaymentResponseType checkGiftCode(String giftCode, String email, List<Agreement> agreements);
 	
 	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException;
+
+	public PaymentResultVnPay updateStatusWebVnPay(String transRef, String responseString) throws AgencyBusinessException;
 }

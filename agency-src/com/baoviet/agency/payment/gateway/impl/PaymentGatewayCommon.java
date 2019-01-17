@@ -12,6 +12,7 @@ import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.payment.domain.PaymentBank;
 import com.baoviet.agency.payment.dto.PaymentResult;
+import com.baoviet.agency.payment.dto.PaymentResultVnPay;
 import com.baoviet.agency.payment.gateway.AbstractPaymentGateway;
 import com.baoviet.agency.web.rest.vm.PaymentProcessRequestVM;
 
@@ -39,5 +40,12 @@ public class PaymentGatewayCommon extends AbstractPaymentGateway {
 	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public PaymentResultVnPay updateStatusWebVnPay(String transRef, String responseString)
+			throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

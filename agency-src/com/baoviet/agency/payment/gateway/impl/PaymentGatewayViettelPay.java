@@ -34,6 +34,7 @@ import com.baoviet.agency.payment.common.PaymentStatus;
 import com.baoviet.agency.payment.common.PaymentType;
 import com.baoviet.agency.payment.common.ViettelCheckOrderStatus;
 import com.baoviet.agency.payment.dto.PaymentResult;
+import com.baoviet.agency.payment.dto.PaymentResultVnPay;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoRequest;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoResponse;
 import com.baoviet.agency.payment.dto.ViettelResponseDTO;
@@ -338,5 +339,12 @@ public class PaymentGatewayViettelPay extends AbstractPaymentGateway {
 	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public PaymentResultVnPay updateStatusWebVnPay(String transRef, String responseString)
+			throws AgencyBusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

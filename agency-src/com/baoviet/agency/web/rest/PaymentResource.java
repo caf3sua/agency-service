@@ -50,10 +50,8 @@ import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoRequest;
 import com.baoviet.agency.payment.dto.ViettelCheckOrderInfoResponse;
 import com.baoviet.agency.payment.dto.ViettelUpdateOrderStatusRequest;
 import com.baoviet.agency.payment.dto.ViettelUpdateOrderStatusResponse;
-import com.baoviet.agency.payment.dto.VnPayOrderStatusResponse;
 import com.baoviet.agency.payment.gateway.PaymentGateway;
 import com.baoviet.agency.payment.gateway.impl.PaymentGatewayViettelPay;
-import com.baoviet.agency.payment.gateway.impl.PaymentGatewayVnPay;
 import com.baoviet.agency.repository.GhiInsurejRepository;
 import com.baoviet.agency.repository.PayActionRepository;
 import com.baoviet.agency.repository.TravelcareRepository;
@@ -348,10 +346,42 @@ public class PaymentResource extends AbstractAgencyResource {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
-//        headers.add("X-Total-Count", Long.toString(page.getTotalElements()));
 		headers.add("X-Validate-Transaction-Link", paymentResult.getLinkValidateTransaction());
 		
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+	}
+	
+	// web call lấy link
+	@GetMapping("/returnVnPayWeb")
+	@Timed
+	public ResponseEntity<String> returnVnPayWeb(Device device, @RequestParam(value = "vnp_Amount", required=false) String vnpAmount,
+			@RequestParam("vnp_BankCode") String vnpBankCode, @RequestParam(value = "vnp_BankTranNo", required=false) String vnpBankTranNo,
+			@RequestParam("vnp_CardType") String vnpCardType, @RequestParam("vnp_OrderInfo") String vnpOrderInfo,
+			@RequestParam("vnp_PayDate") String vnpPayDate, @RequestParam("vnp_ResponseCode") String vnpResponseCode,
+			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
+			@RequestParam("vnp_TxnRef") String vnpTxnRef, @RequestParam("vnp_SecureHash") String vnpSecureHash)
+			throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to returnVnPay, {}");
+
+		Map<String, String> paramMap = new LinkedHashMap<>();
+		paramMap.put(Constants.VNPAY_PARAM_AMOUNT, vnpAmount);
+		paramMap.put(Constants.VNPAY_PARAM_BANK_CODE, vnpBankCode);
+		paramMap.put(Constants.VNPAY_PARAM_BANK_TRAN_NO, vnpBankTranNo);
+		paramMap.put(Constants.VNPAY_PARAM_CARD_TYPE, vnpCardType);
+		paramMap.put(Constants.VNPAY_PARAM_ORDER_INFO, vnpOrderInfo);
+		paramMap.put(Constants.VNPAY_PARAM_PAY_DATE, vnpPayDate);
+		paramMap.put(Constants.VNPAY_PARAM_RESPONSE_CODE, vnpResponseCode);
+		paramMap.put(Constants.VNPAY_PARAM_TMN_CODE, vnpTmnCode);
+		paramMap.put(Constants.VNPAY_PARAM_TRANSACTION_NO, vnpTransactionNo);
+		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
+		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
+
+		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
+
+		String linkResult = paymentResult.getLinkValidateTransaction();
+		
+		return new ResponseEntity<>(linkResult, HttpStatus.OK);
 	}
 	
 	@PostMapping("/update-status-vnpay")
@@ -369,6 +399,18 @@ public class PaymentResource extends AbstractAgencyResource {
 		param.setResult(result);
 		
 		return new ResponseEntity<>(param, HttpStatus.MOVED_PERMANENTLY);
+	}
+	
+	@GetMapping("/update-status-vnpayWeb")
+	@Timed
+	public ResponseEntity<PaymentResultVnPay> updateStatusVnPayWeb(@RequestParam(value = "trans_Ref") String transRef, @RequestParam(value = "response_String") String responseString)
+			throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to updateStatusVnPayWeb, {}");
+		
+		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
+		PaymentResultVnPay result = paymentGateway.updateStatusWebVnPay(transRef, responseString);
+
+		return new ResponseEntity<>(result, HttpStatus.MOVED_PERMANENTLY);
 	}
 	
 	@GetMapping("/notify-returnVnPay")
