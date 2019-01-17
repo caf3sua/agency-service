@@ -401,16 +401,19 @@ public class PaymentResource extends AbstractAgencyResource {
 		return new ResponseEntity<>(param, HttpStatus.MOVED_PERMANENTLY);
 	}
 	
-	@GetMapping("/update-status-vnpayWeb")
+	@PostMapping("/update-status-vnpayWeb")
 	@Timed
-	public ResponseEntity<PaymentResultVnPay> updateStatusVnPayWeb(@RequestParam(value = "trans_Ref") String transRef, @RequestParam(value = "response_String") String responseString)
+	public ResponseEntity<PaymentResultVnPay> updateStatusVnPayWeb(@RequestBody PaymentValidateResult param)
 			throws URISyntaxException, AgencyBusinessException {
 		log.info("START REST request to updateStatusVnPayWeb, {}");
+		
+		String transRef = param.getTransRef();
+		String responseString = param.getResponseString();
 		
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
 		PaymentResultVnPay result = paymentGateway.updateStatusWebVnPay(transRef, responseString);
 
-		return new ResponseEntity<>(result, HttpStatus.MOVED_PERMANENTLY);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 	@GetMapping("/notify-returnVnPay")
