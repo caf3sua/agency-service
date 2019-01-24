@@ -46,8 +46,10 @@ public final class AgencyConstants {
 	public class EXCEL {
 		// POTENTIAL, FAMILIAR, VIP, ORGANIZATION
 		public static final String TEMPLATE_NAME_TVC = "TVC_Template.xls";
+		public static final String TEMPLATE_NAME_MOTO = "MOTO_Template.xls";
 		public static final String IMPORT_NAME_TVC_ERROR = "Imp_TVC_Data_Error.xls";
 		public static final String EXPORT_NAME_TVC = "Export_TVC_Data.xls";
+		public static final String EXPORT_NAME_MOTO = "Export_Moto_Data.xls";
 	}
 	
 	public class CONTACT_GROUP_TYPE {

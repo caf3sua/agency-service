@@ -217,13 +217,12 @@ public class PaymentServiceImpl implements PaymentService {
 		if (StringUtils.equals(param.getStatusPayment(), "1")) {
 			AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(param.getGycbhNumber(), agentId);
 			if (agreement != null) {
-				agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
-				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
-				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_CAPDON);
-				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_CAPDON);
-				agreement.setCancelPolicySupport3(1d);	 // gửi mail
-				agreement.setCancelPolicyCommision3(1d); // gửi sms
-				
+				agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
+				agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
+				agreement.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
+				agreement.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
+				agreement.setSendEmail(1);
+				agreement.setSendSms(1);
 				AgreementDTO agreementSave = agreementService.save(agreement);
 				log.debug("REST request StatusPolicyId: {}", agreementSave.getStatusPolicyId());
 				

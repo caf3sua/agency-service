@@ -6,6 +6,7 @@ import java.util.List;
 import com.baoviet.agency.bean.DashboardDTO;
 import com.baoviet.agency.dto.PayActionDTO;
 import com.baoviet.agency.dto.eclaim.EclaimDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.dto.report.ReportDataDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.web.rest.vm.ReportSearchCriterialVM;
@@ -34,6 +35,8 @@ public interface ReportService {
 	ReportDataDTO getBaoCaoDoanhThuAdmin(ReportSearchCriterialVM obj, String adminId);
 	
 	List<PayActionDTO> getBaoCaoTransferAdmin(ReportSearchCriterialVM obj, String agentId);
+	
+	List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId);
 	
 }
 

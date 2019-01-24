@@ -24,8 +24,12 @@ import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.PayActionDTO;
 import com.baoviet.agency.dto.eclaim.EclaimDTO;
+import com.baoviet.agency.dto.excel.BasePathInfoDTO;
+import com.baoviet.agency.dto.excel.ProductMotoExcelDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.dto.report.ReportDataDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.service.ExcelService;
 import com.baoviet.agency.service.ReportService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
@@ -47,7 +51,28 @@ public class ReportResource extends AbstractAgencyResource{
 
 	@Autowired
 	private ReportService reportService;
+	
+	@Autowired
+    private ExcelService excelService;
 
+	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_REPORT_INCOME_VIEW')")
+	@PostMapping("/report-moto")
+	@ApiOperation(value="reportMoto", notes="Báo cáo khai thác Xe máy")
+	@Timed
+	public ResponseEntity<List<BcKhaiThacMotoDTO>> reportMoto(@Valid @RequestBody ReportSearchCriterialVM param)
+			throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to reportMoto : {}", param);
+
+		// Get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+		
+		// Call service
+		List<BcKhaiThacMotoDTO> result = reportService.getBaoCaoKtMoto(param, currentAgency.getMa());
+
+		// Return data
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_REPORT_INCOME_VIEW')")
 	@PostMapping("/report-income")
 	@ApiOperation(value="reportIncome", notes="Báo cáo Doanh thu")
@@ -261,6 +286,20 @@ public class ReportResource extends AbstractAgencyResource{
 		// Return data
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
+	
+	@PostMapping("/export-excel")
+    @Timed
+    @ApiOperation(value="exportExcel", notes="Export excel")
+    public ResponseEntity<BasePathInfoDTO> exportExcel(@Valid @RequestBody ProductMotoExcelDTO param) throws Exception {
+
+    	log.debug("REST request to export : {}", param);
+		
+		// Call service
+    	BasePathInfoDTO result = excelService.processExportMOT(param);
+		
+		// Return data
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 	
 	/*********************************
 	 *     Private method 

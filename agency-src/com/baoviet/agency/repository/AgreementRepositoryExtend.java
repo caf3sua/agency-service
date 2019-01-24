@@ -12,6 +12,8 @@ import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
 import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
+import com.baoviet.agency.web.rest.vm.ReportSearchCriterialVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementWaitVM;
 
@@ -62,4 +64,6 @@ public interface AgreementRepositoryExtend {
 	CountOrderDTO getCountAllOrder(String agentId);
 	
 	CountOrderDTO getAdmCountAllOrder(String departmentId);
+
+	List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId);
 }

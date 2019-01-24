@@ -31,7 +31,10 @@ import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Conversation;
 import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
+import com.baoviet.agency.service.mapper.AgreementMapper;
 import com.baoviet.agency.utils.DateUtils;
+import com.baoviet.agency.web.rest.vm.ReportSearchCriterialVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementWaitVM;
 import com.baoviet.agency.web.rest.vm.common.PageableVM;
@@ -51,6 +54,134 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	@Autowired
 	private AttachmentRepository attachmentRepository;
+	
+	@Autowired
+	private AgreementMapper agreementMapper;
+	
+	@Override
+	public List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId) {
+		String expression = "";
+
+		expression = "SELECT " + 
+				"  A.STATUS_POLICY_ID," + 
+				"  A.DATE_OF_PAYMENT," + 
+				"  M.INSURED_NAME, " + 
+				"  M.INSURED_ADDRESS INSURED_ADDRESS_DIA_CHI," + 
+				"  '' AS INSURED_ADDRESS_PHUONG_XA," + 
+				"  M.INSURED_PHONE," + 
+				"  A.RECEIVER_NAME, " + 
+				"  '' AS RECEIVER_TINH_TP," + 
+				"  '' AS RECEIVER_QUAN_HUYEN," + 
+				"  '' AS RECEIVER_PHUONG_XA," + 
+				"  A.RECEIVER_ADDRESS AS RECEIVER_DIA_CHI," + 
+				"  A.RECEIVER_MOIBLE," + 
+				"  M.REGISTRATION_NUMBER," + 
+				"  M.SOKHUNG," + 
+				"  M.SOMAY," + 
+				"  A.GYCBH_NUMBER," + 
+				"  M.TYPE_OF_MOTO_NAME," + 
+				"  A.INCEPTION_DATE," + 
+				"  A.EXPIRED_DATE," + 
+				"  M.TNDS_BB_PHI," + 
+				"  M.TNDS_TN_NGUOI," + 
+				"  M.TNDS_TN_TS," + 
+				"  M.TNDS_TN_PHI," + 
+				"  M.NNTX_SO_NGUOI," + 
+				"  M.NNTX_STBH," + 
+				"  M.TNDS_TN_NNTX_PHI NNTX_PHI," + 
+				"  M.CHAYNO_STBH," + 
+				"  M.CHAYNO_PHI," + 
+				"  M.VCX_STBH," + 
+				"  M.VCX_PHI," + 
+				"  M.TONG_PHI," + 
+				"  A.MCI_ADD_ID," + 
+				"  A.AGREEMENT_ID," + 
+				"  A.PAYMENT_GATEWAY," + 
+				"  M.GHICHU"
+				+ " FROM AGREEMENT A JOIN MOTO M ON A.GYCBH_ID = M.ID"
+				+ " WHERE A.LINE_ID = 'MOT' AND A.STATUS_POLICY_ID IN ('100','91') AND A.AGENT_ID = :pType ";
+		
+		if (StringUtils.isNotEmpty(obj.getFromDate())) {
+        	expression = expression +  " AND TRUNC(A.AGREEMENT_SYSDATE) >= TRUNC(:pFromDate)";
+        } 
+		if (StringUtils.isNotEmpty(obj.getToDate())) {
+        	expression = expression +  " AND TRUNC(A.AGREEMENT_SYSDATE) <= TRUNC(:pToDate)";
+        }
+        
+        // ORDER
+        expression = expression +  " ORDER BY A.AGREEMENT_ID DESC";
+
+        Query query = entityManager.createNativeQuery(expression);
+        
+		query.setParameter("pType", agentId);
+		if (StringUtils.isNotEmpty(obj.getFromDate())) {
+        	query.setParameter("pFromDate", DateUtils.str2Date(obj.getFromDate()));
+        } 
+		if (StringUtils.isNotEmpty(obj.getToDate())) {
+        	query.setParameter("pToDate",  DateUtils.str2Date(obj.getToDate()));
+        }
+
+		List<Object[]> data = query.getResultList();
+
+		if (data != null && data.size() > 0) {
+			return converToMoto(data);
+		}
+		return null;
+	}
+	
+	private List<BcKhaiThacMotoDTO> converToMoto(List<Object[]> data) {
+		List<BcKhaiThacMotoDTO> result = new ArrayList<>();
+		for (Object[] obj : data) {
+			BcKhaiThacMotoDTO moto = new BcKhaiThacMotoDTO();
+			
+			moto.setStatusPolicyId((String)obj[0]);
+			
+			Date dateOfPayment = new Date();
+			dateOfPayment = (Date) obj[1];
+			moto.setDateOfPayment(DateUtils.date2Str(dateOfPayment));
+			moto.setInsuredName((String)obj[2]);
+			moto.setInsuredAddressDiaChi((String)obj[3]);
+//			moto.setInsuredAddressPhuongXa((String)obj[4]);
+			moto.setInsuredPhone((String)obj[5]);
+			moto.setReceiverName((String)obj[6]);
+//			moto.setReceiverTinhTp((String)obj[7]);
+//			moto.setReceiverQuanHuyen((String)obj[8]);
+//			moto.setReceiverPhuongXa((String)obj[9]);
+			moto.setReceiverDiaChi((String)obj[10]);
+			moto.setReceiverMoible((String)obj[11]);
+			moto.setRegistrationNumber((String)obj[12]);
+			moto.setSokhung((String)obj[13]);
+			moto.setSomay((String)obj[14]);
+			moto.setPolicyNumber((String)obj[15]);
+			moto.setTypeOfMotoName((String)obj[16]);
+			
+			Date inceptionDate = new Date();
+			inceptionDate = (Date) obj[17];
+			moto.setInceptionDate(DateUtils.date2Str(inceptionDate));
+			
+			Date expiredDate = new Date();
+			expiredDate = (Date) obj[18];
+			moto.setExpiredDate(DateUtils.date2Str(expiredDate));
+			moto.setTndsBbPhi((BigDecimal)obj[19]);
+			moto.setTndsTnNguoi((BigDecimal)obj[20]);
+			moto.setTndsTnTs((BigDecimal)obj[21]);
+			moto.setTndsTnPhi((BigDecimal)obj[22]);
+			moto.setNntxSoNguoi((BigDecimal)obj[23]);
+			moto.setNntxStbh((BigDecimal)obj[24]);
+			moto.setNntxPhi((BigDecimal)obj[25]);
+			moto.setChaynoStbh((BigDecimal)obj[26]);
+			moto.setChaynoPhi((BigDecimal)obj[27]);
+			moto.setVcxStbh((BigDecimal)obj[28]);
+			moto.setVcxPhi((BigDecimal)obj[29]);
+			moto.setTongPhi((BigDecimal)obj[30]);
+			moto.setMciAddId((String)obj[31]);
+			moto.setAgreementId((String)obj[32]);
+			moto.setPaymentGateway((String)obj[33]);
+			moto.setGhichu((String)obj[34]);
+			result.add(moto);
+		}
+		return result;
+	}
 	
 	@Override
 	public List<OrderHistoryDTO> getOrderHistoryByGycbhNumber(List<AgreementHis> lstAgreementHis) {

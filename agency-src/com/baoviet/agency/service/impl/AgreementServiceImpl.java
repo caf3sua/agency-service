@@ -60,6 +60,7 @@ import com.baoviet.agency.dto.TravelCareAddDTO;
 import com.baoviet.agency.dto.TravelcareDTO;
 import com.baoviet.agency.dto.TviCareAddDTO;
 import com.baoviet.agency.dto.TvicareDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AdminUserBuRepository;
@@ -108,6 +109,7 @@ import com.baoviet.agency.web.rest.vm.AgreementYcbhOfflineVM;
 import com.baoviet.agency.web.rest.vm.HastableTNC;
 import com.baoviet.agency.web.rest.vm.OrderInfoItemVM;
 import com.baoviet.agency.web.rest.vm.OrderInfoVM;
+import com.baoviet.agency.web.rest.vm.ReportSearchCriterialVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementVM;
 import com.baoviet.agency.web.rest.vm.SearchAgreementWaitVM;
 
@@ -254,6 +256,11 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		// type, pageable));
 		return agreementRepository.findByContactIdAndAgentIdOrderByAgreementIdDesc(contactId, type, pageable)
 				.map(agreementMapper::toDto);
+	}
+	
+	@Override
+	public List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId) {
+		return agreementRepository.getBaoCaoKtMoto(obj, agentId);
 	}
 	
 	@Override
@@ -1739,4 +1746,5 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		for (AgreementDTO agreementDTO : lstAgreement) {
 		}
 	}
+	
 }

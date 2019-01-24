@@ -36,7 +36,9 @@ import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Relationship;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.dto.excel.ProductImportDTO;
+import com.baoviet.agency.dto.excel.ProductMotoExcelDTO;
 import com.baoviet.agency.dto.excel.ProductTvcExcelDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.RelationshipRepository;
@@ -223,7 +225,40 @@ public class ExcelServiceImpl implements ExcelService {
 		return result;
 	}
 
-	
+	@Override
+	public BasePathInfoDTO processExportMOT(ProductMotoExcelDTO obj) throws AgencyBusinessException {
+		BasePathInfoDTO result = new BasePathInfoDTO();
+		InputStream excelFileToRead = null;
+		try {
+			Resource resource = resourceLoader.getResource("classpath:templates/" + AgencyConstants.EXCEL.TEMPLATE_NAME_MOTO);
+			excelFileToRead = resource.getInputStream(); // <-- this is the difference
+			
+			if (excelFileToRead == null) {
+				// Load from template folder
+				throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+			}
+			
+			Workbook workbook = WorkbookFactory.create(excelFileToRead);
+			Sheet sheet0 = workbook.getSheetAt(0); // Lay sheet dau tien
+			
+			bindingDataForExcelItemMoto(obj.getData(), sheet0);
+			
+			// close resource
+			excelFileToRead.close();
+			String path = AgencyCommonUtil.customUploadFix(workbook, AgencyConstants.EXCEL.EXPORT_NAME_MOTO, folderUpload);
+			result.setPath(UEncrypt.encryptFileUploadPath(path));
+		} catch (FileNotFoundException e) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file template: " + AgencyConstants.EXCEL.TEMPLATE_NAME_MOTO);
+		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+			e.printStackTrace();
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Lỗi khi tạo file workbook excel");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new AgencyBusinessException(ErrorCode.UNKNOW_ERROR, e.getMessage());
+		}
+				
+		return result;
+	}
 	
     /*
 	 * -------------------------------------------------
@@ -246,6 +281,144 @@ public class ExcelServiceImpl implements ExcelService {
 			bindDataForOneRowTvc(obj, i, row, sheet);
 			i++;
 		}
+	}
+	
+	private void bindingDataForExcelItemMoto(List<BcKhaiThacMotoDTO> lstObj, Sheet sheet) {
+ 		Row row = null;
+		int rowNum = 1;
+		int i = 1;
+		
+		for (BcKhaiThacMotoDTO obj : lstObj) {
+			row = sheet.createRow(rowNum++);
+			bindDataForOneRowMoto(obj, i, row, sheet);
+			i++;
+		}
+	}
+	
+	private void bindDataForOneRowMoto(BcKhaiThacMotoDTO obj, int stt, Row row, Sheet sheet) {
+		CellStyle styleText = AgencyCommonUtil.styleText(sheet);
+		CellStyle styleNumber = AgencyCommonUtil.styleNumber(sheet);
+		
+		// STT
+//		createCellAndStyle(row, 0, stt, styleNumber);
+		
+		// DATE_OF_PAYMENT
+		createCellAndStyle(row, 0, obj.getDateOfPayment(), styleText);
+		
+		// INSURED_NAME
+		createCellAndStyle(row, 1, obj.getInsuredName(), styleText);
+		
+		// INSURED_ADDRESS_DIA_CHI
+		createCellAndStyle(row, 2, obj.getInsuredAddressDiaChi(), styleText);
+		
+		// INSURED_ADDRESS_PHUONG_XA
+		if (StringUtils.isNotEmpty(obj.getInsuredAddressPhuongXa())) {
+			createCellAndStyle(row, 3, obj.getInsuredAddressPhuongXa(), styleText);	
+		} else {
+			createCellAndStyle(row, 3, "", styleText);
+		}
+		
+		// INSURED_PHONE
+		createCellAndStyle(row, 4, obj.getInsuredPhone(), styleText);
+
+		// RECEIVER_NAME
+		createCellAndStyle(row, 5, obj.getReceiverName(), styleText);
+
+		// RECEIVER_TINH_TP
+		if (StringUtils.isNotEmpty(obj.getReceiverTinhTp())) {
+			createCellAndStyle(row, 6, obj.getReceiverTinhTp(), styleText);	
+		} else {
+			createCellAndStyle(row, 6, "", styleText);
+		}
+
+		// RECEIVER_QUAN_HUYEN
+		if (StringUtils.isNotEmpty(obj.getReceiverQuanHuyen())) {
+			createCellAndStyle(row, 7, obj.getReceiverQuanHuyen(), styleText);	
+		} else {
+			createCellAndStyle(row, 7, "", styleText);
+		}
+
+		// RECEIVER_PHUONG_XA
+		if (StringUtils.isNotEmpty(obj.getReceiverPhuongXa())) {
+			createCellAndStyle(row, 8, obj.getReceiverPhuongXa(), styleText);	
+		} else {
+			createCellAndStyle(row, 8,  "", styleText);
+		}
+
+		// RECEIVER_DIA_CHI
+		createCellAndStyle(row, 9, obj.getReceiverDiaChi(), styleText);
+
+		// RECEIVER_MOIBLE
+		createCellAndStyle(row, 10, obj.getReceiverMoible(), styleText);
+
+		// REGISTRATION_NUMBER
+		createCellAndStyle(row, 11, obj.getRegistrationNumber(), styleText);
+
+		// SOKHUNG
+		createCellAndStyle(row, 12, obj.getSokhung(), styleText);
+
+		// SOMAY
+		createCellAndStyle(row, 13, obj.getSomay(), styleText);
+
+		// POLICY_NUMBER
+		createCellAndStyle(row, 14, obj.getPolicyNumber(), styleText);
+
+		// TYPE_OF_MOTO_NAME
+		createCellAndStyle(row, 15, obj.getTypeOfMotoName(), styleText);
+
+		// INCEPTION_DATE
+		createCellAndStyle(row, 16, obj.getInceptionDate(), styleText);
+
+		// EXPIRED_DATE
+		createCellAndStyle(row, 17, obj.getExpiredDate(), styleText);
+
+		// TNDS_BB_PHI
+		createCellAndStyle(row, 18, obj.getTndsBbPhi(), styleText);
+
+		// TNDS_TN_NGUOI
+		createCellAndStyle(row, 19, obj.getTndsTnNguoi(), styleText);
+
+		// TNDS_TN_TS
+		createCellAndStyle(row, 20, obj.getTndsTnTs(), styleText);
+
+		// TNDS_TN_PHI
+		createCellAndStyle(row, 21, obj.getTndsTnPhi(), styleText);
+
+		// NNTX_SO_NGUOI
+		createCellAndStyle(row, 22, obj.getNntxSoNguoi(), styleText);
+
+		// NNTX_STBH
+		createCellAndStyle(row, 23, obj.getNntxStbh(), styleText);
+
+		// NNTX_PHI
+		createCellAndStyle(row, 24, obj.getNntxPhi(), styleText);
+
+		// CHAYNO_STBH
+		createCellAndStyle(row, 25, obj.getChaynoStbh(), styleText);
+
+		// CHAYNO_PHI
+		createCellAndStyle(row, 26, obj.getChaynoPhi(), styleText);
+
+		// VCX_STBH
+		createCellAndStyle(row, 27, obj.getVcxStbh(), styleText);
+
+		// VCX_PHI
+		createCellAndStyle(row, 28, obj.getVcxPhi(), styleText);
+
+		// TONG_PHI
+		createCellAndStyle(row, 29, obj.getTongPhi(), styleText);
+
+		// MCI_ADD_ID
+		createCellAndStyle(row, 30, obj.getMciAddId(), styleText);
+
+		// AGREEMENT_ID
+		createCellAndStyle(row, 31, obj.getAgreementId(), styleText);
+
+		// CONG_THANH_TOAN
+		createCellAndStyle(row, 32, obj.getPaymentGateway(), styleText);
+
+		// GHI_CHU
+		createCellAndStyle(row, 33, obj.getGhichu(), styleText);
 	}
 	
 	private void bindDataForOneRowTvc(TvcAddBaseVM obj, int stt, Row row, Sheet sheet) {

@@ -36,10 +36,10 @@ import com.baoviet.agency.dto.report.BcDoanhThuAdminDTO;
 import com.baoviet.agency.dto.report.BcDoanhThuDTO;
 import com.baoviet.agency.dto.report.BcHoaHongAdminDTO;
 import com.baoviet.agency.dto.report.BcHoaHongDTO;
+import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.dto.report.ReportDataDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
-import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.ReportRepository;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.PayActionService;
@@ -88,9 +88,6 @@ public class ReportServiceImpl implements ReportService {
 
 	@Autowired
 	private PayActionService payActionService;
-	
-	@Autowired
-	private ContactRepository contactRepository;
 	
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -211,6 +208,13 @@ public class ReportServiceImpl implements ReportService {
 	public List<PayActionDTO> getBaoCaoTransferAdmin(ReportSearchCriterialVM obj, String adminId) {
 		log.debug("REST request to getBaoCaoTransfer, ReportSearchCriterialVM{}, adminId{} :", obj, adminId);
 		List<PayActionDTO> data = payActionService.searchAdmin(obj.getFromDate(), obj.getToDate(), adminId);
+		return data;
+	}
+	
+	@Override
+	public List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId) {
+		 log.debug("REST request to getBaoCaoKtMoto, ReportSearchCriterialVM{}, agentId{} :", obj, agentId);
+		 List<BcKhaiThacMotoDTO> data = agreementService.getBaoCaoKtMoto(obj, agentId);
 		return data;
 	}
 
