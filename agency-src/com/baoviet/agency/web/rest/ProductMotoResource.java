@@ -116,7 +116,7 @@ public class ProductMotoResource extends AbstractAgencyResource{
 		ProductMotoVM motoVM = convertToVM(currentAgency, param);
 		
 		// Call service
-		ProductMotoVM data = productMotoService.createOrUpdatePolicy(motoVM, currentAgency);
+		ProductMotoVM data = productMotoService.createOrUpdatePolicyMOMO(motoVM, currentAgency);
 		
 		// Return data
         return new ResponseEntity<>(data, HttpStatus.OK);

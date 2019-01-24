@@ -13,5 +13,7 @@ public interface ProductMotoService {
 	ProductMotoVM createOrUpdatePolicy(ProductMotoVM moto, AgencyDTO currentAgency) throws AgencyBusinessException;
 	
 	PremiumMotoVM calculatePremium(PremiumMotoVM param) throws AgencyBusinessException;
+	
+	ProductMotoVM createOrUpdatePolicyMOMO(ProductMotoVM moto, AgencyDTO currentAgency) throws AgencyBusinessException;
 }
 

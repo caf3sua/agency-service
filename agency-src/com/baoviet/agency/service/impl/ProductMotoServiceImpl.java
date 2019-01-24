@@ -65,6 +65,59 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
 		
 //		// TH dùng cho MOMO
+		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
+			validateAndSetValueContactMOMO(obj, currentAgency);
+			
+		}
+		
+		// ValidGycbhNumber : Không dùng trong TH update
+		if (StringUtils.isEmpty(obj.getAgreementId())) {
+			validateGycbhNumber(obj.getGycbhNumber(), currentAgency.getMa());	
+		}
+		
+		// Check validate data
+		validateDataPolicy(obj);
+
+		Contact co = contactRepository.findOneByContactCodeAndType(obj.getContactCode(), currentAgency.getMa());
+		if (co == null) {
+			throw new AgencyBusinessException("contactCode", ErrorCode.INVALID, "Không tồn tại dữ liệu");
+		}
+
+		// kiem tra logic nghiep vu
+		// kiem tra phi BH
+		validatePremium(obj);
+
+		// gan du lieu vao obj de insert vao db
+		MotoDTO pMOTO = getObjectProduct(obj, co, currentAgency);
+
+		AgreementDTO pAGREEMENT = getObjectAgreement(obj, co, pMOTO, currentAgency);
+		
+		// thuc hien luu du lieu
+		int motoId = motoService.insertMoto(pMOTO);
+		if (motoId > 0) {
+			pAGREEMENT.setGycbhId(String.valueOf(motoId));
+			// luu agreement
+			AgreementDTO agreementDTOSave = agreementService.save(pAGREEMENT);
+			log.debug("Result of save agreement, {}", agreementDTOSave);
+			
+			// check TH thêm mới: 0, update: 1 để gửi sms
+//	        if (StringUtils.isEmpty(obj.getAgreementId())) {
+	        	// pay_action
+	         	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "0");	
+//	        } else {
+//	        	sendSmsAndSavePayActionInfo(co, agreementDTOSave, "1");
+//	        }
+	        obj.setAgreementId(agreementDTOSave.getAgreementId());
+		}
+
+		return obj;
+	}
+	
+	@Override
+	public ProductMotoVM createOrUpdatePolicyMOMO(ProductMotoVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
+		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
+		
+//		// TH dùng cho MOMO
 //		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
 //			validateAndSetValueContactMOMO(obj, currentAgency);
 //			
