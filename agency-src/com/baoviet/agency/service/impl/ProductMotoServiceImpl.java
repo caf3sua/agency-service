@@ -65,10 +65,10 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
 		
 //		// TH dùng cho MOMO
-		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
-			validateAndSetValueContactMOMO(obj, currentAgency);
-			
-		}
+//		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
+//			validateAndSetValueContactMOMO(obj, currentAgency);
+//			
+//		}
 		
 		// ValidGycbhNumber : Không dùng trong TH update
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
@@ -118,10 +118,9 @@ public class ProductMotoServiceImpl extends AbstractProductService implements Pr
 		log.debug("REST request to createOrUpdateMotoPolicy : {}", obj);
 		
 //		// TH dùng cho MOMO
-//		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
-//			validateAndSetValueContactMOMO(obj, currentAgency);
-//			
-//		}
+		if (currentAgency.getMa().equals(AGENT_ID_MOMO)) {
+			validateAndSetValueContactMOMO(obj, currentAgency);
+		}
 		
 		// ValidGycbhNumber : Không dùng trong TH update
 		if (StringUtils.isEmpty(obj.getAgreementId())) {
