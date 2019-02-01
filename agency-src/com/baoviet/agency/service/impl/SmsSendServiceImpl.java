@@ -145,7 +145,7 @@ public class SmsSendServiceImpl implements SmsSendService {
 		handlerChain.add(new SOAPLoggingHandler(wsUsername, wsPassword));
 		binding.setHandlerChain(handlerChain);
 
-
+		log.debug("REST request to getService : {}", smsService);
 		return smsService;
 	}
 
