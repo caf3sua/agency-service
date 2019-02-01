@@ -6,6 +6,8 @@ public interface Constants {
 	static final String PAYMENT_VIETTEL_STATUS_SUCCESS = "1";
 	static final String PAYMENT_VNPAY_STATUS_SUCCESS = "00";
 	static final String PAYMENT_MOMO_STATUS_SUCCESS = "0";
+	static final String PAYMENT_VIVIET_STATUS_SUCCESS = "0";
+	static final String PAYMENT_VIVIET_STATUS_PAY18 = "PAY-0018";
 	
 	static final String MOMO_PARAM_PARTNER_CODE = "partnerCode";
 	static final String MOMO_PARAM_ACCESS_KEY = "accessKey";
@@ -49,4 +51,24 @@ public interface Constants {
 	static final String VNPAY_PARAM_CREATE_DATE = "vnp_CreateDate";
 	static final String VNPAY_PARAM_IP_ADDR = "vnp_IpAddr";
 	static final String VNPAY_PARAM_TRANSACTION_STATUS = "vnp_TransactionStatus";
+	
+	static final String VIVIET_PARAM_SECRET_KEY = "secretKey";
+	static final String VIVIET_PARAM_ACCESS_CODE = "accessCode";
+	static final String VIVIET_PARAM_CLIENT_IP = "clientIp";
+	static final String VIVIET_PARAM_MERCH_TXN_REF = "merchTxnRef";
+	static final String VIVIET_PARAM_MERCHANT_SITE = "merchantSite";
+	static final String VIVIET_PARAM_ORDER_DESC = "orderDesc";
+	static final String VIVIET_PARAM_ORDER_NO = "orderNo";
+	static final String VIVIET_PARAM_RETURN_URL = "returnUrl";
+	static final String VIVIET_PARAM_TOTAL_AMOUNT = "totalAmount";
+	static final String VIVIET_PARAM_VERSION = "version";
+	static final String VIVIET_PARAM_ACCOUNT_TYPE = "accountType";
+	static final String VIVIET_PARAM_LOCALE = "locale";
+	
+	static final String VIVIET_PARAM_TRANSACTION_NO = "transactionNo";
+	static final String VIVIET_PARAM_CURRENCY = "currency";
+	static final String VIVIET_PARAM_RESPONSE_CODE = "responseCode";
+	static final String VIVIET_PARAM_MESSAGE = "message";
+	static final String VIVIET_PARAM_MERCHANT_SITE_ID = "merchantSiteId";
+	static final String VIVIET_PARAM_SECURE_HASH = "secureHash";
 }

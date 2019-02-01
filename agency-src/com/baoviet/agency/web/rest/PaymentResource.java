@@ -168,6 +168,8 @@ public class PaymentResource extends AbstractAgencyResource {
 		// Return data
 		return new ResponseEntity<>(processResponseVM, HttpStatus.OK);
 	}
+	
+	
 
 	@GetMapping("/getBanksByPaymentCode")
 	@Timed
@@ -309,6 +311,47 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.MOMO_PARAM_SIGNATURE, URLDecoder.decode(signature, "UTF-8"));
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.Momo);
+		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
+		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+	}
+	
+	@GetMapping("/returnViViet")
+	@Timed
+	@ApiOperation(value = "returnViViet", notes = "Xử lý thanh toán đơn hàng từ Ví Việt")
+	public ResponseEntity<HttpHeaders> returnViViet(Device device, 
+			@RequestParam(value="response_code") String responseCode,
+			@RequestParam(value="message") String message,
+			@RequestParam(value="version", required=false) String version,
+			@RequestParam(value="access_code", required=false) String accessCode,
+			@RequestParam(value="merchant_site_id", required=false) String merchantSiteId,
+			@RequestParam(value="return_url", required=false) String returnUrl,
+			@RequestParam(value="cancel_url", required=false) String cancelUrl,
+			@RequestParam(value="merch_txn_ref") String merchTxnRef,
+			@RequestParam(value="order_no") String orderNo,
+			@RequestParam(value="order_desc", required=false) String orderDesc,
+			@RequestParam(value="total_amount") String totalAmount,
+			@RequestParam(value="transaction_no") String transactionNo,
+			@RequestParam(value="secure_hash", required=false) String secureHash) throws URISyntaxException, AgencyBusinessException {
+		log.info("START REST request to returnViViet, {}");
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put(Constants.VIVIET_PARAM_RESPONSE_CODE, responseCode);
+		paramMap.put(Constants.VIVIET_PARAM_MESSAGE, message);
+		paramMap.put(Constants.VIVIET_PARAM_VERSION, version);
+		paramMap.put(Constants.VIVIET_PARAM_ACCESS_CODE, accessCode);
+		paramMap.put(Constants.VIVIET_PARAM_MERCHANT_SITE_ID, merchantSiteId);
+		paramMap.put(Constants.VIVIET_PARAM_MERCH_TXN_REF, merchTxnRef);
+		paramMap.put(Constants.VIVIET_PARAM_ORDER_NO, orderNo);
+		paramMap.put(Constants.VIVIET_PARAM_ORDER_DESC, orderDesc);
+		paramMap.put(Constants.VIVIET_PARAM_TOTAL_AMOUNT, totalAmount);
+		paramMap.put(Constants.VIVIET_PARAM_SECURE_HASH, secureHash);
+		paramMap.put(Constants.VIVIET_PARAM_TRANSACTION_NO, transactionNo);
+		
+		
+		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.ViViet);
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, null);
 
 		HttpHeaders headers = new HttpHeaders();

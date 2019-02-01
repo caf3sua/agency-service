@@ -16,6 +16,7 @@ import com.baoviet.agency.common.ProductType;
 import com.baoviet.agency.config.ApplicationProperties;
 import com.baoviet.agency.config.GateWay123PayConfig;
 import com.baoviet.agency.config.GateWayMomoConfig;
+import com.baoviet.agency.config.GateWayViVietConfig;
 import com.baoviet.agency.config.GateWayViettelPayConfig;
 import com.baoviet.agency.config.GateWayVnPayConfig;
 import com.baoviet.agency.config.PaymentConfig;
@@ -219,6 +220,8 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 				agreement.setPaymentGateway(PaymentType.ViettelPay.getValue());
 			} else if (config instanceof GateWayVnPayConfig) {
 				agreement.setPaymentGateway(PaymentType.VnPay.getValue());
+			} else if (config instanceof GateWayViVietConfig) {
+				agreement.setPaymentGateway(PaymentType.ViViet.getValue());
 			}
 
 			// Trừ phí TNDSBB xe ô tô, TNDSBB xe máy

@@ -154,6 +154,17 @@ jhipster:
 # ===================================================================
 
 payment:
+    vi-viet:
+        service-url: "https://sandbox.viviet.vn/vipay/ecommerce"
+        return-url: "http://localhost:9090/api/agency/payment/returnViViet"
+        merchant: "Bảo Việt Bảo Hiểm"
+        merchant_site_id : "4314"
+        access_code: "AH1982718872"
+        sercurity_secret: "PG332642218196611948"
+        version: "1.0"
+        cid: "BVGI"
+        did: "D04"
+        client-ip: "10.36.20.47"
     l23-pay:
         service-url: "https://sandbox.123pay.vn/miservice/createOrder1"
         return-url: "http://localhost:8080/api/landing/123Pay"

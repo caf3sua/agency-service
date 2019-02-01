@@ -29,6 +29,10 @@ public class PaymentFactory {
 	@Autowired
 	@Qualifier(value = "paymentGatewayCommon")
 	private PaymentGateway paymentGatewayCommon;
+	
+	@Autowired
+	@Qualifier(value = "paymentGatewayViViet")
+	private PaymentGateway paymentGatewayViViet;
 
 	public PaymentGateway getPaymentGateway(PaymentType paymentType) {
 		PaymentGateway paymentGateway = null;
@@ -47,6 +51,9 @@ public class PaymentFactory {
 			break;
 		case Common:
 			paymentGateway = paymentGatewayCommon;
+			break;
+		case ViViet:
+			paymentGateway = paymentGatewayViViet;
 			break;
 		}
 		return paymentGateway;
