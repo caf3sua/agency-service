@@ -333,7 +333,7 @@ public class PaymentResource extends AbstractAgencyResource {
 			@RequestParam(value="order_no") String orderNo,
 			@RequestParam(value="order_desc", required=false) String orderDesc,
 			@RequestParam(value="total_amount") String totalAmount,
-			@RequestParam(value="transaction_no") String transactionNo,
+			@RequestParam(value="transaction_no", required=false) String transactionNo,
 			@RequestParam(value="secure_hash", required=false) String secureHash) throws URISyntaxException, AgencyBusinessException {
 		log.info("START REST request to returnViViet, {}");
 

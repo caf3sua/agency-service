@@ -146,7 +146,7 @@ jhipster:
 payment:
     vi-viet:
         service-url: "https://sandbox.viviet.vn/vipay/ecommerce"
-        return-url: "http://localhost:9090/api/agency/payment/returnViViet"
+        return-url: "https://appuat.baoviet.com.vn:7778/api/agency/payment/returnViViet"
         merchant: "Bảo Việt Bảo Hiểm"
         merchant_site_id : "4314"
         access_code: "AH1982718872"
