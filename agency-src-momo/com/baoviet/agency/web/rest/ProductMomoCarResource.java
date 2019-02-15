@@ -64,6 +64,8 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 
     // TCT Ban Kinh doanh bảo hiểm Phi hàng hải
     private final static String DEPARTMENT_ID_MOMO = "A000009218";
+    private final static String AGENT_ID_MOMO = "T000080696";
+    private final static String AGENT_NAME_MOMO = "MOMO";
     
     @Autowired
     private MomoCarService momoCarService;
@@ -231,9 +233,9 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 				
 				// Get current agency
 				AgencyDTO currentAgency = new AgencyDTO();
-				currentAgency.setMa("T000080696");
-				currentAgency.setId("T000080696");
-				currentAgency.setTen("MOMO");
+				currentAgency.setMa(AGENT_ID_MOMO);
+				currentAgency.setId(AGENT_ID_MOMO);
+				currentAgency.setTen(AGENT_NAME_MOMO);
 
 				// Create policy
 				// Fix departmentID for momo
@@ -303,7 +305,7 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 		String statusCodeBaoviet = "";
 		if (StringUtils.equals(status_code, "0")) {
 			if (!StringUtils.isEmpty(order_id)) {
-				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, "MOMO");
+				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, AGENT_ID_MOMO);
 				if (agreement != null) {
 					agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
 					agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
@@ -343,7 +345,7 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 			statusCodeBaoviet = "0";
 		} else {
 			if (!StringUtils.isEmpty(order_id)) {
-				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, "MOMO");
+				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, AGENT_ID_MOMO);
 				if (agreement != null) {
 					agreement.setStatusPolicyId("93");
 					agreement.setStatusPolicyName("Chờ BV giám định");

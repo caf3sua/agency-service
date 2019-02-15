@@ -255,6 +255,9 @@ public class PaymentGatewayViViet extends AbstractPaymentGateway {
 						} else {
 							payAction.setStatus(90);
 							updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), "", payAction);
+							result.setMciAddId(payAction.getMciAddId());
+							result.setPolicyNumber(payAction.getPolicyNumbers());
+							result.setResponseType(PaymentResponseType.ERROR);
 						}
 						payActionRepository.save(payAction);
 					}
