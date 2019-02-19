@@ -244,7 +244,7 @@ public class ContactResource extends AbstractAgencyResource {
 		
 		// Validate Số điện thoại, Số CMT/MST, Email
 		Contact contactTmp = null;
-		contactTmp = contactRepository.findOneByPhoneAndType(param.getPhone(), currentAgency.getMa());
+		contactTmp = contactRepository.findOneByPhoneAndTypeAndCategoryType(param.getPhone(), currentAgency.getMa(), param.getCategoryType());
 		if (contactTmp != null && !StringUtils.equals(param.getContactId(), contactTmp.getContactId())) {
 			throw new AgencyBusinessException("phone", ErrorCode.INVALID, "Số điện thoại " + param.getPhone() + " đã được sử dụng!");
 		}
