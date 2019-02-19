@@ -338,11 +338,16 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 						payAction.setStatus(91);
 						payActionService.save(payAction);
 					}
-					
+					messageBaoviet = "Đã thanh toán";
+					statusCodeBaoviet = "0";		
+				} else {
+					messageBaoviet = "Thanh toán thất bại - Không tìm thấy đơn hàng";
+					statusCodeBaoviet = "1";
 				}
+			} else {
+				messageBaoviet = "Không tìm thấy đơn hàng";
+				statusCodeBaoviet = "1";
 			}
-			messageBaoviet = "Đã thanh toán";
-			statusCodeBaoviet = "0";
 		} else {
 			if (!StringUtils.isEmpty(order_id)) {
 				AgreementDTO agreement = agreementService.findByGycbhNumberAndAgentId(order_id, AGENT_ID_MOMO);
@@ -354,10 +359,17 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
 					
 					AgreementDTO agreementSave = agreementService.save(agreement);
 					log.debug("REST request StatusPolicyId: {}", agreementSave.getStatusPolicyId());
+				
+					messageBaoviet = "Chờ BV giám định";
+					statusCodeBaoviet = "93";			
+				} else {
+					messageBaoviet = "Không tìm thấy đơn hàng";
+					statusCodeBaoviet = "1";
 				}
+			} else {
+				messageBaoviet = "Không tìm thấy đơn hàng";
+				statusCodeBaoviet = "1";
 			}
-			messageBaoviet = "Chờ BV giám định";
-			statusCodeBaoviet = "93";			
 		}
 		
 		

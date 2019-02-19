@@ -214,4 +214,4 @@ application:
     http-proxy-port: 8080
 #    payment-return-page: "http://localhost:8080/#/app/cart"
     payment-return-page: "http://localhost:8080/#/access/returnPayment"
-    payment-mobile-return-page: "http://localhost:8080/#/payment-landing"
+    payment-mobile-return-page: "http://localhost:8080/#/access/returnPayment"
