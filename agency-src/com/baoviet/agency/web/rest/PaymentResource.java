@@ -164,7 +164,7 @@ public class PaymentResource extends AbstractAgencyResource {
 		PaymentProcessResponseVM processResponseVM = new PaymentProcessResponseVM();
 		processResponseVM.setRedirectUrl(paymentResult.getRedirectUrl());
 
-		log.info("END REST request to processPayment");
+		log.info("processPayment RedirectUrl: " + paymentResult.getRedirectUrl());
 		// Return data
 		return new ResponseEntity<>(processResponseVM, HttpStatus.OK);
 	}
@@ -393,6 +393,8 @@ public class PaymentResource extends AbstractAgencyResource {
 		headers.setLocation(URI.create(getRedirectUrl(device, paymentResult)));
 		headers.add("X-Validate-Transaction-Link", paymentResult.getLinkValidateTransaction());
 		
+		log.info("START REST request to returnVnPay, LinkValidateTransaction{}"+ paymentResult.getLinkValidateTransaction());
+		
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
 	
@@ -432,6 +434,8 @@ public class PaymentResource extends AbstractAgencyResource {
 		} else {
 			linkResult = paymentResult.getRspCode();
 		}
+		
+		log.info("START REST request to returnVnPayWeb, linkResult {}" +linkResult);
 		
 		return new ResponseEntity<>(linkResult, HttpStatus.OK);
 	}
