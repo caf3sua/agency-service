@@ -383,6 +383,8 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.VNPAY_PARAM_TRANSACTION_NO, vnpTransactionNo);
 		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
 		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
+		
+		log.info("START REST request to returnVnPay, paramMap{}"+ paramMap);
 
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
@@ -404,7 +406,7 @@ public class PaymentResource extends AbstractAgencyResource {
 			@RequestParam("vnp_TmnCode") String vnpTmnCode, @RequestParam("vnp_TransactionNo") String vnpTransactionNo,
 			@RequestParam("vnp_TxnRef") String vnpTxnRef, @RequestParam("vnp_SecureHash") String vnpSecureHash)
 			throws URISyntaxException, AgencyBusinessException {
-		log.info("START REST request to returnVnPay, {}");
+		log.info("START REST request to returnVnPayWeb, {}");
 
 		Map<String, String> paramMap = new LinkedHashMap<>();
 		paramMap.put(Constants.VNPAY_PARAM_AMOUNT, vnpAmount);
@@ -419,10 +421,17 @@ public class PaymentResource extends AbstractAgencyResource {
 		paramMap.put(Constants.VNPAY_PARAM_TXN_REF, vnpTxnRef);
 		paramMap.put(Constants.VNPAY_PARAM_SECURE_HASH, vnpSecureHash);
 
+		log.info("START REST request to returnVnPayWeb, paramMap {}" + paramMap);
+		
 		PaymentGateway paymentGateway = paymentFactory.getPaymentGateway(PaymentType.VnPay);
 		PaymentResult paymentResult = paymentGateway.processReturn(paramMap, vnpTmnCode);
 
-		String linkResult = paymentResult.getLinkValidateTransaction();
+		String linkResult = "";
+		if (paymentResult.getLinkValidateTransaction() != null) {
+			linkResult = paymentResult.getLinkValidateTransaction();
+		} else {
+			linkResult = paymentResult.getRspCode();
+		}
 		
 		return new ResponseEntity<>(linkResult, HttpStatus.OK);
 	}
@@ -431,7 +440,7 @@ public class PaymentResource extends AbstractAgencyResource {
 	@Timed
 	public ResponseEntity<PaymentValidateResult> updateStatusVnPay(@Valid @RequestBody PaymentValidateResult param)
 			throws URISyntaxException, AgencyBusinessException {
-		log.info("START REST request to updateStatusVnPay, {}");
+		log.info("START REST request to updateStatusVnPay, {}" + param);
 		
 		String transRef = param.getTransRef();
 		String responseString = param.getResponseString();
@@ -448,7 +457,7 @@ public class PaymentResource extends AbstractAgencyResource {
 	@Timed
 	public ResponseEntity<PaymentResultVnPay> updateStatusVnPayWeb(@RequestBody PaymentValidateResult param)
 			throws URISyntaxException, AgencyBusinessException {
-		log.info("START REST request to updateStatusVnPayWeb, {}");
+		log.info("START REST request to updateStatusVnPayWeb, param{}" + param);
 		
 		String transRef = param.getTransRef();
 		String responseString = param.getResponseString();
@@ -460,6 +469,7 @@ public class PaymentResource extends AbstractAgencyResource {
 	}
 	
 	@GetMapping("/notify-returnVnPay")
+	@Deprecated
 	@Timed
 	@ApiOperation(value = "returnVnPay", notes = "Xử lý thanh toán đơn hàng từ vendor VnPay")
 	public ResponseEntity<PaymentResultVnPay> notifyReturnVnPay(Device device, @RequestParam("vnp_Amount") String vnpAmount,
