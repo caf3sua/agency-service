@@ -24,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.AdminUserBu;
+import com.baoviet.agency.domain.AgencyMap;
 import com.baoviet.agency.domain.MvAgentAgreement;
 import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.domain.User;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.repository.AdminUserBuRepository;
+import com.baoviet.agency.repository.AgencyMapRepository;
 import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
 import com.baoviet.agency.repository.UserRepository;
@@ -76,6 +78,9 @@ public class AccountResource {
 	
 	@Autowired
 	private AdminUserBuRepository adminUserBuRepository;
+	
+	@Autowired
+	private AgencyMapRepository agencyMapRepository;
     
     /**
      * POST  /register : register the user.
@@ -188,9 +193,31 @@ public class AccountResource {
     			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     		}
     		// Load department
-    		List<DepartmentDTO> lstDepartment = adminUserService.searchDepartment(existingUser.getMa());
-    		if (lstDepartment != null && lstDepartment.size() > 0) {
-    			existingUser.setLstDepartment(lstDepartment);
+    		if (StringUtils.equals(AgencyConstants.KENH_PHAN_PHOI_AGENCY, existingUser.getKenhPhanPhoi())) {
+    			List<DepartmentDTO> lstDepartment = adminUserService.searchDepartment(existingUser.getMa());
+        		if (lstDepartment != null && lstDepartment.size() > 0) {
+        			existingUser.setLstDepartment(lstDepartment);
+        		}	
+    		} else {
+    			if (StringUtils.isNotEmpty(existingUser.getKenhPhanPhoi())) {
+    				if (StringUtils.isNotEmpty(existingUser.getMaDonVi())) {
+    					List<AgencyMap> lstAgencyMap = agencyMapRepository.findByAgencyP3Id(existingUser.getMaDonVi());
+        				if (lstAgencyMap != null && lstAgencyMap.size() > 0) {
+        					List<DepartmentDTO> lstDepartment = new ArrayList<>();
+        					for (AgencyMap agencyMap : lstAgencyMap) {
+    							if (StringUtils.isNotEmpty(agencyMap.getBvId3()) && StringUtils.isNotEmpty(agencyMap.getBvName3())) {
+    								DepartmentDTO depar = new DepartmentDTO();
+    	    						depar.setDepartmentId(agencyMap.getBvId3());
+    	    						depar.setDepartmentName(agencyMap.getBvName3());
+    	    						lstDepartment.add(depar);
+    							}
+    						}
+        					if (lstDepartment != null && lstDepartment.size() > 0) {
+        	        			existingUser.setLstDepartment(lstDepartment);
+        	        		}
+        				}
+    				}
+    			}
     		}
     		
     		return new ResponseEntity<>(existingUser, HttpStatus.OK);

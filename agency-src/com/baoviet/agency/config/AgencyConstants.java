@@ -86,6 +86,8 @@ public final class AgencyConstants {
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final String ROLE_BAOVIET = "ROLE_BAOVIET";
     
+    public static final String KENH_PHAN_PHOI_AGENCY = "AGENCY";
+    
     public static final String DEFAULT_STRING_VALUE = " ";
     public static final double DEFAULT_DOUBLE_VALUE = 0d;
     public static final int DEFAULT_INTEGER_VALUE = 0;

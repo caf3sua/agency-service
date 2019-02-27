@@ -1,5 +1,6 @@
 package com.baoviet.agency.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,14 +10,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.baoviet.agency.bean.InvoiceInfoDTO;
+import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.AgencyMap;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.MvAgentAgreement;
 import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.domain.PayAction;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.DepartmentDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
+import com.baoviet.agency.repository.AgencyMapRepository;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.MvAgentAgreementRepository;
 import com.baoviet.agency.repository.MvClaOutletLocationRepository;
@@ -56,6 +61,9 @@ public class AbstractProductService {
 	
 	@Autowired
 	private MvAgentAgreementRepository mvAgentAgreementRepository;
+	
+	@Autowired
+	private AgencyMapRepository agencyMapRepository;
 	
 	private final Logger log = LoggerFactory.getLogger(AbstractProductService.class);
 	
@@ -288,23 +296,34 @@ public class AbstractProductService {
 			throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Cần lựa chọn phòng ban");
 		}
 		
-		List<MvClaOutletLocation> lstmvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsIdAndPrOutletAmsId(currentAgency.getMa(), obj.getDepartmentId());
-		List<MvAgentAgreement> listMvAgentAgreement = mvAgentAgreementRepository.findByAgentCodeAndDepartmentCode(currentAgency.getMa(), obj.getDepartmentId());
-		if(lstmvClaOutletLocation == null && listMvAgentAgreement == null) {
-			throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Không tồn tại Id phòng ban: " + obj.getDepartmentId());
-		} else {
-			if (lstmvClaOutletLocation != null && lstmvClaOutletLocation.size() > 0) {
-				voAg.setUrnDaily(lstmvClaOutletLocation.get(0).getUrn());
-				voAg.setBaovietDepartmentId(obj.getDepartmentId());
-				voAg.setBaovietDepartmentName(lstmvClaOutletLocation.get(0).getPrOutletName());
-			} else if (listMvAgentAgreement != null && listMvAgentAgreement.size() > 0) {
-				voAg.setUrnDaily(listMvAgentAgreement.get(0).getAgentUrn());
-				voAg.setBaovietDepartmentId(obj.getDepartmentId());
-				voAg.setBaovietDepartmentName(listMvAgentAgreement.get(0).getDepartmentName());	
+		if (StringUtils.equals(currentAgency.getKenhPhanPhoi(), AgencyConstants.KENH_PHAN_PHOI_AGENCY)) {
+			List<MvClaOutletLocation> lstmvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsIdAndPrOutletAmsId(currentAgency.getMa(), obj.getDepartmentId());
+			List<MvAgentAgreement> listMvAgentAgreement = mvAgentAgreementRepository.findByAgentCodeAndDepartmentCode(currentAgency.getMa(), obj.getDepartmentId());
+			if(lstmvClaOutletLocation.size() == 0 && listMvAgentAgreement.size() == 0) {
+				throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Không tồn tại Id phòng ban: " + obj.getDepartmentId());
 			} else {
-				voAg.setUrnDaily("");
-				voAg.setBaovietDepartmentId("");
-				voAg.setBaovietDepartmentName("");
+				if (lstmvClaOutletLocation != null && lstmvClaOutletLocation.size() > 0) {
+					voAg.setUrnDaily(lstmvClaOutletLocation.get(0).getUrn());
+					voAg.setBaovietDepartmentId(obj.getDepartmentId());
+					voAg.setBaovietDepartmentName(lstmvClaOutletLocation.get(0).getPrOutletName());
+				} else if (listMvAgentAgreement != null && listMvAgentAgreement.size() > 0) {
+					voAg.setUrnDaily(listMvAgentAgreement.get(0).getAgentUrn());
+					voAg.setBaovietDepartmentId(obj.getDepartmentId());
+					voAg.setBaovietDepartmentName(listMvAgentAgreement.get(0).getDepartmentName());	
+				} else {
+					voAg.setUrnDaily("");
+					voAg.setBaovietDepartmentId("");
+					voAg.setBaovietDepartmentName("");
+				}
+			}
+		} else {
+			List<AgencyMap> lstAgencyMap = agencyMapRepository.findByBvId3(obj.getDepartmentId());
+			if (lstAgencyMap != null && lstAgencyMap.size() > 0) {
+				voAg.setBaovietDepartmentId(obj.getDepartmentId());
+				voAg.setBaovietDepartmentName(lstAgencyMap.get(0).getBvName3());
+				voAg.setUrnDaily(currentAgency.getId());
+			} else {
+				throw new AgencyBusinessException("departmentId", ErrorCode.INVALID, "Không tồn tại Id phòng ban: " + obj.getDepartmentId());	
 			}
 		}
 		
