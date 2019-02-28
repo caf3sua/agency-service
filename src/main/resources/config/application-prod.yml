@@ -204,4 +204,4 @@ application:
     http-proxy-port: 8080
 #    payment-return-page: "https://appuat.baoviet.com.vn:7780/#/app/cart"
     payment-return-page: "https://appuat.baoviet.com.vn:7780/#/access/returnPayment"
-    payment-mobile-return-page: "https://appuat.baoviet.com.vn:7780/#/payment-landing"
+    payment-mobile-return-page: "https://appuat.baoviet.com.vn:7780/#/access/returnPayment"
