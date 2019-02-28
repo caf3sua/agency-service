@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.InvoiceInfoDTO;
 import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.domain.SktdRate;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -44,6 +45,7 @@ import com.baoviet.agency.dto.Root;
 import com.baoviet.agency.dto.TinhtrangSkDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
+import com.baoviet.agency.repository.AgencyRepository;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.SktdRateRepository;
 import com.baoviet.agency.repository.TinhtrangSkRepository;
@@ -94,6 +96,9 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 	
 	@Autowired
 	private AgreementService agreementService;
+	
+	@Autowired
+	private AgencyRepository agencyRepository;
 
 	@Override
 	public ProductBvpVM createOrUpdatePolicy(ProductBvpVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
@@ -951,12 +956,24 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 					bvpXML.setBAOVIET_DEPARTMENT_NAME(agreement.getBaovietDepartmentName());
 					bvpXML.setBAOVIET_NAME(""); // hiện tại để trống
 					bvpXML.setNGAY_HOA_DON(DateUtils.date2Str(new Date()));
-					bvpXML.setURN_DAILY(agreement.getUrnDaily());
+					bvpXML.setURN_DAILY(agreement.getAgentId());
 					bvpXML.setAGENT_NAME(agreement.getAgentName());
 					bvpXML.setBAOVIET_COMPANY_NAME(agreement.getBaovietCompanyName());
 					bvpXML.setCAN_BO_QLDV("");	 // hiện tại để trống
-					bvpXML.setKENH_PHAN_PHOI(""); // hiện tại để trống
-					bvpXML.setDIEN_THOAI("");	// hiện tại để trống
+					
+					Agency agency = agencyRepository.findByMa(agreement.getAgentId());
+					String kenhPP = agency.getKenhPhanPhoi();
+					if (StringUtils.equals(AgencyConstants.KENH_PHAN_PHOI_AGENCY, kenhPP)) {
+						bvpXML.setKENH_PHAN_PHOI("Đại lý trực tiếp"); 
+					} else {
+						bvpXML.setKENH_PHAN_PHOI("Banca");	
+					}
+					
+					if (StringUtils.isNotEmpty(agency.getDienThoai())) {
+						bvpXML.setDIEN_THOAI(agency.getDienThoai());	
+					} else {
+						bvpXML.setDIEN_THOAI("");
+					}
 					
 					BvpNdbhXML bvpNdbhXML = new BvpNdbhXML();
 					bvpNdbhXML.setNGUOIDBH_NAME(bvp.getNguoidbhName());
