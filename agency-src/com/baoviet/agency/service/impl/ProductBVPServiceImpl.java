@@ -956,7 +956,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 					bvpXML.setBAOVIET_DEPARTMENT_NAME(agreement.getBaovietDepartmentName());
 					bvpXML.setBAOVIET_NAME(""); // hiện tại để trống
 					bvpXML.setNGAY_HOA_DON(DateUtils.date2Str(new Date()));
-					bvpXML.setURN_DAILY(agreement.getAgentId());
+					bvpXML.setURN_DAILY(agreement.getUrnDaily());
 					bvpXML.setAGENT_NAME(agreement.getAgentName());
 					bvpXML.setBAOVIET_COMPANY_NAME(agreement.getBaovietCompanyName());
 					bvpXML.setCAN_BO_QLDV("");	 // hiện tại để trống
