@@ -1,6 +1,8 @@
 package com.baoviet.agency.service;
 
 import com.baoviet.agency.dto.AgencyDTO;
+import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.BvpFile;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.web.rest.vm.PremiumBVPVM;
 import com.baoviet.agency.web.rest.vm.ProductBvpVM;
@@ -15,5 +17,7 @@ public interface ProductBVPService {
 	PremiumBVPVM calculatePremium(PremiumBVPVM param) throws AgencyBusinessException;
 	
 	ProductBvpVM createOrUpdatePolicyAdayroi(ProductBvpVM bvp, AgencyDTO currentAgency, String loaidon, String ordercode) throws AgencyBusinessException;
+	
+	BvpFile downloadBVP(AgreementDTO data) throws AgencyBusinessException;
 }
 

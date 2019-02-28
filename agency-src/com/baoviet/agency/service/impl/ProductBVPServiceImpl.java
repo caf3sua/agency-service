@@ -1,8 +1,18 @@
 package com.baoviet.agency.service.impl;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -10,6 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.InvoiceInfoDTO;
@@ -20,12 +37,17 @@ import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
 import com.baoviet.agency.dto.AttachmentDTO;
 import com.baoviet.agency.dto.BvpDTO;
+import com.baoviet.agency.dto.BvpFile;
+import com.baoviet.agency.dto.BvpNdbhObj;
+import com.baoviet.agency.dto.BvpNdbhXML;
+import com.baoviet.agency.dto.Root;
 import com.baoviet.agency.dto.TinhtrangSkDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.SktdRateRepository;
 import com.baoviet.agency.repository.TinhtrangSkRepository;
+import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.AttachmentService;
 import com.baoviet.agency.service.BVPService;
 import com.baoviet.agency.service.ProductBVPService;
@@ -37,6 +59,8 @@ import com.baoviet.agency.web.rest.vm.PremiumBVPVM;
 import com.baoviet.agency.web.rest.vm.PremiumSKTDVM;
 import com.baoviet.agency.web.rest.vm.ProductBvpVM;
 import com.baoviet.agency.web.rest.vm.SKTDAddVM;
+
+import doc.glite.DocGLitev2018Service;
 
 /**
  * Service Implementation for managing bvp.
@@ -67,6 +91,9 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 	
 	@Autowired
 	private AttachmentService attachmentService;
+	
+	@Autowired
+	private AgreementService agreementService;
 
 	@Override
 	public ProductBvpVM createOrUpdatePolicy(ProductBvpVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
@@ -906,4 +933,166 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 
 		// ==============End logic validate================
 	}
+
+	@Override
+	public BvpFile downloadBVP(AgreementDTO agreement) throws AgencyBusinessException {
+			if (agreement != null) {
+				BvpDTO bvp = bVPService.getById(agreement.getGycbhId());
+				if (bvp != null) {
+					Root bvpXML = new Root();
+					bvpXML.setPOLICY_NUMBER(agreement.getGycbhNumber());
+					bvpXML.setNGUOIYC_NAME(bvp.getNguoiycName());
+					bvpXML.setNGUOIYC_CMND(bvp.getNguoiycCmnd());
+					bvpXML.setNGUOIYC_NGAYSINH(DateUtils.date2Str(bvp.getNguoiycNgaysinh()));
+					bvpXML.setNGUOIYC_DIACHITHUONGTRU(bvp.getNguoiycDiachithuongtru());
+					bvpXML.setNGUOIYC_DIENTHOAI(bvp.getNguoiycDienthoai());
+					bvpXML.setNGUOIYC_EMAIL(bvp.getNguoiycEmail());
+					bvpXML.setBAOVIET_DEPARTMENT_ID(agreement.getBaovietDepartmentId());
+					bvpXML.setBAOVIET_DEPARTMENT_NAME(agreement.getBaovietDepartmentName());
+					bvpXML.setBAOVIET_NAME(""); // hiện tại để trống
+					bvpXML.setNGAY_HOA_DON(DateUtils.date2Str(new Date()));
+					bvpXML.setURN_DAILY(agreement.getUrnDaily());
+					bvpXML.setAGENT_NAME(agreement.getAgentName());
+					bvpXML.setBAOVIET_COMPANY_NAME(agreement.getBaovietCompanyName());
+					bvpXML.setCAN_BO_QLDV("");	 // hiện tại để trống
+					bvpXML.setKENH_PHAN_PHOI(""); // hiện tại để trống
+					bvpXML.setDIEN_THOAI("");	// hiện tại để trống
+					
+					BvpNdbhXML bvpNdbhXML = new BvpNdbhXML();
+					bvpNdbhXML.setNGUOIDBH_NAME(bvp.getNguoidbhName());
+					bvpNdbhXML.setNGUOIDBH_DIACHITHUONGTRU(bvp.getNguoidbhDiachithuongtru());
+					bvpNdbhXML.setNGUOIDBH_NGAYSINH(DateUtils.date2Str(bvp.getNguoidbhNgaysinh()));
+					bvpNdbhXML.setNGUOIDBH_CMND(bvp.getNguoidbhCmnd());
+					bvpNdbhXML.setNGUOIDBH_QUANHE(bvp.getNguoidbhQuanhe());
+					bvpNdbhXML.setNGUOIDBH_GIOITINH(bvp.getNguoidbhGioitinh());
+					bvpNdbhXML.setNGUOIDBH_DIENTHOAI(""); // hiện tại để trống
+					bvpNdbhXML.setNGUOIDBH_EMAIL(""); // hiện tại để trống
+					bvpNdbhXML.setCHUONG_TRINH(bvp.getChuongtrinhBh());
+					bvpNdbhXML.setSTBH_CTC(String.valueOf(bvp.getChuongtrinhPhi()));
+					bvpNdbhXML.setSTBH_QLBS_1("0");
+					bvpNdbhXML.setTNCN(bvp.getTncn());
+					bvpNdbhXML.setSINHMANG_SOTIENBH(String.valueOf(bvp.getSinhmangSotienbh()));
+					bvpNdbhXML.setSTBH_QLBS_4("0");
+					bvpNdbhXML.setSTBH_QLBS_TS("0");
+					bvpNdbhXML.setTHBH_TU(DateUtils.date2Str(agreement.getInceptionDate()));
+					bvpNdbhXML.setTHBH_DEN(DateUtils.date2Str(agreement.getExpiredDate()));
+					bvpNdbhXML.setTONGPHI_PHI(String.valueOf(bvp.getTongphiPhi()));
+					bvpNdbhXML.setTANGGIAM_PHI(String.valueOf(bvp.getTanggiamPhi()));
+					bvpNdbhXML.setTONG_PHI(String.valueOf(bvp.getTongphiPhi()));
+					bvpNdbhXML.setTONG_PHI_CHU(String.valueOf(bvp.getTongphiPhi()));
+					bvpNdbhXML.setCHANGE_PREMIUM(String.valueOf(agreement.getChangePremium()));
+					bvpNdbhXML.setNGUOITH_NAME(bvp.getNguoithName());
+					bvpNdbhXML.setNGUOITH_CMND(bvp.getNguoithCmnd());
+					bvpNdbhXML.setNGUOITH_QUANHE(bvp.getNguoithQuanhe());
+					bvpNdbhXML.setNGUOITH_DIENTHOAI(bvp.getNguoithDienthoai());
+					bvpNdbhXML.setNGUOITH_EMAIL(bvp.getNguoithEmail());
+					bvpNdbhXML.setNGUOITH_DIACHI(bvp.getNguoithDiachi());
+					bvpNdbhXML.setNGUOINHAN_NAME(bvp.getNguoinhanName());
+					bvpNdbhXML.setNGUOINHAN_CMND(bvp.getNguoinhanCmnd());
+					bvpNdbhXML.setNGUOINHAN_QUANHE(bvp.getNguoinhanQuanhe());
+					bvpNdbhXML.setNGUOINHAN_DIENTHOAI(bvp.getNguoinhanDienthoai());
+					bvpNdbhXML.setNGUOINHAN_EMAIL(bvp.getNguoinhanEmail());
+					bvpNdbhXML.setNGUOINHAN_DIACHI(bvp.getNguoinhanDiachi());
+					bvpNdbhXML.setNGAYCAP(DateUtils.date2Str(new Date()));
+					bvpNdbhXML.setGHICHU(bvp.getGhichu());
+					bvpNdbhXML.setQ1(bvp.getQ1());
+					bvpNdbhXML.setQ2(bvp.getQ2());
+					bvpNdbhXML.setQ3(bvp.getQ3());
+					
+					BvpNdbhObj nguoidbh = new BvpNdbhObj();
+					nguoidbh.setNGUOIDBH(bvpNdbhXML);
+					
+					List<BvpNdbhObj> LstNguoidbhCol = new ArrayList<>();
+					LstNguoidbhCol.add(nguoidbh);
+					
+					bvpXML.setNGUOIDBH_COL(LstNguoidbhCol);
+					
+					try {
+						JAXBContext jaxbContext = JAXBContext.newInstance(Root.class);
+						Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+						jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+						
+						StringWriter sw = new StringWriter();
+				        jaxbMarshaller.marshal(bvpXML, sw);
+				        String xml = sw.toString();
+				        
+				        xml = xml.replace("root", "ROOT");
+				        xml = xml.replace("<q", "<Q");
+				        xml = xml.replace("</q", "</Q");
+				        
+				        DocGLitev2018Service service = new DocGLitev2018Service();
+				        String result = service.getDocGLitev2018Port().runReportV1("TOL", "BVP_01", "v1", "vi", xml);
+				        
+				        if (result != null && result.length() > 0) {
+				        	BvpFile file = GetByteFromResponse(result);
+				        	if (file != null) {
+				        		return file;	
+				        	} else {
+				        		throw new AgencyBusinessException(ErrorCode.UNKNOW_ERROR, "Không tải được File");
+				        	}
+				        }
+				        
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				} else {
+					throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tìm thấy đơn hàng");
+				}
+			} else {
+				throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tìm thấy đơn hàng");
+			}
+	}
+	
+	private BvpFile GetByteFromResponse(String response) {
+		String xmlRecords = "<data><employee>"+response+"</employee></data>";
+
+		DocumentBuilder db;
+		try {
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(xmlRecords));
+
+			Document doc = db.parse(is);
+			NodeList nodes = doc.getElementsByTagName("employee");
+
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Element element = (Element) nodes.item(i);
+				
+				NodeList reportStatus = element.getElementsByTagName("reportStatus");
+				Element line = (Element) reportStatus.item(0);
+				String stauts = getCharacterDataFromElement(line);
+				if (StringUtils.equals(stauts, "SUCC")) {
+					NodeList reportBytes = element.getElementsByTagName("reportBytes");
+					line = (Element) reportBytes.item(0);
+					BvpFile file = new BvpFile();
+					file.setContentStr(getCharacterDataFromElement(line));
+					file.setContent(getCharacterDataFromElement(line).getBytes());
+					file.setType("pdf");
+	        		file.setFileName("Hop_Dong_Bao_Hiem_An_Gia.pdf");
+					return file;
+				}
+			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static String getCharacterDataFromElement(Element e) {
+	    Node child = e.getFirstChild();
+	    if (child instanceof CharacterData) {
+	      CharacterData cd = (CharacterData) child;
+	      return cd.getData();
+	    }
+	    return "";
+	  }
 }

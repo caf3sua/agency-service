@@ -1,6 +1,5 @@
 package com.baoviet.agency.web.rest;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,29 +8,19 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -40,8 +29,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,30 +37,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.baoviet.agency.domain.AgentDocument;
 import com.baoviet.agency.domain.Attachment;
+import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgentDocumentDTO;
+import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.BvpFile;
 import com.baoviet.agency.dto.excel.BasePathInfoDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AgentDocumentRepository;
 import com.baoviet.agency.repository.AttachmentRepository;
 import com.baoviet.agency.service.AgentDocumentService;
+import com.baoviet.agency.service.AgreementService;
+import com.baoviet.agency.service.ProductBVPService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.MediaTypeUtils;
 import com.baoviet.agency.utils.UEncrypt;
-import com.baoviet.agency.utils.UFile;
 import com.baoviet.agency.utils.UString;
 import com.codahale.metrics.annotation.Timed;
+
+import sun.misc.BASE64Decoder;
 
 /**
  * REST controller for promotion resource.
  */
 @RestController
 @RequestMapping(AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "document")
-public class AgentDocumentResource {
+public class AgentDocumentResource{
 
 	private final Logger log = LoggerFactory.getLogger(AgentDocumentResource.class);
 
@@ -91,6 +83,11 @@ public class AgentDocumentResource {
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
+	
+	@Autowired
+    private ProductBVPService productBVPService;
+    @Autowired
+    private AgreementService agreementService;
         
 	@Value("${spring.upload.folder-upload}")
 	private String folderUpload;
@@ -145,6 +142,37 @@ public class AgentDocumentResource {
 		
 		ServletOutputStream outputStream = response.getOutputStream();
 	    outputStream.write(entity.getContent()); 
+	    outputStream.flush();
+	    outputStream.close();
+		
+		// Return data
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+	@GetMapping("/download/bvp/{id}")
+	@Timed
+	public ResponseEntity<BvpFile> downloadBvp(final HttpServletRequest request,  final HttpServletResponse response
+			, @PathVariable String id) throws URISyntaxException, IOException, AgencyBusinessException {
+		
+		AgreementDTO agreement = agreementService.findById(id);
+		if (StringUtils.isEmpty(agreement.getGycbhNumber())) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file đính kèm " + id);
+		}
+		
+		BvpFile data = productBVPService.downloadBVP(agreement);
+				
+		// Process download
+		response.reset();
+		
+		response.setContentType("application/octet-stream");
+		response.setContentLength(data.getContent().length);
+		
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + data.getFileName() + "\"");
+		
+		ServletOutputStream outputStream = response.getOutputStream();
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] imageByte = decoder.decodeBuffer(data.getContentStr());
+	    outputStream.write(imageByte); 
 	    outputStream.flush();
 	    outputStream.close();
 		
