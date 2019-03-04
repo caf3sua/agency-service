@@ -19,5 +19,7 @@ public interface ProductBVPService {
 	ProductBvpVM createOrUpdatePolicyAdayroi(ProductBvpVM bvp, AgencyDTO currentAgency, String loaidon, String ordercode) throws AgencyBusinessException;
 	
 	BvpFile downloadBVP(AgreementDTO data) throws AgencyBusinessException;
+	
+	BvpFile downloadBvpGYCBH(AgreementDTO data) throws AgencyBusinessException;
 }
 

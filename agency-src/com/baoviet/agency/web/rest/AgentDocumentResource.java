@@ -180,6 +180,37 @@ public class AgentDocumentResource{
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
+	@GetMapping("/download/bvpGYCBH/{id}")
+	@Timed
+	public ResponseEntity<BvpFile> downloadBvpGYCBH(final HttpServletRequest request,  final HttpServletResponse response
+			, @PathVariable String id) throws URISyntaxException, IOException, AgencyBusinessException {
+		
+		AgreementDTO agreement = agreementService.findById(id);
+		if (StringUtils.isEmpty(agreement.getGycbhNumber())) {
+			throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file đính kèm " + id);
+		}
+		
+		BvpFile data = productBVPService.downloadBvpGYCBH(agreement);
+				
+		// Process download
+		response.reset();
+		
+		response.setContentType("application/octet-stream");
+		response.setContentLength(data.getContent().length);
+		
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + data.getFileName() + "\"");
+		
+		ServletOutputStream outputStream = response.getOutputStream();
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] imageByte = decoder.decodeBuffer(data.getContentStr());
+	    outputStream.write(imageByte); 
+	    outputStream.flush();
+	    outputStream.close();
+		
+		// Return data
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
 	@GetMapping("/download-attachment/{id}")
 	@Timed
 	public ResponseEntity<AgentDocumentDTO> downloadAttachmentConversation(final HttpServletRequest request,  final HttpServletResponse response
