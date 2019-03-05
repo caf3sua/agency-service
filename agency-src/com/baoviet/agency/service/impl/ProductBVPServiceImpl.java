@@ -490,6 +490,12 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		vo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
 		vo.setNguoiycName(obj.getNguoiycName());// Họ và tên người yêu cầu bảo hiểm:
 		vo.setNguoiycNgaysinh(obj.getNguoiycNgaysinh());// Ngày sinh:NYCBH
+		// 05/03/2019 start
+		vo.setNguoiycCmnd(co.getIdNumber());
+		vo.setNguoiycDienthoai(co.getPhone());
+		vo.setNguoiycDiachinhanthu(co.getHomeAddress());
+		// 05/03/2019 end
+		
 		vo.setPolicyParent(obj.getPolicyParent()); // Số HĐBH/GCNBH/Thẻ/Mã đơn hàng Bố(Mẹ):
 		vo.setNguoidbhName(obj.getNguoidbhName()); // Họ tên người được bảo hiểm:
 		vo.setNguoidbhCmnd(obj.getNguoidbhCmnd()); // Số Chứng minh nhân dân/Hộ chiếu: NDBH
