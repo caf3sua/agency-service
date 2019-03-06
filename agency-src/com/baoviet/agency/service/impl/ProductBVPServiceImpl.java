@@ -62,7 +62,6 @@ import com.baoviet.agency.web.rest.vm.PremiumSKTDVM;
 import com.baoviet.agency.web.rest.vm.ProductBvpVM;
 import com.baoviet.agency.web.rest.vm.SKTDAddVM;
 
-import doc.glite.DeliveryResponse;
 import doc.glite.DocGLitev2018Service;
 
 /**
@@ -491,9 +490,10 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		vo.setNguoiycName(obj.getNguoiycName());// Họ và tên người yêu cầu bảo hiểm:
 		vo.setNguoiycNgaysinh(obj.getNguoiycNgaysinh());// Ngày sinh:NYCBH
 		// 05/03/2019 start
-		vo.setNguoiycCmnd(co.getIdNumber());
+		vo.setNguoiycCmnd(obj.getNguoiycCmnd());
 		vo.setNguoiycDienthoai(co.getPhone());
-		vo.setNguoiycDiachinhanthu(co.getHomeAddress());
+		vo.setNguoiycDiachithuongtru(co.getHomeAddress());
+		vo.setNguoiycEmail(co.getEmail());
 		// 05/03/2019 end
 		
 		vo.setPolicyParent(obj.getPolicyParent()); // Số HĐBH/GCNBH/Thẻ/Mã đơn hàng Bố(Mẹ):

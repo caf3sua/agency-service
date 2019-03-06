@@ -230,6 +230,9 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				carInfo.setPolicyNumber(data.getGycbhNumber());
 			}
 		}
+		carInfo.setMonthOfMake(obj.getMonthOfMake());// thang sx
+		carInfo.setCategoryType(obj.getCategoryType());// loại khách hàng
+		carInfo.setPackageType(obj.getPackageType());
 		
 		carInfo.setInceptionDate(DateUtils.str2Date(obj.getThoihantu()));// Thời hạn bảo hiểm: tu
 		Calendar cal = Calendar.getInstance();
@@ -295,7 +298,7 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 		}
 		carInfo.setPurposeOfUsageId(obj.getPurposeOfUsageId()); // Chọn nhóm loại xe: id
 		carInfo.setPurposeOfUsageName("Xe ô tô chở người không kinh doanh vận tải"); // Chọn nhóm loại xe: ten
-		if (obj.getVcxCheck()) {
+//		if (obj.getVcxCheck()) {
 			// gia tri xe
 			carInfo.setActualValue(obj.getActualValue());// Giá trị xe theo thị trường
 			carInfo.setYearOfMake(obj.getYearOfMake());
@@ -307,6 +310,8 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 					namsd = 1;
 				carInfo.setYearOfUse(namsd.toString());
 			}
+			
+			
 			// vat chat xe
 			carInfo.setPhysicalDamageSi(obj.getPhysicalDamageSi());// Giá trị xe tham gia bảo hiểm
 			carInfo.setPhysicalDamagePremium(obj.getPhysicalDamagePremium());// Phí bảo hiểm Vật chất xe tạm tính (đã bao gồm VAT)
@@ -322,20 +327,20 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				carInfo.setMatCap(1.0);// Điều khoản mất cắp bộ phận
 			if (obj.getGarageCheck())
 				carInfo.setGarage(1.0);// Điều khoản lựa chọn garage sửa chữa
-		}
-		if (obj.getTndstnCheck()) {
+//		}
+//		if (obj.getTndstnCheck()) {
 			carInfo.setMatCapBoPhanRate(obj.getTndstnSotien()); // Bảo hiểm trách nhiệm dân sự tự nguyện:Số tiền tham
 																// gia bảo hiểm
 			carInfo.setMatCapBoPhanPremium(obj.getTndstnPhi());// Phí bảo hiểm trách nhiệm dân sự tự nguyện (đã bao gồm
 																// VAT)
-		}
+//		}
 		carInfo.setChangePremiumPremium(obj.getChangePremium());
 		// NNTX
-		if (obj.getNntxCheck()) {
+//		if (obj.getNntxCheck()) {
 			carInfo.setPassengersAccidentPremium(obj.getPassengersAccidentPremium());// Phí bảo hiểm người ngồi trên xe
 			carInfo.setPassengersAccidentNumber(obj.getPassengersAccidentNumber());// Số người tham gia: NNTX
 			carInfo.setPassengersAccidentSi(obj.getPassengersAccidentSi());// Số tiền tham gia bảo hiểm: NNTX
-		}
+//		}
 		// TNDSBB
 		if (obj.getTndsbbCheck()) {
 			carInfo.setThirdPartySiCn(100000000.0); // Muc TNDSBB ve nguoi

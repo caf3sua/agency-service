@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import com.baoviet.agency.config.AgencyConstants;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -261,4 +263,10 @@ public class Car implements Serializable {
 	private String diachiTh;
 	@Column
 	private Double sotienTh;
+	@Column
+	private String monthOfMake;
+	@Column
+	private String categoryType;
+	@Column
+	private String packageType;
 }

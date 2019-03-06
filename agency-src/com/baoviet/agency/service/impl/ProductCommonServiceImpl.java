@@ -438,6 +438,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		}
 		bvp.setNguoiycName(bvpObj.getNguoiycName());
 		bvp.setNguoiycNgaysinh(bvpObj.getNguoiycNgaysinh());
+		bvp.setNguoiycCmnd(bvpObj.getNguoiycCmnd());
 		bvp.setNguoidbhName(bvpObj.getNguoidbhName());
 		bvp.setNguoidbhCmnd(bvpObj.getNguoidbhCmnd());
 		bvp.setNguoidbhQuanhe(bvpObj.getNguoidbhQuanhe());
@@ -627,6 +628,15 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		if (!StringUtils.isEmpty(carObj.getYearOfMake())) {
 			car.setYearOfMake(carObj.getYearOfMake());
 		} 
+		if (!StringUtils.isEmpty(carObj.getMonthOfMake())) {
+			car.setMonthOfMake(carObj.getMonthOfMake());
+		}
+		if (!StringUtils.isEmpty(carObj.getCategoryType())) {
+			car.setCategoryType(carObj.getCategoryType());
+		}
+		if (!StringUtils.isEmpty(carObj.getPackageType())) {
+			car.setPackageType(carObj.getPackageType());
+		}
 		if (carObj.getPhysicalDamagePremium() != null && carObj.getPhysicalDamagePremium() > 0) {
 			car.setPhysicalDamagePremium(carObj.getPhysicalDamagePremium());	// phi bhvc
 		}

@@ -113,6 +113,9 @@ public class ProductBvpVM extends ProductBaseVM {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date nguoiycNgaysinh ;
 	
+	@ApiModelProperty(value = "Người yêu cầu bảo hiểm CMTND")
+    private String nguoiycCmnd ;
+	
 	@NotEmpty
 	@ApiModelProperty(value = "Họ tên người được bảo hiểm", required = true)
     private String nguoidbhName ;

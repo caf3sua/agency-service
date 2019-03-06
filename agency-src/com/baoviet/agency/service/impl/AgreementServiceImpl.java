@@ -1322,7 +1322,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		} else if (StringUtils.equals(data.getLineId(), "CAR")) {
 			Car car = carRepository.findOne(data.getGycbhId());
 			if (car == null) {
-				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng xe máy có mã " + data.getGycbhId());
+				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng ô tô có mã " + data.getGycbhId());
 			}
 			if (car.getPhysicalDamagePremium() != null && car.getPhysicalDamageSi() != null && car.getPhysicalDamagePremium() > 0 && car.getPhysicalDamageSi() > 0) {
 				insertStatusPolicy(data, "1");
@@ -1332,7 +1332,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		} else if (StringUtils.equals(data.getLineId(), "BVP")) {
 			Bvp bvp = bvpRepository.findOne(data.getGycbhId());
 			if (bvp == null) {
-				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng xe máy có mã " + data.getGycbhId());
+				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng An Gia có mã " + data.getGycbhId());
 			}
 			if (bvp.getNguoidbhNgaysinh() != null) {
 				int tuoi = DateUtils.countYears(bvp.getNguoidbhNgaysinh(), new Date());
@@ -1348,7 +1348,7 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		} else if (StringUtils.equals(data.getLineId(), "KCR")) {
 			Kcare kcare = kcareRepository.findOne(data.getGycbhId());
 			if (kcare == null) {
-				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng xe máy có mã " + data.getGycbhId());
+				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng KCARE có mã " + data.getGycbhId());
 			}
 			if (kcare.getInsuredDob() != null) {
 				int tuoi = DateUtils.countYears(DateUtils.str2Date(kcare.getInsuredDob()), new Date());

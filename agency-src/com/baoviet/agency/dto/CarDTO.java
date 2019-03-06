@@ -199,4 +199,7 @@ public class CarDTO implements Serializable {
 	private String thoihantu = AgencyConstants.DEFAULT_STRING_VALUE;
 	private Boolean vcxCheck = AgencyConstants.DEFAULT_BOOLEAN_VALUE;
 	private String yearOfMake = AgencyConstants.DEFAULT_STRING_VALUE;
+	private String monthOfMake = AgencyConstants.DEFAULT_STRING_VALUE;
+	private String categoryType = AgencyConstants.DEFAULT_STRING_VALUE;
+	private String packageType;
 }

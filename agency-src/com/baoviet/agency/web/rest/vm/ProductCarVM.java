@@ -151,7 +151,17 @@ public class ProductCarVM extends ProductBaseVM {
 
 	@ApiModelProperty(value = "Năm sản xuất xe")
 	private String yearOfMake;
+
+	@ApiModelProperty(value = "Tháng sản xuất xe")
+	private String monthOfMake;
+	
+	@ApiModelProperty(value = "Loại khách hàng", allowableValues = "PERSON,ORGANIZATION") 
+	private String categoryType;
+	
+	@ApiModelProperty(value = "Gói bảo hiểm 1: cơ bản, 2: linh hoạt", allowableValues = "1,2") 
+	private String packageType;
 	
 	// More attribute
     String userAgent;
 }
+
