@@ -1335,15 +1335,16 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 				throw new AgencyBusinessException("gycbhId", ErrorCode.INVALID, "Không tồn tại đơn hàng An Gia có mã " + data.getGycbhId());
 			}
 			if (bvp.getNguoidbhNgaysinh() != null) {
-				int tuoi = DateUtils.countYears(bvp.getNguoidbhNgaysinh(), new Date());
+				int tuoi = DateUtils.countYears(bvp.getNguoidbhNgaysinh(), data.getInceptionDate());
 				if (tuoi < 18) {
 					insertStatusPolicy(data, "1");
+				} else {
+					if (StringUtils.equals(bvp.getQ1(), "1") || StringUtils.equals(bvp.getQ2(), "1") || StringUtils.equals(bvp.getQ3(), "1")) {
+						insertStatusPolicy(data, "1");
+					} else {
+						insertStatusPolicy(data, "0");
+					}
 				}
-			}
-			if (StringUtils.equals(bvp.getQ1(), "1") || StringUtils.equals(bvp.getQ2(), "1") || StringUtils.equals(bvp.getQ3(), "1")) {
-				insertStatusPolicy(data, "1");
-			} else {
-				insertStatusPolicy(data, "0");
 			}			
 		} else if (StringUtils.equals(data.getLineId(), "KCR")) {
 			Kcare kcare = kcareRepository.findOne(data.getGycbhId());
