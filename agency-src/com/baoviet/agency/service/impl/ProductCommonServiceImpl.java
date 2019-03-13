@@ -1,17 +1,22 @@
 package com.baoviet.agency.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +49,7 @@ import com.baoviet.agency.dto.TravelcareDTO;
 import com.baoviet.agency.dto.TviCareAddDTO;
 import com.baoviet.agency.dto.TvicareDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AttachmentRepository;
 import com.baoviet.agency.repository.ContactRepository;
 import com.baoviet.agency.repository.TvcPlaneAddRepository;
@@ -192,6 +198,9 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 	@Autowired
 	private TvcPlaneRepository tvcPlaneRepository;
 	
+	@Value("${spring.upload.folder-upload-cars}")
+	private String folderUpload;
+	
 	@Override
 	public String getProductIdByGycbhId(String lineId, String gycbhId) {
 		log.debug("Request to getProductIdByGycbhId, lineId{}, gycbhId{}", lineId, gycbhId);
@@ -299,7 +308,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 	}
 
 	@Override
-	public <T extends ProductBaseVM> T convertProductObjectToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException{
+	public <T extends ProductBaseVM> T convertProductObjectToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException, IOException, Exception{
 		log.debug("Request to convertProductObjectToVM, AgreementSearchDTO{}, taituc{} : ", result, taituc);
 		//"TVI", "CAR", "MOT", "TVC", "HOM", "KHC", "KCR", "BVP", "PAS", "HHV", "GFI", "TNC"
 		T object = null;
@@ -442,6 +451,10 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		bvp.setNguoidbhName(bvpObj.getNguoidbhName());
 		bvp.setNguoidbhCmnd(bvpObj.getNguoidbhCmnd());
 		bvp.setNguoidbhQuanhe(bvpObj.getNguoidbhQuanhe());
+		
+		bvp.setNguoidbhGioitinh(bvpObj.getNguoidbhGioitinh());
+		bvp.setNguoidbhDiachi(bvpObj.getNguoidbhDiachithuongtru());
+		
 		bvp.setQ1(bvpObj.getQ1());
 		bvp.setQ2(bvpObj.getQ2());
 		bvp.setQ3(bvpObj.getQ3());
@@ -528,7 +541,7 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		return bvp;
 	}
 
-	private ProductCarVM convertCarToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException{
+	private ProductCarVM convertCarToVM(AgreementSearchDTO result, String taituc) throws Exception{
 		log.debug("Request to convertCarToVM, AgreementSearchDTO{}, taituc{} : ", result, taituc);
 		ProductCarVM car = new ProductCarVM();
 		// convert
@@ -697,9 +710,44 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 			car.setTndstnCheck(false);
 		}
 		
-		
 		car.setTotalPremium(carObj.getTotalPremium());
 		car.setThirdPartyPremium(carObj.getThirdPartyPremium());
+		
+		// Check fileId1 if not null -> get file
+		if (StringUtils.isNotEmpty(StringUtils.trim(carObj.getFileId1()))) {
+			FileContentDTO file = getFileCar(carObj.getFileId1());
+			if (file != null) {
+				car.setImgPDau(file);
+			}
+		}
+		
+		if (StringUtils.isNotEmpty(StringUtils.trim(carObj.getFileId2()))) {
+			FileContentDTO file = getFileCar(carObj.getFileId2());
+			if (file != null) {
+				car.setImgTDau(file);
+			}
+		}
+		
+		if (StringUtils.isNotEmpty(StringUtils.trim(carObj.getFileId3()))) {
+			FileContentDTO file = getFileCar(carObj.getFileId3());
+			if (file != null) {
+				car.setImgPDuoi(file);
+			}
+		}
+		
+		if (StringUtils.isNotEmpty(StringUtils.trim(carObj.getFileId4()))) {
+			FileContentDTO file = getFileCar(carObj.getFileId4());
+			if (file != null) {
+				car.setImgTDuoi(file);
+			}
+		}
+		
+		if (StringUtils.isNotEmpty(StringUtils.trim(carObj.getFileId5()))) {
+			FileContentDTO file = getFileCar(carObj.getFileId5());
+			if (file != null) {
+				car.setImgDKiem(file);
+			}
+		}
 		
 		// Tái tục thì insert
 		if (taituc.equals("1")) {
@@ -712,7 +760,38 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		
 		return car;
 	}
-
+	
+	private FileContentDTO getFileCar(String fileId) throws IOException, AgencyBusinessException {
+		Attachment item = attachmentRepository.findOne(fileId);
+		if (item != null) {
+			FileContentDTO file = new FileContentDTO();
+			if (StringUtils.equals(item.getGroupType(), "ONLLINE_CAR")) {
+				file.setFilename(item.getAttachmentName());
+				file.setFileType(item.getAttachmentType());
+				file.setAttachmentId(item.getAttachmentId());
+				
+				String path = folderUpload + item.getAttachmentName();
+				
+				File f = new File(path);
+				
+				if (f.exists()) {
+					System.out.println("File existed");
+					byte[] fileContent = FileUtils.readFileToByteArray(new File(path));
+					String encodedString = Base64.getEncoder().encodeToString(fileContent);
+					if (StringUtils.isNotEmpty(encodedString)) {
+						file.setContent(encodedString);
+					}
+					
+				} else {
+					System.out.println("File not found!");
+					throw new AgencyBusinessException(ErrorCode.INVALID, "Không tồn tại file");
+				}
+				return file;
+			}
+		}
+		return null;
+	}
+	
 	private ProductHomeVM convertHomeToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException{
 		log.debug("Request to convertHomeToVM, AgreementSearchDTO{}, taituc{} : ", result, taituc);
 		ProductHomeVM home = new ProductHomeVM();

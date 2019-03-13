@@ -1,37 +1,59 @@
 package com.baoviet.agency.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
+import com.baoviet.agency.bean.FileContentDTO;
+import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.Attachment;
+import com.baoviet.agency.domain.Car;
 import com.baoviet.agency.domain.CarRate;
 import com.baoviet.agency.domain.Contact;
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.AgreementDTO;
+import com.baoviet.agency.dto.AttachmentDTO;
 import com.baoviet.agency.dto.CarDTO;
 import com.baoviet.agency.dto.PurposeOfUsageDTO;
 import com.baoviet.agency.dto.SppCarDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
+import com.baoviet.agency.repository.AttachmentRepository;
+import com.baoviet.agency.repository.CarRepository;
 import com.baoviet.agency.repository.ContactRepository;
+import com.baoviet.agency.service.AttachmentService;
 import com.baoviet.agency.service.CarRateService;
 import com.baoviet.agency.service.CarService;
 import com.baoviet.agency.service.ProductCARService;
 import com.baoviet.agency.service.PurposeOfUsageService;
+import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
+import com.baoviet.agency.utils.UString;
 import com.baoviet.agency.utils.ValidateUtils;
-import com.baoviet.agency.web.rest.vm.ProductCarVM;
 import com.baoviet.agency.web.rest.vm.PremiumCARVM;
+import com.baoviet.agency.web.rest.vm.ProductCarImageVM;
+import com.baoviet.agency.web.rest.vm.ProductCarVM;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * Service Implementation for managing CAR.
@@ -51,14 +73,26 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 	private CarRateService carRateService;
 	@Autowired
 	private CarService carService;
+	
+	@Autowired
+	private AttachmentService attachmentService;
 
 	@Autowired
 	private ContactRepository contactRepository;
 	
+	@Autowired
+	private CarRepository carRepository;
+	
+	@Value("${spring.upload.folder-upload-cars}")
+	private String folderUpload;
+	
+	@Autowired
+	private AttachmentRepository attachmentRepository;
+	
 	public int seatNumberMin = 0;
 	public int seatNumberMax = 0;
 
-	public ProductCarVM createOrUpdatePolicy(ProductCarVM obj, AgencyDTO currentAgency) throws AgencyBusinessException {
+	public ProductCarVM createOrUpdatePolicy(ProductCarVM obj, AgencyDTO currentAgency) throws AgencyBusinessException, IOException {
 		log.debug("Result of createPolicy CARBaseVM, {}", obj);
 		
 		// ValidGycbhNumber : Không dùng trong TH update
@@ -82,6 +116,28 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 		
 		AgreementDTO agreementInfo = getObjectAgreement(carinfo, co, obj, currentAgency);
 		if (carinfo != null && agreementInfo != null) {
+			// 08/03/2019: lưu file
+			if (obj.getImgPDau() != null && !StringUtils.isEmpty(obj.getImgPDau().getContent())) {
+				String fileId = saveFileContent(obj.getImgPDau(), currentAgency, "ONLLINE_CAR");
+				carinfo.setFileId1(fileId);
+			}
+			if (obj.getImgTDau() != null && !StringUtils.isEmpty(obj.getImgTDau().getContent())) {
+				String fileId = saveFileContent(obj.getImgTDau(), currentAgency, "ONLLINE_CAR");
+				carinfo.setFileId2(fileId);
+			}
+			if (obj.getImgPDuoi() != null && !StringUtils.isEmpty(obj.getImgPDuoi().getContent())) {
+				String fileId = saveFileContent(obj.getImgPDuoi(), currentAgency, "ONLLINE_CAR");
+				carinfo.setFileId3(fileId);
+			}
+			if (obj.getImgTDuoi() != null && !StringUtils.isEmpty(obj.getImgTDuoi().getContent())) {
+				String fileId = saveFileContent(obj.getImgTDuoi(), currentAgency, "ONLLINE_CAR");
+				carinfo.setFileId4(fileId);
+			}
+			if (obj.getImgDKiem() != null && !StringUtils.isEmpty(obj.getImgDKiem().getContent())) {
+				String fileId = saveFileContent(obj.getImgDKiem(), currentAgency, "ONLLINE_CAR");
+				carinfo.setFileId5(fileId);
+			}
+			
 			String carId = carService.InsertCar(carinfo);
 			if (carId != null) {
 				agreementInfo.setGycbhId(carId);
@@ -91,15 +147,169 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 				// check TH thêm mới: 0, update: 1 để gửi sms
 //		        if (StringUtils.isEmpty(obj.getAgreementId())) {
 		        	// pay_action
-		         	sendSmsAndSavePayActionInfo(co, agreementSave, "0");	
+//		         	sendSmsAndSavePayActionInfo(co, agreementSave, "0");	
 //		        } else {
 //		        	sendSmsAndSavePayActionInfo(co, agreementSave, "1");
 //		        }
 		        obj.setAgreementId(agreementSave.getAgreementId());
+		        obj.setLineId(agreementSave.getLineId());
 			}
 		}
 		
 		return obj;
+	}
+	
+	public ProductCarImageVM updateImagesPolicy(ProductCarImageVM obj, AgencyDTO currentAgency) throws AgencyBusinessException, IOException {
+		log.debug("Result of updateImagesPolicy {}", obj);
+		
+		AgreementDTO agreementInfo = agreementService.findByGycbhNumberAndAgentId(obj.getGycbhNumber(), currentAgency.getMa());
+		if (agreementInfo == null) {
+			throw new AgencyBusinessException("gycbhNumber", ErrorCode.GET_GYCBH_NUMBER_ERROR, "Đơn hàng không tồn tại " + obj.getGycbhNumber());
+		}
+		
+		if (StringUtils.isNotEmpty(agreementInfo.getGycbhId())) {
+			Car carinfo = carService.getById(agreementInfo.getGycbhId());
+			
+			if (carinfo != null && agreementInfo != null) {
+				// 08/03/2019: lưu file
+				if (obj.getImgPDau() != null && !StringUtils.isEmpty(obj.getImgPDau().getContent())) {
+					// xóa file trước khi lưu
+					if (StringUtils.isNotEmpty(carinfo.getFileId1())) {
+						deleteFileCar(carinfo.getFileId1());
+					}
+					// lưu file
+					String fileId = saveFileContent(obj.getImgPDau(), currentAgency, "ONLLINE_CAR");
+					carinfo.setFileId1(fileId);
+				}
+				if (obj.getImgTDau() != null && !StringUtils.isEmpty(obj.getImgTDau().getContent())) {
+					// xóa file trước khi lưu
+					if (StringUtils.isNotEmpty(carinfo.getFileId2())) {
+						deleteFileCar(carinfo.getFileId2());
+					}
+					
+					String fileId = saveFileContent(obj.getImgTDau(), currentAgency, "ONLLINE_CAR");
+					carinfo.setFileId2(fileId);
+				}
+				if (obj.getImgPDuoi() != null && !StringUtils.isEmpty(obj.getImgPDuoi().getContent())) {
+					// xóa file trước khi lưu
+					if (StringUtils.isNotEmpty(carinfo.getFileId3())) {
+						deleteFileCar(carinfo.getFileId3());
+					}
+					
+					String fileId = saveFileContent(obj.getImgPDuoi(), currentAgency, "ONLLINE_CAR");
+					carinfo.setFileId3(fileId);
+				}
+				if (obj.getImgTDuoi() != null && !StringUtils.isEmpty(obj.getImgTDuoi().getContent())) {
+					// xóa file trước khi lưu
+					if (StringUtils.isNotEmpty(carinfo.getFileId4())) {
+						deleteFileCar(carinfo.getFileId4());
+					}
+					
+					String fileId = saveFileContent(obj.getImgTDuoi(), currentAgency, "ONLLINE_CAR");
+					carinfo.setFileId4(fileId);
+				}
+				if (obj.getImgDKiem() != null && !StringUtils.isEmpty(obj.getImgDKiem().getContent())) {
+					// xóa file trước khi lưu
+					if (StringUtils.isNotEmpty(carinfo.getFileId5())) {
+						deleteFileCar(carinfo.getFileId5());
+					}
+					
+					String fileId = saveFileContent(obj.getImgDKiem(), currentAgency, "ONLLINE_CAR");
+					carinfo.setFileId5(fileId);
+				}
+				
+				// update car
+				carRepository.save(carinfo);
+				
+				// update agreement
+				if (currentAgency.getSendOtp() != null && currentAgency.getSendOtp() > 0) {
+					// tạo otp mới
+					String otp = AgencyUtils.getRandomOTP();
+					agreementInfo.setOtp(otp);
+					agreementInfo.setOtpStatus(AppConstants.STATUS_OTP_0); // 0: timeout
+					agreementInfo.setOtpStartTime(DateUtils.date2Str(new Date()));
+					// gửi sms thì bật gửi mail cờ gửi mail cancel_policy_support3 = 1
+					agreementInfo.setCancelPolicySupport3(1.0);
+					agreementInfo.setSendEmailOtp(1);
+					
+					agreementInfo.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_OTP);
+					agreementInfo.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);
+					agreementInfo.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_OTP);
+					agreementInfo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);
+				} else {
+					agreementInfo.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
+					agreementInfo.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
+					agreementInfo.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
+					agreementInfo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);	
+				}
+				
+				// gửi sms
+				if (StringUtils.isNotEmpty(agreementInfo.getContactId())) {
+					Contact co = contactRepository.findOne(agreementInfo.getContactId());
+					// check TH thêm mới: 0, update: 1 để gửi sms
+			        sendSmsAndSavePayActionInfo(co, agreementInfo, "0");
+				} else {
+					throw new AgencyBusinessException("gycbhNumber", ErrorCode.GET_GYCBH_NUMBER_ERROR, "Đơn hàng có contact không thỏa mãn điều kiện " + obj.getGycbhNumber());
+				}
+			}
+		} else {
+			throw new AgencyBusinessException("gycbhNumber", ErrorCode.GET_GYCBH_NUMBER_ERROR, "Đơn hàng không thỏa mãn điều kiện " + obj.getGycbhNumber());
+		}
+		
+		return obj;
+	}
+	
+	/*
+	 * 1: góc phải đầu xe
+	 * 2: góc trái đầu xe
+	 * 3: góc phải đuôi xe
+	 * 4: góc trái đuôi xe
+	 * 5: Đăng kiểm/ số khung
+	 * */
+	private String saveFileContent(FileContentDTO item, AgencyDTO currentAgency, String type) throws IOException {
+		// ghi file vào thư mục
+		// Convert to byte[]
+		BASE64Decoder decoder = new BASE64Decoder();
+		byte[] imageByte = decoder.decodeBuffer(item.getContent());
+		
+		long currentTime = System.currentTimeMillis();
+		String fileName = currentTime + "_" + UString.getSafeFileName(item.getFilename());
+		Path path = Paths.get(folderUpload + fileName);
+        Files.write(path, imageByte);
+		
+		AttachmentDTO attachmenInfo = new AttachmentDTO();
+		if (!StringUtils.isEmpty(fileName)) {
+			attachmenInfo.setAttachmentName(fileName);
+		}
+		if (!StringUtils.isEmpty(item.getContent())) {
+			attachmenInfo.setContentFile(item.getContent());
+		}
+		if (!StringUtils.isEmpty(item.getFileType())) {
+			attachmenInfo.setAttachmentType(item.getFileType());
+		}
+		attachmenInfo.setGroupType(type);
+		attachmenInfo.setModifyDate(new Date());
+		attachmenInfo.setTradeolSysdate(new Date());
+		attachmenInfo.setUserId(currentAgency.getId());
+		attachmenInfo.setIstransferred(0);
+		String attachmentId = attachmentService.save(attachmenInfo);
+		log.debug("Request to save Attachment, attachmentId{}", attachmentId);
+
+		return attachmentId;
+	}
+	
+	private void deleteFileCar(String fileId) throws IOException, AgencyBusinessException {
+		Attachment item = attachmentRepository.findOne(fileId);
+		if (item != null) {
+			if (StringUtils.equals(item.getGroupType(), "ONLLINE_CAR")) {
+				String path = folderUpload + item.getAttachmentName();
+				File f = new File(path);
+				if (f.exists()) {
+					System.out.println("File existed");
+					f.delete();
+				}
+			}
+		}
 	}
 
 	@Override

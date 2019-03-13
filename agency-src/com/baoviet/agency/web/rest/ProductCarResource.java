@@ -1,5 +1,6 @@
 package com.baoviet.agency.web.rest;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -25,8 +26,9 @@ import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.service.AgreementService;
 import com.baoviet.agency.service.ProductCARService;
 import com.baoviet.agency.utils.AppConstants;
-import com.baoviet.agency.web.rest.vm.ProductCarVM;
 import com.baoviet.agency.web.rest.vm.PremiumCARVM;
+import com.baoviet.agency.web.rest.vm.ProductCarImageVM;
+import com.baoviet.agency.web.rest.vm.ProductCarVM;
 import com.baoviet.agency.web.rest.vm.UpdateAgreementCarVM;
 import com.codahale.metrics.annotation.Timed;
 
@@ -70,7 +72,7 @@ public class ProductCarResource extends AbstractAgencyResource {
     @PostMapping("/createPolicy")
     @Timed
     @ApiOperation(value="createPolicy", notes="Tạo yêu cầu Bảo hiểm ô tô Car.")
-    public ResponseEntity<ProductCarVM> createPolicy(@Valid @RequestBody ProductCarVM obj) throws URISyntaxException, AgencyBusinessException{
+    public ResponseEntity<ProductCarVM> createPolicy(@Valid @RequestBody ProductCarVM obj) throws URISyntaxException, AgencyBusinessException, IOException{
 		log.debug("REST request to createPolicy : {}", obj);
 		
 		// Get current agency
@@ -91,7 +93,7 @@ public class ProductCarResource extends AbstractAgencyResource {
     @PostMapping("/update")
     @Timed
     @ApiOperation(value="update", notes="Cập nhật yêu cầu Bảo hiểm ô tô Car.")
-    public ResponseEntity<ProductCarVM> update(@Valid @RequestBody ProductCarVM obj) throws URISyntaxException, AgencyBusinessException{
+    public ResponseEntity<ProductCarVM> update(@Valid @RequestBody ProductCarVM obj) throws URISyntaxException, AgencyBusinessException, IOException{
 		log.debug("REST request to update : {}", obj);
 		// validate 
 		validateUpdateProduct(obj);
@@ -212,6 +214,22 @@ public class ProductCarResource extends AbstractAgencyResource {
 		
 		// Call service
 		List<String> data = productCARService.getAllYear();
+		
+		// Return data
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+    
+    @PostMapping("/updateImagesPolicy")
+    @Timed
+    @ApiOperation(value="updateImagesPolicy", notes="Cập nhật ảnh giám định Bảo hiểm ô tô Car.")
+    public ResponseEntity<ProductCarImageVM> updateImagesPolicy(@Valid @RequestBody ProductCarImageVM obj) throws URISyntaxException, AgencyBusinessException, IOException{
+		log.debug("REST request to createPolicy : {}", obj);
+		
+		// Get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+		
+		// Call service
+		ProductCarImageVM data = productCARService.updateImagesPolicy(obj, currentAgency);
 		
 		// Return data
         return new ResponseEntity<>(data, HttpStatus.OK);

@@ -202,4 +202,9 @@ public class CarDTO implements Serializable {
 	private String monthOfMake = AgencyConstants.DEFAULT_STRING_VALUE;
 	private String categoryType = AgencyConstants.DEFAULT_STRING_VALUE;
 	private String packageType;
+	private String fileId1;
+	private String fileId2;
+	private String fileId3;
+	private String fileId4;
+	private String fileId5;
 }

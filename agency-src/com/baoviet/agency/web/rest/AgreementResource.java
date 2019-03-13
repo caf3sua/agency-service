@@ -1,5 +1,6 @@
 package com.baoviet.agency.web.rest;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,7 +128,7 @@ public class AgreementResource extends AbstractAgencyResource {
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
 	@GetMapping("/get-by-id/{agreementId}")
     @Timed
-    public <T extends ProductBaseVM> ResponseEntity<T> getById(@PathVariable String agreementId) throws URISyntaxException, AgencyBusinessException {
+    public <T extends ProductBaseVM> ResponseEntity<T> getById(@PathVariable String agreementId) throws URISyntaxException, AgencyBusinessException, IOException, Exception {
 		log.debug("REST request to getById");
 	
 		AgreementSearchDTO result = new AgreementSearchDTO();
@@ -417,7 +418,7 @@ public class AgreementResource extends AbstractAgencyResource {
 	
 	@GetMapping("/create-agrement-taituc/{agreementId}")
     @Timed
-    public <T extends ProductBaseVM> ResponseEntity<T> createAgrementTaiTuc(@RequestParam String agreementId) throws URISyntaxException, AgencyBusinessException {
+    public <T extends ProductBaseVM> ResponseEntity<T> createAgrementTaiTuc(@RequestParam String agreementId) throws URISyntaxException, AgencyBusinessException, IOException, Exception {
 		log.debug("REST request to createAgrementTaiTuc", agreementId);
 	
 		AgreementSearchDTO result = new AgreementSearchDTO();

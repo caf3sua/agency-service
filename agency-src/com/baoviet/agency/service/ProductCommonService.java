@@ -1,5 +1,6 @@
 package com.baoviet.agency.service;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import com.baoviet.agency.dto.AgreementSearchDTO;
@@ -15,6 +16,6 @@ public interface ProductCommonService {
 	
 	void addProductObject(String lineId, String gycbhId, AgreementSearchDTO result);
 	
-	<T extends ProductBaseVM> T convertProductObjectToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException;	// dùng để check xem tái tục hay ko. 1: Có
+	<T extends ProductBaseVM> T convertProductObjectToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException, IOException, Exception;	// dùng để check xem tái tục hay ko. 1: Có
 }
 

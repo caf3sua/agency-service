@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "DocGLitev2018Service", targetNamespace = "http://lite.ws.bv.com/", wsdlLocation = "http://10.29.85.24:7006/DocGLite/DocGLitev2018?wsdl")
+@WebServiceClient(name = "DocGLitev2018Service", targetNamespace = "http://lite.ws.bv.com/", wsdlLocation = "http://172.29.2.31:7003/DocGLiteSB/DocGLitev2018?wsdl")
 public class DocGLitev2018Service
     extends Service
 {
@@ -30,7 +30,7 @@ public class DocGLitev2018Service
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://10.29.85.24:7006/DocGLite/DocGLitev2018?wsdl");
+            url = new URL("http://172.29.2.31:7003/DocGLiteSB/DocGLitev2018?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

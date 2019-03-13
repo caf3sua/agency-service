@@ -1,5 +1,6 @@
 package com.baoviet.agency.web.rest;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class ProductMomoCarResource extends AbstractAgencyResource {
     @Timed
     @ApiOperation(value="doFormData", notes="Service URL để Momo sử dụng cho việc getForm và submitForm.")
     @RequestLogger
-    public ResponseEntity<ResponseMomoForm> doFormData(HttpServletRequest request, @Valid @RequestBody RequestMomoForm param) throws URISyntaxException, AgencyBusinessException {
+    public ResponseEntity<ResponseMomoForm> doFormData(HttpServletRequest request, @Valid @RequestBody RequestMomoForm param) throws URISyntaxException, AgencyBusinessException, IOException {
 		log.debug("REST request to get/submit form data : {}", param);
 		List<MomoComponent> form = null;
 		

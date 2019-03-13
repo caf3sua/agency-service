@@ -35,12 +35,6 @@ public class ProductBvpVM extends ProductBaseVM {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date expiredDate ;  
 	
-	@NotNull
-	@JsonSerialize(using = DateSerializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-	@ApiModelProperty(value = "Ngày sinh người được bảo hiểm", allowableValues = "dd/MM/yyyy", required = true)
-    private Date nguoidbhNgaysinh ;
-
 	@NotEmpty
 	@ApiModelProperty(value = "Chương trình bảo hiểm", allowableValues = "1,2,3,4,5", required = true)
     private String chuongtrinhBh ;
@@ -127,6 +121,24 @@ public class ProductBvpVM extends ProductBaseVM {
 	@NotEmpty
 	@ApiModelProperty(value = "Quan hệ với người Yêu cầu bảo hiểm", allowableValues = "30,31,32,33,34", required = true)
     private String nguoidbhQuanhe ;
+	
+	@NotNull
+	@JsonSerialize(using = DateSerializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@ApiModelProperty(value = "Ngày sinh người được bảo hiểm", allowableValues = "dd/MM/yyyy", required = true)
+    private Date nguoidbhNgaysinh ;
+	
+	@ApiModelProperty(value = "Giới tính người được bảo hiểm")
+    private String nguoidbhGioitinh;
+	
+	@ApiModelProperty(value = "Địa chỉ người được bảo hiểm")
+    private String nguoidbhDiachi;
+	
+	@ApiModelProperty(value = "Điện thoại người được bảo hiểm")
+    private String nguoidbhDienthoai;
+	
+	@ApiModelProperty(value = "Điện thoại người được bảo hiểm")
+    private String nguoidbhEmail;
 
 	@NotEmpty
 	@ApiModelProperty(value = "Trả lời câu hỏi 1: thông tin tình trạng sức khỏe 0: Không, 1: Có", allowableValues = "0,1", required = true)
@@ -152,6 +164,15 @@ public class ProductBvpVM extends ProductBaseVM {
 	@ApiModelProperty(value = "Quan hệ với người thụ hưởng")
     private String nguoithQuanhe;
 	
+	@ApiModelProperty(value = "Số Điện thoại của người thụ hưởng")
+    private String nguoithDienthoai;
+	
+	@ApiModelProperty(value = "Địa chỉ của người thụ hưởng")
+    private String nguoithDiachi;
+	
+	@ApiModelProperty(value = "Email của người thụ hưởng")
+    private String nguoithEmail;
+	
 	@JsonSerialize(using = DateSerializer.class)
 	@ApiModelProperty(value = "Ngày sinh người thụ hưởng", allowableValues = "dd/MM/yyyy")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -167,6 +188,15 @@ public class ProductBvpVM extends ProductBaseVM {
 	
 	@ApiModelProperty(value = "Quan hệ với người được bảo hiểm", allowableValues = "31,32,33")
     private String nguoinhanQuanhe ;
+	
+	@ApiModelProperty(value = "Số điện thoại người nhận tiền")
+    private String nguointDienthoai;
+	
+	@ApiModelProperty(value = "Địa chỉ người nhận tiền")
+    private String nguointDiachi;
+	
+	@ApiModelProperty(value = "Email người nhận tiền")
+    private String nguointEmail;
 	
 	@JsonSerialize(using = DateSerializer.class)
 	@ApiModelProperty(value = "Ngày sinh người nhận tiền", allowableValues = "dd/MM/yyyy")

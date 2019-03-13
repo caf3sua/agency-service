@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.utils.DoubleSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -163,5 +164,20 @@ public class ProductCarVM extends ProductBaseVM {
 	
 	// More attribute
     String userAgent;
+    
+    @ApiModelProperty(value = "data content của Góc phải đầu xe")
+    private FileContentDTO imgPDau;
+    
+    @ApiModelProperty(value = "data content của Góc trái đầu xe")
+    private FileContentDTO imgTDau;
+    
+    @ApiModelProperty(value = "data content của Góc phải đuôi xe")
+    private FileContentDTO imgPDuoi;
+    
+    @ApiModelProperty(value = "data content của Góc trái đuôi xe")
+    private FileContentDTO imgTDuoi;
+    
+    @ApiModelProperty(value = "data content của Đăng kiểm")
+    private FileContentDTO imgDKiem;
 }
 

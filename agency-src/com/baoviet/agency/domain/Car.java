@@ -269,4 +269,15 @@ public class Car implements Serializable {
 	private String categoryType;
 	@Column
 	private String packageType;
+	
+	@Column(name = "FILE_ID_1")
+	private String fileId1;
+	@Column(name = "FILE_ID_2")
+	private String fileId2;
+	@Column(name = "FILE_ID_3")
+	private String fileId3;
+	@Column(name = "FILE_ID_4")
+	private String fileId4;
+	@Column(name = "FILE_ID_5")
+	private String fileId5;
 }

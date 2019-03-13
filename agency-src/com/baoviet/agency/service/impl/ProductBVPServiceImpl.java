@@ -501,6 +501,9 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		vo.setNguoidbhCmnd(obj.getNguoidbhCmnd()); // Số Chứng minh nhân dân/Hộ chiếu: NDBH
 		vo.setNguoidbhNgaysinh(obj.getNguoidbhNgaysinh());
 		vo.setNguoidbhQuanhe(obj.getNguoidbhQuanhe());// Quan hệ với người Yêu cầu bảo hiểm:
+		
+		vo.setNguoidbhDiachithuongtru(obj.getNguoidbhDiachi());
+		vo.setNguoidbhGioitinh(obj.getNguoidbhGioitinh());
 
 		vo.setChuongtrinhBh(obj.getChuongtrinhBh());// Chương trình bảo hiểm
 		vo.setNgoaitru(obj.getNgoaitru());// Điều trị ngoại trú do ốm bệnh/tai nạn
@@ -537,6 +540,11 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		if (obj.getNguoithNgaysinh() != null) {
 			vo.setNguoithNgaysinh(obj.getNguoithNgaysinh());
 		}
+		// 05/03/2019 start
+		vo.setNguoithDienthoai(obj.getNguoithDienthoai());
+		vo.setNguoithDiachi(obj.getNguoithDiachi());
+		vo.setNguoithEmail(obj.getNguoithEmail());
+		// 05/03/2019 end
 		
 		vo.setNguoinhanName(obj.getNguoinhanName());// Họ tên người nhận tiền
 		vo.setNguoinhanCmnd(obj.getNguoinhanCmnd());// Số Chứng minh nhân dân/Hộ chiếu
@@ -544,6 +552,11 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		if (obj.getNguointNgaysinh() != null) {
 			vo.setNguointNgaysinh(obj.getNguointNgaysinh());	
 		}
+		// 05/03/2019 start
+		vo.setNguoinhanDienthoai(obj.getNguointDienthoai());
+		vo.setNguoinhanDiachi(obj.getNguointDiachi());
+		vo.setNguoinhanEmail(obj.getNguointEmail());
+		// 05/03/2019 end
 		
 		vo.setContactId(co.getContactId()); // id khach hang
 		vo.setContactCode(co.getContactCode()); // ten truy cap khach hang
@@ -1065,33 +1078,61 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			bvpNdbhXML.setNGUOIDBH_DIACHITHUONGTRU(bvp.getNguoidbhDiachithuongtru());
 			bvpNdbhXML.setNGUOIDBH_NGAYSINH(DateUtils.date2Str(bvp.getNguoidbhNgaysinh()));
 			bvpNdbhXML.setNGUOIDBH_CMND(bvp.getNguoidbhCmnd());
-			bvpNdbhXML.setNGUOIDBH_QUANHE(bvp.getNguoidbhQuanhe());
-			bvpNdbhXML.setNGUOIDBH_GIOITINH(bvp.getNguoidbhGioitinh());
+			bvpNdbhXML.setNGUOIDBH_QUANHE(getQuanHe(bvp.getNguoidbhQuanhe()));
+			if (StringUtils.isNotEmpty(bvp.getNguoidbhGioitinh())) {
+				bvpNdbhXML.setNGUOIDBH_GIOITINH(getGioitinh(bvp.getNguoidbhGioitinh()));
+			} else {
+				bvpNdbhXML.setNGUOIDBH_GIOITINH("");
+			}
+			
 			bvpNdbhXML.setNGUOIDBH_DIENTHOAI(""); // hiện tại để trống
 			bvpNdbhXML.setNGUOIDBH_EMAIL(""); // hiện tại để trống
-			bvpNdbhXML.setCHUONG_TRINH(bvp.getChuongtrinhBh());
-			bvpNdbhXML.setSTBH_CTC(String.valueOf(bvp.getChuongtrinhPhi()));
-			bvpNdbhXML.setSTBH_QLBS_1("0");
-			bvpNdbhXML.setTNCN(bvp.getTncn());
-			bvpNdbhXML.setSINHMANG_SOTIENBH(String.valueOf(bvp.getSinhmangSotienbh()));
-			bvpNdbhXML.setSTBH_QLBS_4("0");
-			bvpNdbhXML.setSTBH_QLBS_TS("0");
+			bvpNdbhXML.setCHUONG_TRINH(getChuongTrinh(bvp.getChuongtrinhBh()));
+			bvpNdbhXML.setSTBH_CTC(String.valueOf(bvp.getChuongtrinhPhi().longValue()));
+			if (StringUtils.equals(bvp.getNgoaitru(), "1")) {
+				bvpNdbhXML.setSTBH_QLBS_1("x");	// có tham gia
+			} else {
+				bvpNdbhXML.setSTBH_QLBS_1("-");
+			}
+			
+			bvpNdbhXML.setTNCN(String.valueOf(bvp.getTncnSotienbh().longValue()));
+			bvpNdbhXML.setSINHMANG_SOTIENBH(String.valueOf(bvp.getSinhmangSotienbh().longValue()));
+			if (StringUtils.equals(bvp.getNhakhoa(), "1")) {
+				bvpNdbhXML.setSTBH_QLBS_4("x");	// có tham gia
+			} else {
+				bvpNdbhXML.setSTBH_QLBS_4("-");
+			}
+			if (StringUtils.equals(bvp.getThaisan(), "1")) {
+				bvpNdbhXML.setSTBH_QLBS_TS("x");	// có tham gia
+			} else {
+				bvpNdbhXML.setSTBH_QLBS_TS("-");
+			}
+			
 			bvpNdbhXML.setTHBH_TU(DateUtils.date2Str(agreement.getInceptionDate()));
 			bvpNdbhXML.setTHBH_DEN(DateUtils.date2Str(agreement.getExpiredDate()));
-			bvpNdbhXML.setTONGPHI_PHI(String.valueOf(bvp.getTongphiPhi()));
-			bvpNdbhXML.setTANGGIAM_PHI(String.valueOf(bvp.getTanggiamPhi()));
-			bvpNdbhXML.setTONG_PHI(String.valueOf(bvp.getTongphiPhi()));
-			bvpNdbhXML.setTONG_PHI_CHU(String.valueOf(bvp.getTongphiPhi()));
-			bvpNdbhXML.setCHANGE_PREMIUM(String.valueOf(agreement.getChangePremium()));
+			bvpNdbhXML.setTONGPHI_PHI(String.valueOf(bvp.getTongphiPhi().longValue()));
+			bvpNdbhXML.setTANGGIAM_PHI(String.valueOf(bvp.getTanggiamPhi().longValue()));
+			bvpNdbhXML.setTONG_PHI(String.valueOf(bvp.getTongphiPhi().longValue()));
+			bvpNdbhXML.setTONG_PHI_CHU(String.valueOf(bvp.getTongphiPhi().longValue()));
+			bvpNdbhXML.setCHANGE_PREMIUM(String.valueOf(agreement.getChangePremium().longValue()));
 			bvpNdbhXML.setNGUOITH_NAME(bvp.getNguoithName());
 			bvpNdbhXML.setNGUOITH_CMND(bvp.getNguoithCmnd());
-			bvpNdbhXML.setNGUOITH_QUANHE(bvp.getNguoithQuanhe());
+			if (StringUtils.isNotEmpty(bvp.getNguoithQuanhe())) {
+				bvpNdbhXML.setNGUOITH_QUANHE(getQuanHe(bvp.getNguoithQuanhe()));
+			} else {
+				bvpNdbhXML.setNGUOITH_QUANHE("");	
+			}
 			bvpNdbhXML.setNGUOITH_DIENTHOAI(bvp.getNguoithDienthoai());
 			bvpNdbhXML.setNGUOITH_EMAIL(bvp.getNguoithEmail());
 			bvpNdbhXML.setNGUOITH_DIACHI(bvp.getNguoithDiachi());
 			bvpNdbhXML.setNGUOINHAN_NAME(bvp.getNguoinhanName());
 			bvpNdbhXML.setNGUOINHAN_CMND(bvp.getNguoinhanCmnd());
-			bvpNdbhXML.setNGUOINHAN_QUANHE(bvp.getNguoinhanQuanhe());
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanQuanhe())) {
+				bvpNdbhXML.setNGUOINHAN_QUANHE(getQuanHe(bvp.getNguoinhanQuanhe()));
+			} else {
+				bvpNdbhXML.setNGUOINHAN_QUANHE("");	
+			}
+			
 			bvpNdbhXML.setNGUOINHAN_DIENTHOAI(bvp.getNguoinhanDienthoai());
 			bvpNdbhXML.setNGUOINHAN_EMAIL(bvp.getNguoinhanEmail());
 			bvpNdbhXML.setNGUOINHAN_DIACHI(bvp.getNguoinhanDiachi());
@@ -1113,6 +1154,72 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 		} else {
 			throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tìm thấy đơn hàng");
 		}
+	}
+	
+	private String getQuanHe(String id) {
+		String name = "";
+		switch (id) {
+			case "30":
+				name = "Bản thân";
+			break;
+			case "31":
+				name = "Vợ/Chồng";
+			break;
+			case "32":
+				name = "Con";
+			break;
+			case "33":
+				name = "Bố/Mẹ";
+			break;
+			case "34":
+				name = "Bố mẹ của Vợ/Chồng";
+			break;
+			case "99":
+				name = "Khác";
+			break;
+		default:
+			break;
+		}
+		return name;
+	}
+	
+	private String getChuongTrinh(String id) {
+		String name = "";
+		switch (id) {
+			case "1":
+				name = "Đồng";
+			break;
+			case "2":
+				name = "Bạc";
+			break;
+			case "3":
+				name = "Vàng";
+			break;
+			case "4":
+				name = "Bạch Kim";
+			break;
+			case "5":
+				name = "Kim Cương";
+			break;
+		default:
+			break;
+		}
+		return name;
+	}
+	
+	private String getGioitinh(String id) {
+		String name = "";
+		switch (id) {
+			case "1":
+				name = "Nam";
+			break;
+			case "2":
+				name = "Nữ";
+			break;
+		default:
+			break;
+		}
+		return name;
 	}
 	
 	private BvpFile getByteFromResponse(String response, String type) {
@@ -1150,13 +1257,10 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				}
 			}
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

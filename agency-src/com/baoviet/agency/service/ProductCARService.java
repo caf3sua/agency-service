@@ -1,19 +1,21 @@
 package com.baoviet.agency.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.baoviet.agency.dto.AgencyDTO;
 import com.baoviet.agency.dto.SppCarDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
-import com.baoviet.agency.web.rest.vm.ProductCarVM;
 import com.baoviet.agency.web.rest.vm.PremiumCARVM;
+import com.baoviet.agency.web.rest.vm.ProductCarImageVM;
+import com.baoviet.agency.web.rest.vm.ProductCarVM;
 
 /**
  * Service Interface for managing TVC.
  */
 public interface ProductCARService {
 
-	ProductCarVM createOrUpdatePolicy(ProductCarVM obj, AgencyDTO currentAgency) throws AgencyBusinessException;
+	ProductCarVM createOrUpdatePolicy(ProductCarVM obj, AgencyDTO currentAgency) throws AgencyBusinessException, IOException;
 	
 	PremiumCARVM calculatePremium(PremiumCARVM param, String agencyRole) throws AgencyBusinessException;
 	
@@ -30,5 +32,7 @@ public interface ProductCARService {
 	List<SppCarDTO> getCarModel(String model) throws AgencyBusinessException;
 	
 	List<String> getAllYear() throws AgencyBusinessException;
+	
+	ProductCarImageVM updateImagesPolicy(ProductCarImageVM obj, AgencyDTO currentAgency) throws AgencyBusinessException, IOException;
 }
 

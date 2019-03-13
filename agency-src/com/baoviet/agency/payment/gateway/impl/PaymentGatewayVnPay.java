@@ -246,18 +246,25 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			// Cap nhat trang thai
 			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
 			if (payAction != null && payAction.getPayEndDate() == null) {
-				// NamNH : 14/1/2019
-				processOrder(result, payAction, paramMap, vnpTmnCode);
-				result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
-		
 				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
-					result.setRspCode("00");
-					result.setMessage("Confirm Success");
-					if (payAction != null) {
-						result.setMciAddId(payAction.getMciAddId());
-						result.setPolicyNumber(payAction.getPolicyNumbers());	
+					boolean orderResult = processOrder(payAction, paramMap);	// duclm add 21/02
+					
+					if (!orderResult) {
+						result.setRspCode("99");
+						if (payAction != null) {
+							result.setMciAddId(payAction.getMciAddId());
+							result.setPolicyNumber(payAction.getPolicyNumbers());	
+						}
+						result.setResponseType(PaymentResponseType.ERROR); // duclm add 21/02	
+					} else {
+						result.setRspCode("00");
+						result.setMessage("Confirm Success");
+						if (payAction != null) {
+							result.setMciAddId(payAction.getMciAddId());
+							result.setPolicyNumber(payAction.getPolicyNumbers());	
+						}
+						result.setResponseType(PaymentResponseType.SUCCESS); // duclm add 21/02	
 					}
-					result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
 				} else {
 					result.setRspCode("99");
 					result.setMciAddId(payAction.getMciAddId());
@@ -286,9 +293,64 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 			result.setRspCode("97");
 			result.setMessage("Chu ky khong hop le");
 			result.setResponseType(PaymentResponseType.ERROR);
+			log.info("Update PayAction Chu ky khong hop le");
 		}
 		return result;
 	}
+	
+//	backup 21/02
+//	@Override
+//	public PaymentResult processReturn(Map<String, String> paramMap, String vnpTmnCode) throws AgencyBusinessException {
+//		String redirectUrl = applicationProperties.getPaymentReturnPage();
+//		PaymentResult result = new PaymentResult();
+//		if (validateSignature(paramMap)) {
+//			// Cap nhat trang thai
+//			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
+//			if (payAction != null && payAction.getPayEndDate() == null) {
+//				// NamNH : 14/1/2019
+//				processOrder(result, payAction, paramMap, vnpTmnCode);
+//				result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
+//		
+//				if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+//					result.setRspCode("00");
+//					result.setMessage("Confirm Success");
+//					if (payAction != null) {
+//						result.setMciAddId(payAction.getMciAddId());
+//						result.setPolicyNumber(payAction.getPolicyNumbers());	
+//					}
+//					result.setResponseType(PaymentResponseType.NEED_VALIDATE_TRANSACTION);
+//				} else {
+//					result.setRspCode("99");
+//					result.setMciAddId(payAction.getMciAddId());
+//					result.setPolicyNumber(payAction.getPolicyNumbers());	
+//					result.setResponseType(PaymentResponseType.ERROR);
+//				}
+//				
+//			} else if (payAction != null && payAction.getPayEndDate() != null) {
+//				result.setRspCode("02");
+//				result.setMessage("Order already confirmed");
+//				result.setMciAddId(payAction.getMciAddId());
+//				result.setPolicyNumber(payAction.getPolicyNumbers());	
+//				result.setResponseType(PaymentResponseType.ERROR);
+//				return result;
+//			} else {
+//				result.setRspCode("01");
+//				result.setMessage("Order not found");
+//				result.setResponseType(PaymentResponseType.ERROR);
+//			}
+//		} else {
+//			PayAction payAction = payActionRepository.findByMciAddId(paramMap.get(Constants.VNPAY_PARAM_TXN_REF));
+//			if (payAction != null) {
+//				result.setMciAddId(payAction.getMciAddId());
+//				result.setPolicyNumber(payAction.getPolicyNumbers());
+//			}
+//			result.setRspCode("97");
+//			result.setMessage("Chu ky khong hop le");
+//			result.setResponseType(PaymentResponseType.ERROR);
+//			log.info("Update PayAction Chu ky khong hop le");
+//		}
+//		return result;
+//	}
 	
 	@Override
 	public boolean updateStatus(String transRef, String responseString) throws AgencyBusinessException {
@@ -497,11 +559,13 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		StringBuffer requestData = new StringBuffer();
 		for (Entry<String, String> entry : paramMap.entrySet()) {
 			if (!entry.getKey().equals(Constants.VNPAY_PARAM_SECURE_HASH)) {
-				requestData.append(entry.getKey());
-				requestData.append("=");
-				requestData.append(entry.getValue());
-				requestData.append("&");
-			}
+				if (StringUtils.isNotEmpty(entry.getValue())) {
+					requestData.append(entry.getKey());
+					requestData.append("=");
+					requestData.append(entry.getValue());
+					requestData.append("&");	
+				}
+			}	
 		}
 		try {
 			if (!StringUtils.isEmpty(requestData)) {
@@ -510,6 +574,11 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 				md5.update(StandardCharsets.UTF_8.encode(config.getHashSecret() + data));
 				String myChecksum = String.format("%032x", new BigInteger(1, md5.digest()));
 
+				
+				log.info("validateSignature , hashSecret {}"+ config.getHashSecret());
+				log.info("validateSignature , requestData {}"+ data);
+				log.info("validateSignature , myChecksum {}"+ myChecksum);
+				
 				if (myChecksum.equalsIgnoreCase(paramMap.get(Constants.VNPAY_PARAM_SECURE_HASH))) {
 					return true;
 				} else {
@@ -559,5 +628,32 @@ public class PaymentGatewayVnPay extends AbstractPaymentGateway {
 		}
 		return vnpOrderInfo;	
 	}
-	
+
+	// old
+	private boolean processOrder(PayAction payAction, Map<String, String> paramMap) {
+		if (paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE) != null
+				&& !paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE).isEmpty()) {
+			
+			String transactionStatus = paramMap.get(Constants.VNPAY_PARAM_RESPONSE_CODE);
+			String transactionNo = paramMap.get(Constants.VNPAY_PARAM_TRANSACTION_NO);
+			payAction.setPayEndDate(new Date());
+
+			if (StringUtils.isNotEmpty(transactionNo)) {
+				payAction.setPayLog("\\n[Response]: " + paramMap);
+
+				if (transactionStatus.equals(Constants.PAYMENT_VNPAY_STATUS_SUCCESS)) {
+					payAction.setStatus(91);
+					updatePaymentResult(PaymentStatus.SUCCESSFUL, payAction.getMciAddId(), transactionNo, payAction);
+				} else {
+					payAction.setStatus(90);
+					updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), transactionNo, payAction);
+				}
+			} else {
+				payAction.setStatus(90);
+				updatePaymentResult(PaymentStatus.FAILED, payAction.getMciAddId(), "", payAction);
+			}
+			payActionRepository.save(payAction);
+		}
+		return true;
+	}
 }
