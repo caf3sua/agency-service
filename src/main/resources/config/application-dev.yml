@@ -32,8 +32,10 @@ spring:
         #password: Viettel#123
         #url: jdbc:oracle:thin:@10.29.83.159:1521:TRADEOLDEV
         #url: jdbc:oracle:thin:@10.29.18.20:1521:pdbbv4u
+        
         url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.83.159)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbagency)))
-        #url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.18.20)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbbv4u)))
+        #UAT-Pro
+        #url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=tcp)(HOST=10.29.18.20)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=pdbagency))) 
         username: agencyuat
         password: agencyuat
         hikari:
@@ -65,6 +67,7 @@ spring:
         cache: false
     upload:
         folder-upload: D:/programme/upload_temp/
+        folder-upload-cars: D:/programme/upload/cars/
 
 liquibase:
     contexts: dev
@@ -142,7 +145,7 @@ jhipster:
             #host: 125.253.113.34
             host: 172.29.13.12
             port: 5000
-            queue-size: 512
+            queue-size: 128
 
 # ===================================================================
 # Application specific properties
