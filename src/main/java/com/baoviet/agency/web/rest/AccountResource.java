@@ -169,9 +169,9 @@ public class AccountResource {
     				department.setDepartmentId(item.getBuId());
     				
     				// lấy tên phòng ban
-    				List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByPrOutletAmsId(item.getBuId());
+    				List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(item.getBuId());
     				if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
-    					department.setDepartmentName(lstMvClaOutletLocation.get(0).getPrOutletName());
+    					department.setDepartmentName(lstMvClaOutletLocation.get(0).getOutletName());
     				} else {
     					List<MvAgentAgreement> lstMvAgentAgreement =mvAgentAgreementRepository.findByDepartmentCode(item.getBuId());
     					if (lstMvAgentAgreement != null && lstMvAgentAgreement.size() > 0) {
