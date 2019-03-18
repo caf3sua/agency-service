@@ -29,4 +29,7 @@ public class TvcAddBaseVM {
 	private String relationshipName;
 	
 	private int order;
+	
+	@ApiModelProperty(value = "Địa chỉ người được BH")
+    private String address;
 }

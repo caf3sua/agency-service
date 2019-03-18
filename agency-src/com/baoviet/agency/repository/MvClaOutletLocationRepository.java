@@ -19,6 +19,8 @@ public interface MvClaOutletLocationRepository extends JpaRepository<MvClaOutlet
 	
 	List<MvClaOutletLocation> findByPrOutletAmsId(String deparmentId);
 	
+	List<MvClaOutletLocation> findByPrOutletAmsIdAndOutletTypeCode(String deparmentId, String type);
+	
 	List<MvClaOutletLocation> findByOutletAmsIdAndPrOutletAmsId(String agentId, String deparmentId);
 	
 	List<MvClaOutletLocation> findByPrOutletAmsIdAndOutletNameLike(String deparmentId, String keyword);

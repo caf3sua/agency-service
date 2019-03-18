@@ -29,6 +29,7 @@ import com.baoviet.agency.dto.excel.ProductMotoExcelDTO;
 import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
 import com.baoviet.agency.dto.report.ReportDataDTO;
 import com.baoviet.agency.exception.AgencyBusinessException;
+import com.baoviet.agency.service.AdminUserService;
 import com.baoviet.agency.service.ExcelService;
 import com.baoviet.agency.service.ReportService;
 import com.baoviet.agency.utils.AppConstants;
@@ -54,6 +55,9 @@ public class ReportResource extends AbstractAgencyResource{
 	
 	@Autowired
     private ExcelService excelService;
+	
+	@Autowired
+    private AdminUserService adminUserService;
 
 	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_REPORT_INCOME_VIEW')")
 	@PostMapping("/report-moto")
@@ -281,8 +285,9 @@ public class ReportResource extends AbstractAgencyResource{
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 
-		CountOrderDTO data = agreementService.getAdmCountAllOrder(currentAgency.getMa());
-
+//		CountOrderDTO data = agreementService.getAdmCountAllOrder(currentAgency.getMa());
+		CountOrderDTO data = adminUserService.getAdmCountAllOrder(currentAgency.getMa());
+		
 		// Return data
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}

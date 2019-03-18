@@ -3,6 +3,8 @@ package com.baoviet.agency.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +56,7 @@ import com.baoviet.agency.service.AttachmentService;
 import com.baoviet.agency.service.BVPService;
 import com.baoviet.agency.service.ProductBVPService;
 import com.baoviet.agency.service.TinhtrangSkService;
+import com.baoviet.agency.utils.AgencyUtils;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.utils.DateUtils;
 import com.baoviet.agency.utils.ValidateUtils;
@@ -1047,13 +1050,13 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			bvpXML.setNGUOIYC_NAME(bvp.getNguoiycName());
 			bvpXML.setNGUOIYC_CMND(bvp.getNguoiycCmnd());
 			bvpXML.setNGUOIYC_NGAYSINH(DateUtils.date2Str(bvp.getNguoiycNgaysinh()));
-			bvpXML.setNGUOIYC_DIACHITHUONGTRU(bvp.getNguoiycDiachithuongtru());
+			bvpXML.setNGUOIYC_DIACHITHUONGTRU(converAddress(bvp.getNguoiycDiachithuongtru()));
 			bvpXML.setNGUOIYC_DIENTHOAI(bvp.getNguoiycDienthoai());
 			bvpXML.setNGUOIYC_EMAIL(bvp.getNguoiycEmail());
 			bvpXML.setBAOVIET_DEPARTMENT_ID(agreement.getBaovietDepartmentId());
 			bvpXML.setBAOVIET_DEPARTMENT_NAME(agreement.getBaovietDepartmentName());
 			bvpXML.setBAOVIET_NAME(""); // hiện tại để trống
-			bvpXML.setNGAY_HOA_DON(DateUtils.date2Str(new Date()));
+			bvpXML.setNGAY_HOA_DON(DateUtils.date2Str(agreement.getDateOfPayment()));
 			bvpXML.setURN_DAILY(agreement.getUrnDaily());
 			bvpXML.setAGENT_NAME(agreement.getAgentName());
 			bvpXML.setBAOVIET_COMPANY_NAME(agreement.getBaovietCompanyName());
@@ -1075,72 +1078,124 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			
 			BvpNdbhXML bvpNdbhXML = new BvpNdbhXML();
 			bvpNdbhXML.setNGUOIDBH_NAME(bvp.getNguoidbhName());
-			bvpNdbhXML.setNGUOIDBH_DIACHITHUONGTRU(bvp.getNguoidbhDiachithuongtru());
+			bvpNdbhXML.setNGUOIDBH_DIACHITHUONGTRU(converAddress(bvp.getNguoidbhDiachithuongtru()));
 			bvpNdbhXML.setNGUOIDBH_NGAYSINH(DateUtils.date2Str(bvp.getNguoidbhNgaysinh()));
 			bvpNdbhXML.setNGUOIDBH_CMND(bvp.getNguoidbhCmnd());
 			bvpNdbhXML.setNGUOIDBH_QUANHE(getQuanHe(bvp.getNguoidbhQuanhe()));
-			if (StringUtils.isNotEmpty(bvp.getNguoidbhGioitinh())) {
-				bvpNdbhXML.setNGUOIDBH_GIOITINH(getGioitinh(bvp.getNguoidbhGioitinh()));
-			} else {
-				bvpNdbhXML.setNGUOIDBH_GIOITINH("");
-			}
 			
-			bvpNdbhXML.setNGUOIDBH_DIENTHOAI(""); // hiện tại để trống
-			bvpNdbhXML.setNGUOIDBH_EMAIL(""); // hiện tại để trống
+//			if (StringUtils.isNotEmpty(bvp.getNguoidbhGioitinh())) {
+//				bvpNdbhXML.setNGUOIDBH_GIOITINH(getGioitinh(bvp.getNguoidbhGioitinh()));
+//			} else {
+				bvpNdbhXML.setNGUOIDBH_GIOITINH("");
+//			}
+			
+			bvpNdbhXML.setNGUOIDBH_DIENTHOAI(""); // hiện tại để trống item.NGUOITH_DIENTHOAI 
+			bvpNdbhXML.setNGUOIDBH_EMAIL(""); // hiện tại để trống item.NGUOITH_EMAIL 
 			bvpNdbhXML.setCHUONG_TRINH(getChuongTrinh(bvp.getChuongtrinhBh()));
-			bvpNdbhXML.setSTBH_CTC(String.valueOf(bvp.getChuongtrinhPhi().longValue()));
+			bvpNdbhXML.setSTBH_CTC(formatNumber(bvp.getTongphiPhi().longValue()));
 			if (StringUtils.equals(bvp.getNgoaitru(), "1")) {
 				bvpNdbhXML.setSTBH_QLBS_1("x");	// có tham gia
 			} else {
-				bvpNdbhXML.setSTBH_QLBS_1("-");
+				bvpNdbhXML.setSTBH_QLBS_1("0");
+			}
+			int tuoi = DateUtils.countYears(bvp.getNguoidbhNgaysinh(), agreement.getInceptionDate());
+			if (tuoi < 3) {
+				bvpNdbhXML.setMUCDONGCHITRA("70/30");
+			} else {
+				bvpNdbhXML.setMUCDONGCHITRA("0");	
 			}
 			
-			bvpNdbhXML.setTNCN(String.valueOf(bvp.getTncnSotienbh().longValue()));
-			bvpNdbhXML.setSINHMANG_SOTIENBH(String.valueOf(bvp.getSinhmangSotienbh().longValue()));
+			bvpNdbhXML.setTNCN(formatNumber(bvp.getTncnSotienbh().longValue()));
+			bvpNdbhXML.setSINHMANG_SOTIENBH(formatNumber(bvp.getSinhmangSotienbh().longValue()));
 			if (StringUtils.equals(bvp.getNhakhoa(), "1")) {
 				bvpNdbhXML.setSTBH_QLBS_4("x");	// có tham gia
 			} else {
-				bvpNdbhXML.setSTBH_QLBS_4("-");
+				bvpNdbhXML.setSTBH_QLBS_4("0");
 			}
 			if (StringUtils.equals(bvp.getThaisan(), "1")) {
 				bvpNdbhXML.setSTBH_QLBS_TS("x");	// có tham gia
 			} else {
-				bvpNdbhXML.setSTBH_QLBS_TS("-");
+				bvpNdbhXML.setSTBH_QLBS_TS("0");
 			}
 			
 			bvpNdbhXML.setTHBH_TU(DateUtils.date2Str(agreement.getInceptionDate()));
 			bvpNdbhXML.setTHBH_DEN(DateUtils.date2Str(agreement.getExpiredDate()));
-			bvpNdbhXML.setTONGPHI_PHI(String.valueOf(bvp.getTongphiPhi().longValue()));
-			bvpNdbhXML.setTANGGIAM_PHI(String.valueOf(bvp.getTanggiamPhi().longValue()));
-			bvpNdbhXML.setTONG_PHI(String.valueOf(bvp.getTongphiPhi().longValue()));
-			bvpNdbhXML.setTONG_PHI_CHU(String.valueOf(bvp.getTongphiPhi().longValue()));
-			bvpNdbhXML.setCHANGE_PREMIUM(String.valueOf(agreement.getChangePremium().longValue()));
-			bvpNdbhXML.setNGUOITH_NAME(bvp.getNguoithName());
-			bvpNdbhXML.setNGUOITH_CMND(bvp.getNguoithCmnd());
+			bvpNdbhXML.setTONGPHI_PHI(formatNumber(bvp.getTongphiPhi().longValue()));
+			bvpNdbhXML.setTANGGIAM_PHI(formatNumber(bvp.getTanggiamPhi().longValue()));
+			bvpNdbhXML.setTONG_PHI(formatNumber(bvp.getTongphiPhi().longValue()));
+			bvpNdbhXML.setTONG_PHI_CHU(AgencyUtils.docso(bvp.getTongphiPhi()));
+			bvpNdbhXML.setCHANGE_PREMIUM(formatNumber(bvp.getTanggiamPhi().longValue()));
+			bvpNdbhXML.setDIEU_KHOAN_CHINH((formatNumber(bvp.getChuongtrinhPhi().longValue())));
+			
+			if (StringUtils.isNotEmpty(bvp.getNguoithName())) {
+				bvpNdbhXML.setNGUOITH_NAME(bvp.getNguoithName());	
+			} else {
+				bvpNdbhXML.setNGUOITH_NAME("");
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoithCmnd())) {
+				bvpNdbhXML.setNGUOITH_CMND(bvp.getNguoithCmnd());	
+			} else {
+				bvpNdbhXML.setNGUOITH_CMND("");
+			}
 			if (StringUtils.isNotEmpty(bvp.getNguoithQuanhe())) {
 				bvpNdbhXML.setNGUOITH_QUANHE(getQuanHe(bvp.getNguoithQuanhe()));
 			} else {
 				bvpNdbhXML.setNGUOITH_QUANHE("");	
 			}
-			bvpNdbhXML.setNGUOITH_DIENTHOAI(bvp.getNguoithDienthoai());
-			bvpNdbhXML.setNGUOITH_EMAIL(bvp.getNguoithEmail());
-			bvpNdbhXML.setNGUOITH_DIACHI(bvp.getNguoithDiachi());
-			bvpNdbhXML.setNGUOINHAN_NAME(bvp.getNguoinhanName());
-			bvpNdbhXML.setNGUOINHAN_CMND(bvp.getNguoinhanCmnd());
+			if (StringUtils.isNotEmpty(bvp.getNguoithDienthoai())) {
+				bvpNdbhXML.setNGUOITH_DIENTHOAI(bvp.getNguoithDienthoai());	
+			} else {
+				bvpNdbhXML.setNGUOITH_DIENTHOAI("");
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoithEmail())) {
+				bvpNdbhXML.setNGUOITH_EMAIL(bvp.getNguoithEmail());	
+			} else {
+				bvpNdbhXML.setNGUOITH_EMAIL("");
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoithDiachi())) {
+				bvpNdbhXML.setNGUOITH_DIACHI(converAddress(bvp.getNguoithDiachi()));	
+			} else {
+				bvpNdbhXML.setNGUOITH_DIACHI("");
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanName())) {
+				bvpNdbhXML.setNGUOINHAN_NAME(bvp.getNguoinhanName());	
+			} else {
+				bvpNdbhXML.setNGUOINHAN_NAME("");
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanCmnd())) {
+				bvpNdbhXML.setNGUOINHAN_CMND(bvp.getNguoinhanCmnd());	
+			} else {
+				bvpNdbhXML.setNGUOINHAN_CMND("");
+			}
 			if (StringUtils.isNotEmpty(bvp.getNguoinhanQuanhe())) {
 				bvpNdbhXML.setNGUOINHAN_QUANHE(getQuanHe(bvp.getNguoinhanQuanhe()));
 			} else {
 				bvpNdbhXML.setNGUOINHAN_QUANHE("");	
 			}
-			
-			bvpNdbhXML.setNGUOINHAN_DIENTHOAI(bvp.getNguoinhanDienthoai());
-			bvpNdbhXML.setNGUOINHAN_EMAIL(bvp.getNguoinhanEmail());
-			bvpNdbhXML.setNGUOINHAN_DIACHI(bvp.getNguoinhanDiachi());
-			bvpNdbhXML.setNGAYCAP(DateUtils.date2Str(new Date()));
-			bvpNdbhXML.setGHICHU(bvp.getGhichu());
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanDienthoai())) {
+				bvpNdbhXML.setNGUOINHAN_DIENTHOAI(bvp.getNguoinhanDienthoai());
+			} else {
+				bvpNdbhXML.setNGUOINHAN_DIENTHOAI("");	
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanEmail())) {
+				bvpNdbhXML.setNGUOINHAN_EMAIL(bvp.getNguoinhanEmail());
+			} else {
+				bvpNdbhXML.setNGUOINHAN_EMAIL("");	
+			}
+			if (StringUtils.isNotEmpty(bvp.getNguoinhanDiachi())) {
+				bvpNdbhXML.setNGUOINHAN_DIACHI(converAddress(bvp.getNguoinhanDiachi()));
+			} else {
+				bvpNdbhXML.setNGUOINHAN_DIACHI("");
+			}
+			bvpNdbhXML.setNGAYCAP(DateUtils.date2Str(agreement.getDateOfPayment()));
+			bvpNdbhXML.setGHICHU(bvp.getGhichu().trim());
 			bvpNdbhXML.setQ1(bvp.getQ1());
 			bvpNdbhXML.setQ2(bvp.getQ2());
 			bvpNdbhXML.setQ3(bvp.getQ3());
+			bvpNdbhXML.setLOGO_BVGI("logo_bvgi.jpg");
+			
+			String logoDT = agency.getKenhPhanPhoi() + ".jpg";
+			bvpNdbhXML.setLOGO_DOITAC(logoDT);
 			
 			BvpNdbhObj nguoidbh = new BvpNdbhObj();
 			nguoidbh.setNGUOIDBH(bvpNdbhXML);
@@ -1153,6 +1208,28 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			return bvpXML;
 		} else {
 			throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tìm thấy đơn hàng");
+		}
+	}
+	
+	private String formatNumber(Long number) {
+        if (number < 1000) {
+            return String.valueOf(number);
+        }
+        try {
+            NumberFormat formatter = new DecimalFormat("###,###");
+            String resp = formatter.format(number);
+            resp = resp.replaceAll(",", ".");
+            return resp;
+        } catch (Exception e) {
+            return "";
+        }
+    }
+	
+	private String converAddress(String address) {
+		if (StringUtils.isNotEmpty(address) && address.contains("::")) {
+			return address.substring(0, address.lastIndexOf("::")).replace("::", " ").trim();
+		} else {
+			return address;
 		}
 	}
 	

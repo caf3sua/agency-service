@@ -54,5 +54,8 @@ public class BvpNdbhXML implements Serializable {
 	private String Q1;
 	private String Q2;
 	private String Q3;
-
+	private String MUCDONGCHITRA;
+	private String DIEU_KHOAN_CHINH;
+	private String LOGO_BVGI;
+	private String LOGO_DOITAC;
 }

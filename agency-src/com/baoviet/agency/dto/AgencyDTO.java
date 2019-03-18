@@ -279,6 +279,8 @@ public class AgencyDTO implements Serializable {
 	
 	private List<DepartmentDTO> lstDepartment;
 	
+	private List<CompanyDTO> lstCompany;
+	
 	private Integer paymentMethod;
 	
 	private String baovietWorkplace;

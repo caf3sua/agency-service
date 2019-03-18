@@ -165,7 +165,11 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
             tvcad.setTitle("");
             tvcad.setJob("");
             tvcad.setCity("");
-            tvcad.setAddress("");
+            if (StringUtils.isNotEmpty(item.getAddress())) {
+            	tvcad.setAddress(item.getAddress());	
+            } else {
+            	tvcad.setAddress("");            	
+            }
             tvcad.setHomePhone("");
             tvcad.setCellPhone("");
             tvcad.setEmailAdress("");                

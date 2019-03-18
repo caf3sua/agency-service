@@ -236,11 +236,13 @@ public class ProductCARServiceImpl extends AbstractProductService implements Pro
 					agreementInfo.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);
 					agreementInfo.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_OTP);
 					agreementInfo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_OTP);
+					agreementService.save(agreementInfo);
 				} else {
-					agreementInfo.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
-					agreementInfo.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);
-					agreementInfo.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_THANHTOAN);
-					agreementInfo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_THANHTOAN);	
+					agreementInfo.setStatusGycbhId(AppConstants.STATUS_POLICY_ID_CHO_BV_GIAMDINH);
+					agreementInfo.setStatusGycbhName(AppConstants.STATUS_POLICY_NAME_CHO_BV_GIAMDINH);
+					agreementInfo.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_CHO_BV_GIAMDINH);
+					agreementInfo.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_CHO_BV_GIAMDINH);	
+					agreementService.save(agreementInfo);
 				}
 				
 				// gửi sms

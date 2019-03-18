@@ -115,23 +115,6 @@ public class AdminResource extends AbstractAgencyResource {
 	@Autowired
 	private ContactRepository contactRepository;
 	
-	@PostMapping("/search-admin-cart")
-	@Timed
-	@ApiOperation(value = "searchOrder", notes = "Hàm tra cứu danh sách giỏ hàng.")
-	public ResponseEntity<List<AgreementDTO>> searchCart(@Valid @RequestBody SearchAgreementWaitVM param)
-			throws URISyntaxException, AgencyBusinessException {
-		log.debug("REST request to searchCart : {}", param);
-
-		// get current agency
-		AgencyDTO currentAgency = getCurrentAccount();
-		
-		Page<AgreementDTO> page = agreementService.searchCartAdmin(param, currentAgency.getMa());
-		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/search-admin-cart");
-		// Return data
-		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-	}
-	
-	
 //	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_DELETE')")
 	@PostMapping("/admin-cancel-order")
 	@Timed
@@ -209,6 +192,23 @@ public class AdminResource extends AbstractAgencyResource {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
+	@PostMapping("/search-admin-cart")
+	@Timed
+	@ApiOperation(value = "searchOrder", notes = "Hàm tra cứu danh sách giỏ hàng.")
+	public ResponseEntity<List<AgreementDTO>> searchCart(@Valid @RequestBody SearchAgreementWaitVM param)
+			throws URISyntaxException, AgencyBusinessException {
+		log.debug("REST request to searchCart : {}", param);
+
+		// get current agency
+		AgencyDTO currentAgency = getCurrentAccount();
+		
+//		Page<AgreementDTO> page = agreementService.searchCartAdmin(param, currentAgency.getMa());
+		Page<AgreementDTO> page = adminUserService.searchCartAdmin(param, currentAgency.getMa());
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/search-admin-cart");
+		// Return data
+		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+	}
+	
 //	@PreAuthorize("hasRole('ADMIN') or hasAuthority('PERM_AGREEMENT_VIEW')")
 	@PostMapping("/search-admin-order")
 	@Timed
@@ -220,28 +220,12 @@ public class AdminResource extends AbstractAgencyResource {
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 		
-		Page<AgreementDTO> page = agreementService.searchOrderBVWait(param, currentAgency.getMa());
+//		Page<AgreementDTO> page = agreementService.searchOrderBVWait(param, currentAgency.getMa());
+		Page<AgreementDTO> page = adminUserService.searchOrderBVWait(param, currentAgency.getMa());
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/search-admin-order");
 		// Return data
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
-	
-//	// Đơn hàng chờ BV giải quyết: Chờ bảo việt giám định StautusPolicy: 93; Chờ bảo việt cấp đơn StautusPolicy: 91; Chờ Bảo Việt cấp GCNBH (bản cứng): 92
-//	@PostMapping("/get-wait-agreement")
-//	@Timed
-//	@ApiOperation(value = "getWaitAgreement", notes = "Hàm lấy tất cả danh sách hợp đồng chờ bảo việt giải quyết của Admin")
-//	public ResponseEntity<List<AgreementDTO>> getWaitAgreement(@Valid @RequestBody SearchAgreementWaitVM param) throws URISyntaxException, AgencyBusinessException {
-//		log.debug("REST request to getWaitAgreement");
-//
-//		// get current agency
-//		AgencyDTO currentAgency = getCurrentAccount();
-//
-//		Page<AgreementDTO> page = agreementService.searchOrderBVWait(param, currentAgency.getMa());
-//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/get-wait-agreement");
-//
-//		// Return data
-//		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//	}
 	
 	@PostMapping("/search-order-transport")
 	@Timed
@@ -253,7 +237,8 @@ public class AdminResource extends AbstractAgencyResource {
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 		
-		Page<AgreementDTO> page = agreementService.searchOrderTransport(param, currentAgency.getMa());
+//		Page<AgreementDTO> page = agreementService.searchOrderTransport(param, currentAgency.getMa());
+		Page<AgreementDTO> page = adminUserService.searchOrderTransport(param, currentAgency.getMa());
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/search-order-transport");
 		// Return data
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -396,6 +381,23 @@ public class AdminResource extends AbstractAgencyResource {
 		lstAgency = adminUserService.searchAgency(param, existingUser.getId());
 		
 		return new ResponseEntity<>(lstAgency, HttpStatus.OK);
+	}
+	
+	@PostMapping("/search-department")
+    @Timed
+    public ResponseEntity<List<DepartmentDTO>> searchDepartment(@RequestBody AdminSearchAgencyVM param) throws AgencyBusinessException{
+		List<DepartmentDTO> lstDepartment = new ArrayList<>();
+		
+		final String userLogin = SecurityUtils.getCurrentUserLogin();
+		AgencyDTO existingUser = adminUserService.findByEmail(userLogin);
+		
+		if (existingUser == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		lstDepartment = adminUserService.searchDepartmentByPr(param,  existingUser.getId());
+		
+		return new ResponseEntity<>(lstDepartment, HttpStatus.OK);
 	}
 	
 	@PostMapping("/admin-get-orderHis-by-gycbhNumber")

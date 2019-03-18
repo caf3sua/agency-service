@@ -53,6 +53,9 @@ public class SearchAgreementWaitVM {
 	@ApiModelProperty(value = "Id phòng ban")
 	private String departmentId;
 	
+	@ApiModelProperty(value = "Id công ty")
+	private String companyId;
+	
 	@ApiModelProperty(value = "Ngày nhập", allowableValues = "dd/MM/yyyy")
     private String createDate;
 }

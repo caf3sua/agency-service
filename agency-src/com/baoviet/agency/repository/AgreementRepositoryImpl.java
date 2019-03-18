@@ -29,6 +29,7 @@ import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.AgreementHis;
 import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Conversation;
+import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.dto.CountOrderDTO;
 import com.baoviet.agency.dto.OrderHistoryDTO;
 import com.baoviet.agency.dto.report.BcKhaiThacMotoDTO;
@@ -57,6 +58,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 	
 	@Autowired
 	private AgreementMapper agreementMapper;
+	
+	@Autowired
+	private MvClaOutletLocationRepository mvClaOutletLocationRepository;
 	
 	@Override
 	public List<BcKhaiThacMotoDTO> getBaoCaoKtMoto(ReportSearchCriterialVM obj, String agentId) {
@@ -393,10 +397,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
 		SearchAgreementWaitVM objLater = new SearchAgreementWaitVM();
 		objLater.setStatusPolicy(AgencyConstants.AgreementStatus.THANH_TOAN_SAU);
 
-		QueryResultDTO countBvWaiting = countAdminAgreement(obj, departmentId, "0");
-		QueryResultDTO countCart = countAdminAgreement(obj, departmentId, "3");
-		QueryResultDTO countTrans = countAdminAgreement(obj, departmentId, "4");
-		QueryResultDTO countOrderLater = countAdminAgreement(objLater, departmentId, "4");
+		QueryResultDTO countBvWaiting = countAdminAgreement(obj, departmentId, "0", null);
+		QueryResultDTO countCart = countAdminAgreement(obj, departmentId, "3", null);
+		QueryResultDTO countTrans = countAdminAgreement(obj, departmentId, "4", null);
+		QueryResultDTO countOrderLater = countAdminAgreement(objLater, departmentId, "4", null);
 		
 		data.setCountBvWaiting(countBvWaiting.getCount());
 		data.setCountCart(countCart.getCount());
@@ -511,7 +515,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "4"), Agreement.class);
 
         // set parameter 
-        setQueryParameterAdmin(query, obj, departmentId);
+        setQueryParameterAdmin(query, obj, departmentId, null);
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -521,7 +525,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, departmentId, "4");
+        QueryResultDTO count = countAdminAgreement(obj, departmentId, "4", null);
         
         // Build pageable
         Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
@@ -538,7 +542,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "3"), Agreement.class);
 
         // set parameter 
-        setQueryParameterAdmin(query, obj, departmentId);
+        setQueryParameterAdmin(query, obj, departmentId, null);
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -548,7 +552,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, departmentId, "3");
+        QueryResultDTO count = countAdminAgreement(obj, departmentId, "3", null);
         
         // Build pageable
         Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
@@ -565,7 +569,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "0"), Agreement.class);
 
         // set parameter 
-        setQueryParameterAdmin(query, obj, departmentId);
+        setQueryParameterAdmin(query, obj, departmentId, null);
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -575,7 +579,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, departmentId, "0");
+        QueryResultDTO count = countAdminAgreement(obj, departmentId, "0", null);
         
         // Build pageable
         Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
@@ -583,17 +587,58 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         return dataPage;
 	}
 	
+//	@Override
+//	public Page<Agreement> searchOrderTransport(SearchAgreementWaitVM obj, String departmentId) {
+//		String expression = "SELECT * FROM AGREEMENT WHERE BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+//        
+//		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+//		
+//        
+//		Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "4"), Agreement.class);
+//
+//        // set parameter 
+//        setQueryParameterAdmin(query, obj, departmentId);
+// 		
+// 		// Paging
+// 		Pageable pageable = buildPageableAgreementWait(obj);
+// 		if (pageable != null) {
+// 			query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()); 
+// 			query.setMaxResults(pageable.getPageSize());
+// 		}
+//        
+//        List<Agreement> data = query.getResultList();
+//        QueryResultDTO count = countAdminAgreement(obj, departmentId, "4");
+//        
+//        // Build pageable
+//        Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
+//        
+//        return dataPage;
+//	}
+	
 	@Override
-	public Page<Agreement> searchOrderTransport(SearchAgreementWaitVM obj, String departmentId) {
-		String expression = "SELECT * FROM AGREEMENT WHERE BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
-        
-		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+	public Page<Agreement> searchOrderTransport(SearchAgreementWaitVM obj, String idLogin) {
+		String expression = "SELECT * FROM AGREEMENT WHERE 1 = 1";
 		
-        Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "4"), Agreement.class);
+		List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(idLogin);
+		
+		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
+				expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+			}
+			
+			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("CTTV")) {
+				expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+			}
+		}
+		
+        
+		Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, "4"), Agreement.class);
 
         // set parameter 
-        setQueryParameterAdmin(query, obj, departmentId);
- 		
+		setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
  		if (pageable != null) {
@@ -602,7 +647,7 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, departmentId, "4");
+        QueryResultDTO count = countAdminAgreement(obj, idLogin, "4", lstMvClaOutletLocation.get(0).getOutletTypeCode());
         
         // Build pageable
         Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
@@ -948,6 +993,10 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         	expression = expression +  " AND BAOVIET_DEPARTMENT_ID = :pDepartment";
         }
         
+        if (!StringUtils.isEmpty(obj.getCompanyId())) {
+        	expression = expression +  " AND BAOVIET_COMPANY_ID = :pCompany";
+        }
+        
         // chờ đại lý giải quyết
         if (StringUtils.equals(caseWait, "1")) {
         	if (!StringUtils.isEmpty(obj.getStatusPolicy())) {
@@ -1290,9 +1339,14 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         }
 	}
 	
-	private void setQueryParameterAdmin(Query query, SearchAgreementWaitVM obj, String departmentId) {
-		query.setParameter("pDepartmentId", departmentId);
-        if (!StringUtils.isEmpty(obj.getProductCode())) {
+	private void setQueryParameterAdmin(Query query, SearchAgreementWaitVM obj, String departmentId, String typeAdmin) {
+		if (StringUtils.equals(typeAdmin, "HOFF")) {
+			
+		} else {
+			query.setParameter("pDepartmentId", departmentId);	
+		}
+        
+		if (!StringUtils.isEmpty(obj.getProductCode())) {
         	query.setParameter("pLineId", obj.getProductCode());
         } 
         // Date
@@ -1311,7 +1365,9 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         if (!StringUtils.isEmpty(obj.getDepartmentId())) {
         	query.setParameter("pDepartment", obj.getDepartmentId());
         }
-        
+        if (!StringUtils.isEmpty(obj.getCompanyId())) {
+        	query.setParameter("pCompany", obj.getCompanyId());
+        }
 	}
 	
 	private void setQuerySearchCart(Query query, SearchAgreementWaitVM obj, String type) {
@@ -1401,18 +1457,32 @@ public class AgreementRepositoryImpl implements AgreementRepositoryExtend {
         return result;
 	}
 	
-	private QueryResultDTO countAdminAgreement(SearchAgreementWaitVM obj, String departmentId, String caseWait) {
+	private QueryResultDTO countAdminAgreement(SearchAgreementWaitVM obj, String departmentId, String caseWait, String typeAdmin) {
 		QueryResultDTO result = new QueryResultDTO();
 		// create the command for the stored procedure
         // Presuming the DataTable has a column named .  
-		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
-		
-		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+//		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+//		
+//		expression = expression +  " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
 
+		String expression = "SELECT count(*), NVL(sum(TOTAL_PREMIUM), 0) FROM AGREEMENT WHERE 1 = 1";
+		
+		if (StringUtils.isNotEmpty(typeAdmin)) {
+			if (typeAdmin.equals("VPDD")) {
+				expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+			}
+			
+			if (typeAdmin.equals("CTTV")) {
+				expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+			}
+		}
+		
 		Query query = entityManager.createNativeQuery(buildSearchExpressionAgreementWait(expression, obj, caseWait));
 
 		// set parameter 
-		setQueryParameterAdmin(query, obj, departmentId);
+		setQueryParameterAdmin(query, obj, departmentId, typeAdmin);
 		
         Object[] data = (Object[]) query.getSingleResult();
         
