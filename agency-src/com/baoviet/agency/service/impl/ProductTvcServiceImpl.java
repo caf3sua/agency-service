@@ -101,6 +101,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
         {
         	TravelCareAddDTO tvcad = new TravelCareAddDTO();
         	tvcad.setTvcAddId("");
+        	tvcad.setAddress("");
             tvcad.setTravaelcareId(String.valueOf(idTravelCare));
             tvcad.setInsuredName(item.getInsuredName());
             if (StringUtils.isNotEmpty(item.getDob())) {
@@ -115,6 +116,7 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
                 case "30":
                     tvcad.setRelationship("30");
                     tvcad.setRelationshipName("bản thân");
+                    tvcad.setAddress(co.getHomeAddress());
                     break;
                 case "31":
                     tvcad.setRelationship("31");
@@ -165,11 +167,6 @@ public class ProductTvcServiceImpl extends AbstractProductService implements Pro
             tvcad.setTitle("");
             tvcad.setJob("");
             tvcad.setCity("");
-            if (StringUtils.isNotEmpty(item.getAddress())) {
-            	tvcad.setAddress(item.getAddress());	
-            } else {
-            	tvcad.setAddress("");            	
-            }
             tvcad.setHomePhone("");
             tvcad.setCellPhone("");
             tvcad.setEmailAdress("");                
