@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "ReceiveMT", targetNamespace = "http://tempuri.org/", wsdlLocation = "https://smsc.baoviet.com.vn/ReceiveMT/WebServices/ReceiveMT.asmx?wsdl")
+@WebServiceClient(name = "ReceiveMT", targetNamespace = "http://tempuri.org/", wsdlLocation = "https://smsctest.baoviet.com.vn/InputMT/WebServices/ReceiveMT.asmx?wsdl")
 public class ReceiveMT
     extends Service
 {
@@ -30,7 +30,7 @@ public class ReceiveMT
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("https://smsc.baoviet.com.vn/ReceiveMT/WebServices/ReceiveMT.asmx?wsdl");
+            url = new URL("https://smsctest.baoviet.com.vn/InputMT/WebServices/ReceiveMT.asmx?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
