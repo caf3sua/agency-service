@@ -126,7 +126,7 @@ public class AbstractProductService {
 			} else {
 				content = "Ma xac nhan sua doi YCBH <" + agreement.getGycbhNumber() + "> la: " + agreement.getOtp();	
 			}
-			content += ". Bang viec cung cap ma xac nhan cho can bo tu van, Quy khach da dong y va chap nhan Quy tac bao hiem da gui qua email.";
+			content += ". Bang viec cung cap ma xac nhan cho can bo tu van, quy khach da dong y va chap nhan Quy tac bao hiem gui qua email.";
 			String phonenumber = StringUtils.EMPTY;
 			if (!StringUtils.isEmpty(contact.getPhone())) {
 				phonenumber = contact.getPhone();
@@ -145,7 +145,7 @@ public class AbstractProductService {
 		// gui sms
 		if (!StringUtils.isEmpty(agreement.getOtp())) {
 			String content = "Ma xac nhan YCBH <" + agreement.getGycbhNumber() + "> la: " + agreement.getOtp();
-			content += ". Bang viec cung cap ma xac nhan cho can bo tu van, Quy khach da dong y va chap nhan Quy tac bao hiem da gui qua email.";
+			content += ". Bang viec cung cap ma xac nhan cho can bo tu van, quy khach da dong y va chap nhan Quy tac bao hiem gui qua email.";
 			String phonenumber = StringUtils.EMPTY;
 			if (!StringUtils.isEmpty(contact.getPhone())) {
 				phonenumber = contact.getPhone();

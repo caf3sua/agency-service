@@ -186,7 +186,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 						skInfo.setKhuoctu("");
 						skInfo.setDkdacbiet("");
 						skInfo.setLydodc("");
-						if (sk.getNgaydieutri() != null && !StringUtils.isEmpty(DateUtils.date2Str(sk.getNgaydieutri()))) {
+						if (sk.getChuandoan() != null && !StringUtils.isEmpty(sk.getChuandoan())) {
 							tinhtrangSkService.save(skInfo);
 						}
 					}
@@ -873,8 +873,8 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			if (StringUtils.isEmpty(obj.getNguoithQuanhe()))
 				throw new AgencyBusinessException("nguoithQuanhe", ErrorCode.INVALID, "Thiếu quan hệ người thụ hưởng ");
 			else {
-				if (obj.getNguoithQuanhe().equals("31") || obj.getNguoithQuanhe().equals("32")
-						|| obj.getNguoithQuanhe().equals("33")) {
+				if (obj.getNguoithQuanhe().equals("30") || obj.getNguoithQuanhe().equals("31") || obj.getNguoithQuanhe().equals("32")
+						|| obj.getNguoithQuanhe().equals("33") || obj.getNguoithQuanhe().equals("99")) {
 				} else
 					throw new AgencyBusinessException("nguoithQuanhe", ErrorCode.INVALID,
 							"Lỗi tham số quan hệ người thụ hưởng ");
@@ -899,8 +899,8 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				throw new AgencyBusinessException("nguoinhanQuanhe", ErrorCode.INVALID,
 						"Thiếu quan hệ người nhận tiền ");
 			} else {
-				if (obj.getNguoinhanQuanhe().equals("31") || obj.getNguoinhanQuanhe().equals("32")
-						|| obj.getNguoinhanQuanhe().equals("33")) {
+				if (obj.getNguoinhanQuanhe().equals("30") || obj.getNguoinhanQuanhe().equals("31") || obj.getNguoinhanQuanhe().equals("32")
+						|| obj.getNguoinhanQuanhe().equals("33") || obj.getNguoinhanQuanhe().equals("99")) {
 
 				} else {
 					throw new AgencyBusinessException("nguoinhanQuanhe", ErrorCode.INVALID,
