@@ -44,7 +44,7 @@ spring:
                 client_secret: adrpublicapi
                 username: BVI_INS
                 password: Adayroi@123456
-        CID: AG
+        CID: DEV
         DID: D05
         ws:
             printed-paper:

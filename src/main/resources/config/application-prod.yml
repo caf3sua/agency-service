@@ -156,16 +156,16 @@ payment:
         access_code: "AH1982718872"
         sercurity_secret: "PG332642218196611948"
         version: "1.0"
-        cid: "BVGI"
-        did: "D04"
+        cid: "DEV"
+        did: "D05"
         client-ip: "10.36.20.47"
     l23-pay:
         service-url: "https://sandbox.123pay.vn/miservice/createOrder1"
         return-url: "https://appuat.baoviet.com.vn:7780/api/landing/123Pay"
         cancel-url: "https://appuat.baoviet.com.vn:7780/api/landing/123Pay"
         error-url: "https://appuat.baoviet.com.vn:7780/api/landing/123Pay"
-        cid: "BVGI"
-        did: "D04"
+        cid: "DEV"
+        did: "D05"
         client-ip: "10.36.20.47"
     momo:
         service-url: "https://test-payment.momo.vn/gw_payment/transactionProcessor"
@@ -176,8 +176,8 @@ payment:
         partner-code: "123456"
         access-key: "F8BBA842ECF85"
         secret-key: "K951B6PE1waDMi640xX08PD3vg6EkVlz"
-        cid: "BVGI"
-        did: "D04"
+        cid: "DEV"
+        did: "D05"
     viettel-pay:
         service-url: "http://125.235.40.34:8085/ViettelSDKPayment/PaymentServlet"
         post-url: "http://125.235.40.34:8085/ViettelSDKPayment/webresources/postData"
@@ -188,8 +188,8 @@ payment:
         access-code: "66b688e12af644ab883052df3a30a940"
         hash-key: "66b688e12af644ab883052df3a30a939"
         currency: "VND"
-        cid: "BVGI"
-        did: "D04"
+        cid: "DEV"
+        did: "D05"
     vn-pay:
 #        service-url: "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
         service-url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
@@ -201,8 +201,8 @@ payment:
         version: "2.0.0"
         command: "pay"
         currency: "VND"
-        cid: "BVGI"
-        did: "D04"
+        cid: "DEV"
+        did: "D05"
 application:
     http-proxy-address: 172.29.1.25
     http-proxy-port: 8080

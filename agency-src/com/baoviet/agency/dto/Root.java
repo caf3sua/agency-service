@@ -37,6 +37,7 @@ public class Root implements Serializable {
 	private String KENH_PHAN_PHOI;
 	private String DIEN_THOAI;
 
+	private String TINHTRANGSK_LIST;
 	private List<BvpNdbhObj> NGUOIDBH_COL;
 
 }
