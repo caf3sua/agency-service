@@ -421,6 +421,9 @@ public class AbstractProductService {
 			case "TVC":
 				voAg.setLineName("Bảo hiểm du lịch Flexi");
 				break;
+			case "MOH":
+				voAg.setLineName("Bảo hiểm xe máy");
+				break;
 			default:
 				break;
 		}

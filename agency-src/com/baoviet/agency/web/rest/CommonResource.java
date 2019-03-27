@@ -124,7 +124,7 @@ public class CommonResource extends AbstractAgencyResource{
 	@Timed
 	@ApiOperation(value="getPolicyNumber"
 		, notes="Lấy số gycbh mới (chưa có trong hệ thống - phục vụ việc tạo đơn mới). "
-				+ "Dữ liệu truyền lên: mã sản phẩm (lineId: TVI, CAR, MOT, TVC, HOM, KHC, KCR, BVP, PAS, HHV, GFI, TNC). "
+				+ "Dữ liệu truyền lên: mã sản phẩm (lineId: TVI, CAR, MOT, TVC, HOM, KHC, KCR, BVP, PAS, HHV, GFI, TNC, MOH). "
 				+ "Dữ liệu trả về số gycbh nếu chưa tồn tại hoặc thông báo lỗi.")
 	public ResponseEntity<String> getPolicyNumber(@RequestParam String lineId) throws URISyntaxException, AgencyBusinessException {
 		log.debug("REST request to getPolicyNumber, lineId: {}", lineId);

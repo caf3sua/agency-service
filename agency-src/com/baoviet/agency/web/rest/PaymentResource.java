@@ -568,7 +568,6 @@ public class PaymentResource extends AbstractAgencyResource {
 	}
 
 	private String getRedirectUrl(Device device, PaymentResult paymentResult) {
-		// TODO : mobile : /landing
 		// web : /cart
 		boolean isMobile = false;
 		if (device.isMobile() || device.isTablet()) {
@@ -667,7 +666,8 @@ public class PaymentResource extends AbstractAgencyResource {
 					}
 				}
 				
-				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
+				// TH sửa đổi bổ sung cho TVC
+				if (StringUtils.isNotEmpty(agreement.getUrlPolicy()) && agreement.getLineId().equals("TVC")) {
 					agreement.setSendEmail(1);
 					agreement.setSendSms(1);					
 				}

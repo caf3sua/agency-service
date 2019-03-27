@@ -126,25 +126,23 @@ public class AdminResource extends AbstractAgencyResource {
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 		
-		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
-		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
+		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
+		if (adminUserBu != null) {
 			AgreementDTO agreementResult = new AgreementDTO();
-			for (AdminUserBu item : lstadminUserBu) {
-				AgreementDTO agreement = agreementService.findByGycbhNumberAndDepartmentId(param.getGycbhNumber(), item.getBuId());
+			AgreementDTO agreement = agreementService.findByGycbhNumberAndDepartmentId(param.getGycbhNumber(), adminUserBu.getBuId());
 
-				if (agreement != null) {
-					// chỉ cho hủy đơn hàng có mã là 93
-					if (agreement.getStatusPolicyId().equals("93")) {
-						agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_BV_TUCHOI);
-						agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_BV_TUCHOI);
-						if (!StringUtils.isEmpty(param.getConversationContent())) {
-							agreement.setStatusRenewalsId1(param.getConversationContent());
-						}
-						agreementResult = agreementService.save(agreement);
-						// Return data
-						return new ResponseEntity<>(agreementResult, HttpStatus.OK);
-					} 
-				}
+			if (agreement != null) {
+				// chỉ cho hủy đơn hàng có mã là 93
+				if (agreement.getStatusPolicyId().equals("93")) {
+					agreement.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_BV_TUCHOI);
+					agreement.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_BV_TUCHOI);
+					if (!StringUtils.isEmpty(param.getConversationContent())) {
+						agreement.setStatusRenewalsId1(param.getConversationContent());
+					}
+					agreementResult = agreementService.save(agreement);
+					// Return data
+					return new ResponseEntity<>(agreementResult, HttpStatus.OK);
+				} 
 			}
 			if (StringUtils.isEmpty(agreementResult.getGycbhNumber())) {
 				throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không có dữ liệu với đơn hàng " + param.getGycbhNumber());
@@ -164,11 +162,10 @@ public class AdminResource extends AbstractAgencyResource {
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 		
-		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
-		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
+		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
+		if (adminUserBu != null) {
 			AgreementDTO agreementResult = new AgreementDTO();
-			for (AdminUserBu item : lstadminUserBu) {
-				AgreementDTO agreement = agreementService.findByGycbhNumberAndDepartmentId(param.getGycbhNumber(), item.getBuId());
+				AgreementDTO agreement = agreementService.findByGycbhNumberAndDepartmentId(param.getGycbhNumber(), adminUserBu.getBuId());
 
 				if (agreement != null) {
 					// chỉ cho cấp đơn hàng có mã là 93
@@ -183,12 +180,11 @@ public class AdminResource extends AbstractAgencyResource {
 						return new ResponseEntity<>(agreementResult, HttpStatus.OK);
 					} 
 				}
+				
+				if (StringUtils.isEmpty(agreementResult.getGycbhNumber())) {
+					throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không có dữ liệu với đơn hàng " + param.getGycbhNumber());
+				}
 			}
-			if (StringUtils.isEmpty(agreementResult.getGycbhNumber())) {
-				throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không có dữ liệu với đơn hàng " + param.getGycbhNumber());
-			}
-		}
-		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
@@ -220,7 +216,6 @@ public class AdminResource extends AbstractAgencyResource {
 		// get current agency
 		AgencyDTO currentAgency = getCurrentAccount();
 		
-//		Page<AgreementDTO> page = agreementService.searchOrderBVWait(param, currentAgency.getMa());
 		Page<AgreementDTO> page = adminUserService.searchOrderBVWait(param, currentAgency.getMa());
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, AppConstants.API_PATH_BAOVIET_AGENCY_PREFIX + "/product/adminUser/search-admin-order");
 		// Return data
@@ -312,12 +307,10 @@ public class AdminResource extends AbstractAgencyResource {
     		if (existingUser == null) {
     			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     		}
-    		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
+    		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
     		List<String> lstDepartment = new ArrayList<>();
-    		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
-    			for (AdminUserBu item : lstadminUserBu) {
-    				lstDepartment.add(item.getBuId());
-    			}
+    		if (adminUserBu != null) {
+    			lstDepartment.add(adminUserBu.getBuId());
     		}
     		if (lstDepartment != null && lstDepartment.size() > 0) {
     			AgreementDTO agreement = agreementService.findByGycbhNumberAndDepartmentId(param.getGycbhNumber(), lstDepartment.get(0));
@@ -347,14 +340,12 @@ public class AdminResource extends AbstractAgencyResource {
     		if (existingUser == null) {
     			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     		}
-    		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
+    		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
     		List<DepartmentDTO> lstDepartment = new ArrayList<>();
-    		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
-    			for (AdminUserBu item : lstadminUserBu) {
-    				// Load department
-    				List<DepartmentDTO> lstDepar = loadDepartmentAndAgency(item.getBuId());
-    				lstDepartment.addAll(lstDepar);
-    			}
+    		if (adminUserBu != null) {
+				// Load department
+				List<DepartmentDTO> lstDepar = loadDepartmentAndAgency(adminUserBu.getBuId());
+				lstDepartment.addAll(lstDepar);
     		}
     		if (lstDepartment != null && lstDepartment.size() > 0) {
     			existingUser.setLstDepartment(lstDepartment);
@@ -410,13 +401,11 @@ public class AdminResource extends AbstractAgencyResource {
 		AgencyDTO currentAgency = getCurrentAccount();
 		List<AgreementHis> lstAgreementHis = new ArrayList<>();
 		
-		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
-		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
-			for (AdminUserBu admin : lstadminUserBu) {
-				List<AgreementHis> lstAg = agreementHisRepository.findByGycbhNumberAndBaovietDepartmentId(param.getGycbhNumber(), admin.getBuId());
-				if (lstAg != null && lstAg.size() > 0) {
-					lstAgreementHis.addAll(lstAg);
-				}
+		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(currentAgency.getId());
+		if (adminUserBu != null) {
+			List<AgreementHis> lstAg = agreementHisRepository.findByGycbhNumberAndBaovietDepartmentId(param.getGycbhNumber(), adminUserBu.getBuId());
+			if (lstAg != null && lstAg.size() > 0) {
+				lstAgreementHis.addAll(lstAg);
 			}
 		}
 		

@@ -718,21 +718,19 @@ public class AgreementServiceImpl extends AbstractProductService implements Agre
 		if (obj.getListGYCBH() != null && obj.getListGYCBH().size() > 0) {
 			List<AgreementDTO> result = new ArrayList<>();
 			// lấy phòng ban
-			List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(departmentId);
-    		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
-    			for (AdminUserBu item : lstadminUserBu) {
-    				for (String gycbh : obj.getListGYCBH()) {
-    					Agreement data = agreementRepository.findByGycbhNumberAndBaovietDepartmentId(gycbh, item.getBuId());
-    					if (data == null) {
-    						throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tồn tại đơn hàng " + gycbh);
-    					}
-    					// update
-    					data.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
-    					data.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
-    					Agreement dataSave = agreementRepository.save(data);
-    					result.add(agreementMapper.toDto(dataSave));
-    				}
-    			}
+			AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(departmentId);
+    		if (adminUserBu != null) {
+				for (String gycbh : obj.getListGYCBH()) {
+					Agreement data = agreementRepository.findByGycbhNumberAndBaovietDepartmentId(gycbh, adminUserBu.getBuId());
+					if (data == null) {
+						throw new AgencyBusinessException("gycbhNumber", ErrorCode.INVALID, "Không tồn tại đơn hàng " + gycbh);
+					}
+					// update
+					data.setStatusPolicyId(AppConstants.STATUS_POLICY_ID_HOANTHANH);
+					data.setStatusPolicyName(AppConstants.STATUS_POLICY_NAME_HOANTHANH);
+					Agreement dataSave = agreementRepository.save(data);
+					result.add(agreementMapper.toDto(dataSave));
+				}
     		}
 			
 			if (result != null && result.size() > 0) {

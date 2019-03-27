@@ -43,7 +43,7 @@ public class CodeManagementServiceImpl implements CodeManagementService {
     @Value("${spring.application.DID}")
 	private String departmentId;
     
-    public List<String> lineIds = Arrays.asList("TVI", "CAR", "MOT", "TVC", "HOM", "KHC", "KCR", "BVP", "PAS", "HHV", "GFI", "TNC");
+    public List<String> lineIds = Arrays.asList("TVI", "CAR", "MOT", "TVC", "HOM", "KHC", "KCR", "BVP", "PAS", "HHV", "GFI", "TNC", "MOH");
     		
 	@Override
 	public String getCode(String year, String type, String nv) {

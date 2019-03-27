@@ -28,6 +28,7 @@ import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Attachment;
 import com.baoviet.agency.domain.Car;
 import com.baoviet.agency.domain.Contact;
+import com.baoviet.agency.domain.MotoHondaCat;
 import com.baoviet.agency.domain.TvcPlane;
 import com.baoviet.agency.domain.TvcPlaneAdd;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -39,6 +40,7 @@ import com.baoviet.agency.dto.GoodsDTO;
 import com.baoviet.agency.dto.HomeDTO;
 import com.baoviet.agency.dto.KcareDTO;
 import com.baoviet.agency.dto.MotoDTO;
+import com.baoviet.agency.dto.MotoHondaDTO;
 import com.baoviet.agency.dto.PaAddDTO;
 import com.baoviet.agency.dto.PaDTO;
 import com.baoviet.agency.dto.TinhtrangSkDTO;
@@ -52,6 +54,7 @@ import com.baoviet.agency.exception.AgencyBusinessException;
 import com.baoviet.agency.exception.ErrorCode;
 import com.baoviet.agency.repository.AttachmentRepository;
 import com.baoviet.agency.repository.ContactRepository;
+import com.baoviet.agency.repository.MotoHondaCatRepository;
 import com.baoviet.agency.repository.TvcPlaneAddRepository;
 import com.baoviet.agency.repository.TvcPlaneRepository;
 import com.baoviet.agency.service.BVPService;
@@ -59,6 +62,7 @@ import com.baoviet.agency.service.CarService;
 import com.baoviet.agency.service.CodeManagementService;
 import com.baoviet.agency.service.GoodsService;
 import com.baoviet.agency.service.HomeService;
+import com.baoviet.agency.service.HondaService;
 import com.baoviet.agency.service.KcareService;
 import com.baoviet.agency.service.MotoService;
 import com.baoviet.agency.service.PaAddService;
@@ -67,6 +71,7 @@ import com.baoviet.agency.service.ProductBVPService;
 import com.baoviet.agency.service.ProductCARService;
 import com.baoviet.agency.service.ProductCommonService;
 import com.baoviet.agency.service.ProductHomeService;
+import com.baoviet.agency.service.ProductHondaService;
 import com.baoviet.agency.service.ProductKcareService;
 import com.baoviet.agency.service.ProductKhcService;
 import com.baoviet.agency.service.ProductMotoService;
@@ -89,6 +94,7 @@ import com.baoviet.agency.web.rest.vm.ProductBvpVM;
 import com.baoviet.agency.web.rest.vm.ProductCarVM;
 import com.baoviet.agency.web.rest.vm.ProductHhvcVM;
 import com.baoviet.agency.web.rest.vm.ProductHomeVM;
+import com.baoviet.agency.web.rest.vm.ProductHondaVM;
 import com.baoviet.agency.web.rest.vm.ProductKcareVM;
 import com.baoviet.agency.web.rest.vm.ProductKhcVM;
 import com.baoviet.agency.web.rest.vm.ProductMotoVM;
@@ -122,6 +128,9 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 	
 	@Autowired
 	private MotoService motoService;
+	
+	@Autowired
+	private HondaService hondaService;
 	
 	@Autowired
 	private HomeService homeService;
@@ -201,6 +210,12 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 	@Value("${spring.upload.folder-upload-cars}")
 	private String folderUpload;
 	
+	@Autowired
+    private ProductHondaService productHondaService;
+	
+	@Autowired
+    private MotoHondaCatRepository motoHondaCatRepository;
+	
 	@Override
 	public String getProductIdByGycbhId(String lineId, String gycbhId) {
 		log.debug("Request to getProductIdByGycbhId, lineId{}, gycbhId{}", lineId, gycbhId);
@@ -224,6 +239,10 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		if (StringUtils.equals(lineId, "MOT")) {
 			MotoDTO motoProduct = motoService.getById(gycbhId);
 			return motoProduct.getId();
+		}
+		if (StringUtils.equals(lineId, "MOH")) {
+			MotoHondaDTO hondaProduct = hondaService.getById(gycbhId);
+			return hondaProduct.getId();
 		}
 		if (StringUtils.equals(lineId, "HOM")) {
 			HomeDTO homeProduct = homeService.getById(gycbhId);
@@ -279,6 +298,10 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 			MotoDTO motoProduct = motoService.getById(gycbhId);
 			result.setObjProduct(motoProduct);
 		}
+		if (StringUtils.equals(lineId, "MOH")) {
+			MotoHondaDTO hondaProduct = hondaService.getById(gycbhId);
+			result.setObjProduct(hondaProduct);
+		}
 		if (StringUtils.equals(lineId, "HOM")) {
 			HomeDTO homeProduct = homeService.getById(gycbhId);
 			result.setObjProduct(homeProduct);
@@ -327,6 +350,9 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		}
 		if (StringUtils.equals(lineId, "MOT")) {
 			object = (T) convertMotoToVM(result, taituc);
+		}
+		if (StringUtils.equals(lineId, "MOH")) {
+			object = (T) convertHondaToVM(result, taituc);
 		}
 		if (StringUtils.equals(lineId, "HOM")) {
 			object = (T) convertHomeToVM(result, taituc);
@@ -1351,6 +1377,177 @@ public class ProductCommonServiceImpl extends AbstractAgencyResource implements 
 		}
 			
 		return moto;
+	}
+	
+	private ProductHondaVM convertHondaToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException{
+		log.debug("Request to convertKhcToVM, AgreementSearchDTO{}, taituc{} : ", result, taituc);
+		ProductHondaVM honda = new ProductHondaVM();
+		// convert
+		AgreementDTO dto = result.getObjAgreement();
+		MotoHondaDTO hondaObj = (MotoHondaDTO) result.getObjProduct();
+		
+		// productBase
+		honda.setStatusPolicy(dto.getStatusPolicyId());
+		honda.setContactCode(hondaObj.getContactCode());
+		honda.setReceiveMethod(dto.getReceiveMethod());
+		
+		InvoiceInfoDTO invoiceInfo = new InvoiceInfoDTO();
+		if (!StringUtils.isEmpty(dto.getInvoiceBuyer())) {
+			invoiceInfo.setName(dto.getInvoiceBuyer());
+			invoiceInfo.setCheck("1");
+		} else {
+			invoiceInfo.setCheck("0");
+		}
+		if (!StringUtils.isEmpty(dto.getInvoiceCompany())) {
+			invoiceInfo.setCompany(dto.getInvoiceCompany());
+		} 
+		if (!StringUtils.isEmpty(dto.getInvoiceTaxNo())) {
+			invoiceInfo.setTaxNo(dto.getInvoiceTaxNo());
+		} 
+		if (!StringUtils.isEmpty(dto.getInvoiceAddress())) {
+			invoiceInfo.setAddress(dto.getInvoiceAddress());
+		}
+		if (!StringUtils.isEmpty(dto.getInvoiceAccountNo())) {
+			invoiceInfo.setAccountNo(dto.getInvoiceAccountNo());
+		} 
+		honda.setInvoiceInfo(invoiceInfo);
+		
+		ReceiverUserInfoDTO receiverUser = new ReceiverUserInfoDTO();
+		receiverUser.setName(dto.getReceiverName());
+		receiverUser.setAddress(dto.getReceiverAddress());
+		receiverUser.setEmail(dto.getReceiverEmail());
+		receiverUser.setMobile(dto.getReceiverMoible());
+		honda.setReceiverUser(receiverUser);
+		
+		// product
+		if (taituc.equals("0")) {
+			honda.setAgreementId(dto.getAgreementId());
+			honda.setGycbhId(dto.getGycbhId());
+			honda.setGycbhNumber(dto.getGycbhNumber());
+			if(dto.getOldGycbhNumber() != null) {
+				honda.setOldGycbhNumber(dto.getOldGycbhNumber());	
+			}
+			if (hondaObj.getInceptionDate() != null) {
+				honda.setThoihantu(DateUtils.date2Str(hondaObj.getInceptionDate()));
+			}
+			if (hondaObj.getExpiredDate() != null) {
+				honda.setThoihanden(DateUtils.date2Str(hondaObj.getExpiredDate()));
+			}
+		} else {
+			// TH tái tục
+			honda.setAgreementId("");
+			honda.setGycbhId("");
+			// số Gycbh mới
+			CodeManagementDTO codeManagementDTO = codeManagementService.getCodeManagement("MOT");
+			honda.setGycbhNumber(codeManagementDTO.getIssueNumber());
+			honda.setOldGycbhNumber(dto.getGycbhNumber());	
+			honda.setThoihantu(DateUtils.date2Str(hondaObj.getExpiredDate()));
+			honda.setThoihanden(DateUtils.date2Str(DateUtils.getCurrentYearPrevious(hondaObj.getExpiredDate(), 1)));
+		}
+		
+		if (!StringUtils.isEmpty(hondaObj.getGoiBaoHiem())) {
+			honda.setGoi(hondaObj.getGoiBaoHiem());
+		}
+		
+		if (!StringUtils.isEmpty(hondaObj.getModel())) {
+			honda.setIdModel(hondaObj.getModel());
+			MotoHondaCat motoHondaCat = motoHondaCatRepository.findOne(hondaObj.getModel());
+			honda.setNamSd(motoHondaCat.getSoNam());
+		}
+		
+		if (!StringUtils.isEmpty(hondaObj.getInsuredEmail())) {
+			honda.setInsuredEmail(hondaObj.getInsuredEmail());
+		}
+		
+		if (!StringUtils.isEmpty(hondaObj.getInsuredPhone())) {
+			honda.setInsuredPhone(hondaObj.getInsuredPhone());
+		}
+		
+		if (!StringUtils.isEmpty(hondaObj.getInsuredName())) {
+			honda.setInsuredName(hondaObj.getInsuredName());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getInsuredAddress())) {
+			honda.setInsuredAddress(hondaObj.getInsuredAddress());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getRegistrationNumber())) {
+			honda.setRegistrationNumber(hondaObj.getRegistrationNumber());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getSokhung())) {
+			honda.setSokhung(hondaObj.getSokhung());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getSomay())) {
+			honda.setSomay(hondaObj.getSomay());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getGhichu())) {
+			honda.setHieuxe(hondaObj.getGhichu());
+		}
+		if (!StringUtils.isEmpty(hondaObj.getTypeOfMotoId())) {
+			honda.setTypeOfMoto(hondaObj.getTypeOfMotoId());
+		}
+		if (hondaObj.getTndsBbPhi() != null && hondaObj.getTndsBbPhi() > 0) {
+			honda.setTndsbbCheck(true);
+		} else {
+			honda.setTndsbbCheck(false);
+		}
+		if (hondaObj.getTndsBbPhi() != null) {
+			honda.setTndsbbPhi(hondaObj.getTndsBbPhi());
+		}
+		if (hondaObj.getTndsTnTs() != null && hondaObj.getTndsTnTs() > 0) {
+			honda.setTndstnCheck(true);
+		} else {
+			honda.setTndstnCheck(false);
+		}
+		if (hondaObj.getTndsTnTs() != null && hondaObj.getTndsTnTs() > 0) {
+			honda.setTndstnSotien(hondaObj.getTndsTnTs());;
+		}
+		if (hondaObj.getTndsTnPhi() != null && hondaObj.getTndsTnPhi() > 0) {
+			honda.setTndstnPhi(hondaObj.getTndsTnPhi());;
+		}
+		//nntx
+		if (hondaObj.getNntxStbh() != null && hondaObj.getNntxStbh() > 0) {
+			honda.setNntxCheck(true);
+		} else {
+			honda.setNntxCheck(false);
+		}
+		if (honda.getNntxCheck()) {
+			if (hondaObj.getNntxStbh() != null) {
+				honda.setNntxStbh(hondaObj.getNntxStbh());
+			}
+			if (hondaObj.getNntxSoNguoi() != null) {
+				honda.setNntxSoNguoi(hondaObj.getNntxSoNguoi());
+			}
+			if (hondaObj.getTndsTnNntxPhi() != null) {
+				honda.setNntxPhi(hondaObj.getTndsTnNntxPhi());
+			}
+		}
+		// chay no
+		if (hondaObj.getChaynoStbh() != null && hondaObj.getChaynoStbh() > 0) {
+			honda.setChaynoCheck(true);
+		} else {
+			honda.setChaynoCheck(false);
+		}
+		if (honda.getChaynoCheck()) {
+			if (hondaObj.getChaynoStbh() != null && hondaObj.getChaynoStbh() > 0) {
+				honda.setChaynoStbh(hondaObj.getChaynoStbh());
+			}
+			if (hondaObj.getChaynoPhi() != null && hondaObj.getChaynoPhi() > 0) {
+				honda.setChaynoPhi(hondaObj.getChaynoPhi());
+			}
+		}
+		if (hondaObj.getTongPhi() != null && hondaObj.getTongPhi() > 0) {
+			honda.setTongPhi(hondaObj.getTongPhi());
+		}
+		
+		// Tái tục thì insert
+		if (taituc.equals("1")) {
+			// Get current agency
+			AgencyDTO currentAgency = getCurrentAccount();
+			
+			// Call service
+			ProductHondaVM data = productHondaService.createOrUpdatePolicy(honda, currentAgency);
+		}
+			
+		return honda;
 	}
 
 	private ProductTncVM convertTncToVM(AgreementSearchDTO result, String taituc) throws URISyntaxException, AgencyBusinessException{

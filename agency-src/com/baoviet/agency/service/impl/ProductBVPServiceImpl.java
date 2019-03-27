@@ -1020,6 +1020,8 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				        xml = xml.replace("root", "ROOT");
 				        xml = xml.replace("<q", "<Q");
 				        xml = xml.replace("</q", "</Q");
+				        xml = xml.replace("&lt;", "<");
+				        xml = xml.replace("&gt;", ">");
 				        
 				        DocGLitev2018Service service = new DocGLitev2018Service();
 				        String result = service.getDocGLitev2018Port().runReportV1("TOL", "BVP_02", "v1", "vi", xml);

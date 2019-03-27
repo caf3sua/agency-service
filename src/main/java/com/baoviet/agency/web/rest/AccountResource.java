@@ -162,80 +162,76 @@ public class AccountResource {
     			existingUser.getAuthorities().add(AgencyConstants.ROLE_BAOVIET);
     		}
     		
-    		List<AdminUserBu> lstadminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
+    		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(existingUser.getId());
     		List<DepartmentDTO> lstDepartment = new ArrayList<>();
     		List<CompanyDTO> lstCompany = new ArrayList<>();
-    		if (lstadminUserBu != null && lstadminUserBu.size() > 0) {
-    			for (AdminUserBu item : lstadminUserBu) {
-    				
-    				// lấy tên phòng ban	// HOFF: tổng công ty; CTTV: công ty; VPDD: phòng ban
-    				List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(item.getBuId());
-    				if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
-    					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
-    						CompanyDTO company = new CompanyDTO();
-    						DepartmentDTO department = new DepartmentDTO();
-    						department.setDepartmentId(item.getBuId());
-    						department.setDepartmentName(lstMvClaOutletLocation.get(0).getOutletName());
-    						company.setCompanyId(lstMvClaOutletLocation.get(0).getPrOutletAmsId());
-        					company.setCompanyName(lstMvClaOutletLocation.get(0).getPrOutletName());
-        					
-        					lstDepartment.add(department);
-        					lstCompany.add(company);
-    					}
+    		if (adminUserBu != null) {
+				// lấy tên phòng ban	// HOFF: tổng công ty; CTTV: công ty; VPDD: phòng ban
+				List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+				if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
+						CompanyDTO company = new CompanyDTO();
+						DepartmentDTO department = new DepartmentDTO();
+						department.setDepartmentId(adminUserBu.getBuId());
+						department.setDepartmentName(lstMvClaOutletLocation.get(0).getOutletName());
+						company.setCompanyId(lstMvClaOutletLocation.get(0).getPrOutletAmsId());
+    					company.setCompanyName(lstMvClaOutletLocation.get(0).getPrOutletName());
     					
-    					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("CTTV")) {
-    						// nếu là cty thì tìm kiếm các phòng trực thuộc công ty
-    						CompanyDTO company = new CompanyDTO();
-    						company.setCompanyId(lstMvClaOutletLocation.get(0).getOutletAmsId());
-        					company.setCompanyName(lstMvClaOutletLocation.get(0).getOutletName());
-        					
-        					List<MvClaOutletLocation> lstOutletDepartment = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(item.getBuId(), "VPDD");
-        					if (lstOutletDepartment != null && lstOutletDepartment.size() > 0) {
-        						for (MvClaOutletLocation depar : lstOutletDepartment) {
-        							DepartmentDTO department = new DepartmentDTO();
-        							department.setDepartmentId(depar.getOutletAmsId());
-            						department.setDepartmentName(depar.getOutletName());
-            						lstDepartment.add(department);
-								}
-        					}
-        					lstCompany.add(company);
-    					}
+    					lstDepartment.add(department);
+    					lstCompany.add(company);
+					}
+					
+					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("CTTV")) {
+						// nếu là cty thì tìm kiếm các phòng trực thuộc công ty
+						CompanyDTO company = new CompanyDTO();
+						company.setCompanyId(lstMvClaOutletLocation.get(0).getOutletAmsId());
+    					company.setCompanyName(lstMvClaOutletLocation.get(0).getOutletName());
     					
-    					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("HOFF")) {
-    						// Tổng công ty thì tìm các phòng ban
-    						List<MvClaOutletLocation> lstOutletComp = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(item.getBuId(), "CTTV");
-        					if (lstOutletComp != null && lstOutletComp.size() > 0) {
-        						for (MvClaOutletLocation comp : lstOutletComp) {
-        							CompanyDTO company = new CompanyDTO();
-        							company.setCompanyId(comp.getOutletAmsId());
-                					company.setCompanyName(comp.getOutletName());
-            						lstCompany.add(company);
-            						
-            						// ứng với mỗi công ty tìm ra phòng ban
-            						List<MvClaOutletLocation> lstOutletDepartment = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(comp.getOutletAmsId(), "VPDD");
-                					if (lstOutletDepartment != null && lstOutletDepartment.size() > 0) {
-                						for (MvClaOutletLocation depar : lstOutletDepartment) {
-                							DepartmentDTO department = new DepartmentDTO();
-                							department.setDepartmentId(depar.getOutletAmsId());
-                    						department.setDepartmentName(depar.getOutletName());
-                    						lstDepartment.add(department);
-        								}
-                					}
-								}
-        					}
+    					List<MvClaOutletLocation> lstOutletDepartment = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(adminUserBu.getBuId(), "VPDD");
+    					if (lstOutletDepartment != null && lstOutletDepartment.size() > 0) {
+    						for (MvClaOutletLocation depar : lstOutletDepartment) {
+    							DepartmentDTO department = new DepartmentDTO();
+    							department.setDepartmentId(depar.getOutletAmsId());
+        						department.setDepartmentName(depar.getOutletName());
+        						lstDepartment.add(department);
+							}
     					}
-    					
-    				} else {
-    					List<MvAgentAgreement> lstMvAgentAgreement =mvAgentAgreementRepository.findByDepartmentCode(item.getBuId());
-    					if (lstMvAgentAgreement != null && lstMvAgentAgreement.size() > 0) {
-    						DepartmentDTO department = new DepartmentDTO();
-    						department.setDepartmentId(item.getBuId());
-    						department.setDepartmentName(lstMvAgentAgreement.get(0).getDepartmentName());
+    					lstCompany.add(company);
+					}
+					
+					if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("HOFF")) {
+						// Tổng công ty thì tìm các phòng ban
+						List<MvClaOutletLocation> lstOutletComp = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(adminUserBu.getBuId(), "CTTV");
+    					if (lstOutletComp != null && lstOutletComp.size() > 0) {
+    						for (MvClaOutletLocation comp : lstOutletComp) {
+    							CompanyDTO company = new CompanyDTO();
+    							company.setCompanyId(comp.getOutletAmsId());
+            					company.setCompanyName(comp.getOutletName());
+        						lstCompany.add(company);
+        						
+        						// ứng với mỗi công ty tìm ra phòng ban
+        						List<MvClaOutletLocation> lstOutletDepartment = mvClaOutletLocationRepository.findByPrOutletAmsIdAndOutletTypeCode(comp.getOutletAmsId(), "VPDD");
+            					if (lstOutletDepartment != null && lstOutletDepartment.size() > 0) {
+            						for (MvClaOutletLocation depar : lstOutletDepartment) {
+            							DepartmentDTO department = new DepartmentDTO();
+            							department.setDepartmentId(depar.getOutletAmsId());
+                						department.setDepartmentName(depar.getOutletName());
+                						lstDepartment.add(department);
+    								}
+            					}
+							}
     					}
-    				}
+					}
+					
+				} else {
+					List<MvAgentAgreement> lstMvAgentAgreement =mvAgentAgreementRepository.findByDepartmentCode(adminUserBu.getBuId());
+					if (lstMvAgentAgreement != null && lstMvAgentAgreement.size() > 0) {
+						DepartmentDTO department = new DepartmentDTO();
+						department.setDepartmentId(adminUserBu.getBuId());
+						department.setDepartmentName(lstMvAgentAgreement.get(0).getDepartmentName());
+					}
+				}
     				
-    				
-    			}
     		}
     		if (lstDepartment != null && lstDepartment.size() > 0) {
     			existingUser.setLstDepartment(lstDepartment);

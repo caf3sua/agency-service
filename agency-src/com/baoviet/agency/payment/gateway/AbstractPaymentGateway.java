@@ -609,7 +609,8 @@ public abstract class AbstractPaymentGateway implements PaymentGateway {
 					}
 				}
 				
-				if (StringUtils.isNotEmpty(agreement.getUrlPolicy())) {
+				// TH sửa đổi bổ sung cho TVC
+				if (StringUtils.isNotEmpty(agreement.getUrlPolicy()) && agreement.getLineId().equals("TVC")) {
 					agreement.setSendEmail(1);
 					agreement.setSendSms(1);					
 				}

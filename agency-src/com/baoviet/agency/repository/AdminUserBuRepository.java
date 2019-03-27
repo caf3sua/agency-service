@@ -1,7 +1,5 @@
 package com.baoviet.agency.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +13,5 @@ import com.baoviet.agency.domain.AdminUserBu;
 @Repository
 public interface AdminUserBuRepository extends JpaRepository<AdminUserBu, String> {
 	
-	List<AdminUserBu> findByAdminId(String id);
+	AdminUserBu findByAdminId(String id);
 }

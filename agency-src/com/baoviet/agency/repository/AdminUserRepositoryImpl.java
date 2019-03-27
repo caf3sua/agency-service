@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import com.baoviet.agency.bean.QueryResultDTO;
 import com.baoviet.agency.config.AgencyConstants;
+import com.baoviet.agency.domain.AdminUserBu;
 import com.baoviet.agency.domain.Agreement;
 import com.baoviet.agency.domain.MvClaOutletLocation;
 import com.baoviet.agency.dto.AgencyDTO;
@@ -45,6 +46,9 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 	
 	@Autowired
 	private MvClaOutletLocationRepository mvClaOutletLocationRepository;
+	
+	@Autowired
+    private AdminUserBuRepository adminUserBuRepository;
 
 	@Override
 	public CountOrderDTO getAdmCountAllOrder(String departmentId) {
@@ -67,6 +71,30 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 			data.setCountOrderDebit(countTrans.getCount());
 			data.setCountOrderLater(countOrderLater.getCount());
 			return data;
+		} else {
+			AdminUserBu  adminUserBu = adminUserBuRepository.findByAdminId(departmentId);
+			if (adminUserBu != null) {
+				String type = "";
+				List<MvClaOutletLocation> lstMvClaOutlet = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+				if (lstMvClaOutlet != null && lstMvClaOutlet.size() > 0) {
+					type = lstMvClaOutlet.get(0).getOutletTypeCode();	
+				}
+				CountOrderDTO data = new CountOrderDTO();
+				SearchAgreementWaitVM obj = new SearchAgreementWaitVM();
+				SearchAgreementWaitVM objLater = new SearchAgreementWaitVM();
+				objLater.setStatusPolicy(AgencyConstants.AgreementStatus.THANH_TOAN_SAU);
+
+				QueryResultDTO countBvWaiting = countAdminAgreement(obj, departmentId, "0", type);
+				QueryResultDTO countCart = countAdminAgreement(obj, departmentId, "3", type);
+				QueryResultDTO countTrans = countAdminAgreement(obj, departmentId, "4", type);
+				QueryResultDTO countOrderLater = countAdminAgreement(objLater, departmentId, "4", type);
+				
+				data.setCountBvWaiting(countBvWaiting.getCount());
+				data.setCountCart(countCart.getCount());
+				data.setCountOrderDebit(countTrans.getCount());
+				data.setCountOrderLater(countOrderLater.getCount());
+				return data;
+			}
 		}
 		 return null;
 	}
@@ -76,7 +104,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 		String expression = "SELECT * FROM AGREEMENT WHERE 1 = 1";
 		
 		List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(idLogin);
-		
+		String type = "";
 		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
 			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
 				expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
@@ -87,12 +115,33 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 				expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
 				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
 			}
+		} else {
+			AdminUserBu  adminUserBu = adminUserBuRepository.findByAdminId(idLogin);
+			if (adminUserBu != null) {
+				List<MvClaOutletLocation> lstMvClaOutlet = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("VPDD")) {
+					expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("CTTV")) {
+					expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				type = lstMvClaOutlet.get(0).getOutletTypeCode();
+			}
 		}
 		
         Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, "3"), Agreement.class);
 
-        // set parameter 
-        setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        // set parameter
+        if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+        	setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());	
+        } else {
+        	setQueryParameterAdmin(query, obj, idLogin, type);
+        }
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -101,13 +150,19 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
  			query.setMaxResults(pageable.getPageSize());
  		}
         
+ 		Page<Agreement> dataPage;
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, idLogin, "3", lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "3", lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        } else {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "3", type);
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        }
         
-        // Build pageable
-        Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
-        
-        return dataPage;
+		return dataPage;
 	}
 	
 	@Override
@@ -115,7 +170,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 		String expression = "SELECT * FROM AGREEMENT WHERE 1 = 1";
 		
 		List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(idLogin);
-		
+		String type = "";
 		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
 			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
 				expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
@@ -126,12 +181,33 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 				expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
 				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
 			}
+		} else {
+			AdminUserBu  adminUserBu = adminUserBuRepository.findByAdminId(idLogin);
+			if (adminUserBu != null) {
+				List<MvClaOutletLocation> lstMvClaOutlet = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("VPDD")) {
+					expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("CTTV")) {
+					expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				type = lstMvClaOutlet.get(0).getOutletTypeCode();
+			}
 		}
         
         Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, "0"), Agreement.class);
 
         // set parameter 
-        setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+        	setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());	
+        } else {
+        	setQueryParameterAdmin(query, obj, idLogin, type);
+        }
  		
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -141,12 +217,18 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, idLogin, "0", lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        Page<Agreement> dataPage;
+        if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "0", lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        } else {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "0", type);
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        }
         
-        // Build pageable
-        Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
-        
-        return dataPage;
+		return dataPage;
 	}
 	
 	@Override
@@ -154,7 +236,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 		String expression = "SELECT * FROM AGREEMENT WHERE 1 = 1";
 		
 		List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(idLogin);
-		
+		String type = "";
 		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
 			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
 				expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
@@ -165,12 +247,34 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 				expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
 				expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
 			}
+		} else {
+			AdminUserBu  adminUserBu = adminUserBuRepository.findByAdminId(idLogin);
+			if (adminUserBu != null) {
+				List<MvClaOutletLocation> lstMvClaOutlet = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("VPDD")) {
+					expression += " AND BAOVIET_DEPARTMENT_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				if (lstMvClaOutlet.get(0).getOutletTypeCode().equals("CTTV")) {
+					expression += " AND BAOVIET_COMPANY_ID IN ( SELECT BU_ID FROM ADMIN_USER_BU WHERE ADMIN_ID = :pDepartmentId )";
+					expression += " AND LINE_ID IN ( SELECT B.LINE_ID FROM ADMIN_USER_PRODUCT_GROUP A JOIN ADMIN_PRODUCT_GROUP_PRODUCT B ON A.GROUP_ID = B.GROUP_ID WHERE A.ADMIN_ID = :pDepartmentId ) ";
+				}
+				
+				type = lstMvClaOutlet.get(0).getOutletTypeCode();
+			}
 		}
 		
 		Query query = entityManager.createNativeQuery(buildSearchExpression(expression, obj, "4"), Agreement.class);
 
         // set parameter 
-		setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());
+		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+			setQueryParameterAdmin(query, obj, idLogin, lstMvClaOutletLocation.get(0).getOutletTypeCode());	
+		} else {
+			setQueryParameterAdmin(query, obj, idLogin, type);
+		}
+		
         
  		// Paging
  		Pageable pageable = buildPageableAgreementWait(obj);
@@ -180,16 +284,19 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
  		}
         
         List<Agreement> data = query.getResultList();
-        QueryResultDTO count = countAdminAgreement(obj, idLogin, "4", lstMvClaOutletLocation.get(0).getOutletTypeCode());
-        
-        // Build pageable
-        Page<Agreement> dataPage = new PageImpl<>(data, pageable, count.getCount());
+        Page<Agreement> dataPage;
+        if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "4", lstMvClaOutletLocation.get(0).getOutletTypeCode());
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        } else {
+        	QueryResultDTO count = countAdminAgreement(obj, idLogin, "4", type);
+        	// Build pageable
+            dataPage = new PageImpl<>(data, pageable, count.getCount());
+        }
         
         return dataPage;
 	}
-	
-	
-	
 	
 	private QueryResultDTO countAdminAgreement(SearchAgreementWaitVM obj, String departmentId, String caseWait, String typeAdmin) {
 		QueryResultDTO result = new QueryResultDTO();
@@ -352,13 +459,30 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 	public List<DepartmentDTO> searchDepartmentByPr(AdminSearchAgencyVM param, String idLogin) {
 		
 		List<MvClaOutletLocation> lstMvClaOutletLocation = mvClaOutletLocationRepository.findByOutletAmsId(param.getDepartmentId());
+		
+		AdminUserBu adminUserBu = adminUserBuRepository.findByAdminId(idLogin);
+		String idPhongban = "";
+		String typeLogin = "";
+		if (adminUserBu != null) {
+			List<MvClaOutletLocation> lstMvClaOutlet = mvClaOutletLocationRepository.findByOutletAmsId(adminUserBu.getBuId());
+			if (lstMvClaOutlet != null && lstMvClaOutlet.size() > 0) {
+				typeLogin = lstMvClaOutlet.get(0).getOutletTypeCode();
+				idPhongban = lstMvClaOutlet.get(0).getOutletAmsId();
+			}
+		}
+		
 		if (lstMvClaOutletLocation != null && lstMvClaOutletLocation.size() > 0) {
 			String expression = "";
-			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
+			
+			if (typeLogin.equals("VPDD")) {
+				expression = "SELECT OL.OUTLET_AMS_ID departmentId, OL.OUTLET_NAME departmentName FROM CLA_OUTLET_LOCATION OL WHERE OL.PR_OUTLET_AMS_ID = '"+ param.getDepartmentId() +"' AND OL.OUTLET_AMS_ID = '"+ idPhongban +"' AND OL.OUTLET_TYPE_CODE = 'VPDD' AND OL.OUTLET_AMS_ID IS NOT NULL";
+			} else if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("VPDD")) {
 				expression = "SELECT OL.OUTLET_AMS_ID departmentId, OL.OUTLET_NAME departmentName FROM CLA_OUTLET_LOCATION OL WHERE OL.PR_OUTLET_AMS_ID = '"+ param.getDepartmentId() +"' AND OL.OUTLET_AMS_ID = '"+ idLogin +"' AND OL.OUTLET_TYPE_CODE = 'VPDD' AND OL.OUTLET_AMS_ID IS NOT NULL";
+			} else {
+				
 			}
 			
-			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("CTTV")) {
+			if (lstMvClaOutletLocation.get(0).getOutletTypeCode().equals("CTTV") && !typeLogin.equals("VPDD")) {
 				expression = "SELECT OL.OUTLET_AMS_ID departmentId, OL.OUTLET_NAME departmentName FROM CLA_OUTLET_LOCATION OL WHERE OL.PR_OUTLET_AMS_ID = '"+ param.getDepartmentId() +"' AND OL.OUTLET_TYPE_CODE = 'VPDD' AND OL.OUTLET_AMS_ID IS NOT NULL";
 			}
 			
@@ -382,12 +506,9 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 		
 		String expression2 = "SELECT AA.AGENT_CODE ma, AA.AGENT_NAME ten FROM AGENT_AGREEMENT AA WHERE AA.DEPARTMENT_CODE = '"+ param.getDepartmentId() +"' AND AA.AGENT_CODE IS NOT NULL";
 		
-//        if (!StringUtils.isEmpty(param.getDepartmentId())) {
-//        	expression1 = expression1 +  " AND OL.PR_OUTLET_AMS_ID = '"+ param.getDepartmentId() +"' ";
-//        	expression2 = expression2 +  " AND AA.DEPARTMENT_CODE = '"+ param.getDepartmentId() +"' ";
-//        } 
-        
-        String expression = expression1 + " UNION " + expression2;
+		String expression3 = "SELECT AA.MA ma, AA.TEN ten FROM agency AA where AA.ma_don_vi IN (SELECT AGENCY_P3_ID FROM AGENCY_MAP WHERE BV_ID3 = '"+ param.getDepartmentId() +"' )";
+		
+        String expression = expression1 + " UNION " + expression2 + " UNION " + expression3;
 		
         Query query = entityManager.createNativeQuery(expression);
         
@@ -436,7 +557,7 @@ public class AdminUserRepositoryImpl implements AdminUserRepositoryExtend {
 			AgencyDTO agency = new AgencyDTO();
 			agency.setId(item[0].toString());
 			agency.setMa(item[0].toString());
-			agency.setTen(item[1].toString());
+			agency.setTen(item[0].toString() + " - " +item[1].toString());
 			lstAgency.add(agency);
 		}
 		if (param.getNumberRecord() != null && param.getNumberRecord() > 0) {
