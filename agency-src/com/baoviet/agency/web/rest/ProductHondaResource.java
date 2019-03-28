@@ -109,6 +109,22 @@ public class ProductHondaResource extends AbstractAgencyResource{
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
+    @GetMapping("/get-mau-xe-chi-tiet/{id}")
+    @Timed
+    @ApiOperation(value="getMauXeById", notes="Lấy danh sách mẫu xe theo năm")
+    public ResponseEntity<MotoHondaCat> getMauXeById(@PathVariable String id) throws URISyntaxException, AgencyBusinessException {
+				
+    	MotoHondaCat motoHondaCat = motoHondaCatRepository.findOne(id);
+    	
+    	if (motoHondaCat != null) {
+    		// Return data
+            return new ResponseEntity<>(motoHondaCat, HttpStatus.OK);	
+    	}
+
+		// Return data
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
     @GetMapping("/get-gia-tri-xe/{id}")
     @Timed
     @ApiOperation(value="getGiaTriXe", notes="Lấy giá trị xe")
