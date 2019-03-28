@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.baoviet.agency.bean.InvoiceReceiverUserInfoXMLDTO;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,5 +41,8 @@ public class Root implements Serializable {
 
 	private String TINHTRANGSK_LIST;
 	private List<BvpNdbhObj> NGUOIDBH_COL;
+   	private InvoiceReceiverUserInfoXMLDTO RECEIVEINFO;
+    
+   	private InvoiceReceiverUserInfoXMLDTO INVOICEINFO;
 
 }

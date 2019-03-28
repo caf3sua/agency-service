@@ -28,7 +28,6 @@ import com.baoviet.agency.service.ProductHondaService;
 import com.baoviet.agency.utils.AppConstants;
 import com.baoviet.agency.web.rest.vm.PremiumMotoHondaVM;
 import com.baoviet.agency.web.rest.vm.ProductHondaVM;
-import com.baoviet.agency.web.rest.vm.ProductMotoVM;
 import com.codahale.metrics.annotation.Timed;
 
 import io.swagger.annotations.Api;

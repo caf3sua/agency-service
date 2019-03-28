@@ -422,7 +422,7 @@ public class AbstractProductService {
 				voAg.setLineName("Bảo hiểm du lịch Flexi");
 				break;
 			case "MOH":
-				voAg.setLineName("Bảo hiểm xe máy");
+				voAg.setLineName("Bảo hiểm xe máy Honda");
 				break;
 			default:
 				break;

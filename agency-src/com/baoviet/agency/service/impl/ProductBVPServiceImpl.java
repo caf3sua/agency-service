@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import com.baoviet.agency.bean.FileContentDTO;
 import com.baoviet.agency.bean.InvoiceInfoDTO;
+import com.baoviet.agency.bean.InvoiceReceiverUserInfoXMLDTO;
 import com.baoviet.agency.config.AgencyConstants;
 import com.baoviet.agency.domain.Agency;
 import com.baoviet.agency.domain.Contact;
@@ -1077,6 +1078,19 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			bvpXML.setAGENT_NAME(agreement.getAgentName());
 			bvpXML.setBAOVIET_COMPANY_NAME(agreement.getBaovietCompanyName());
 			bvpXML.setCAN_BO_QLDV("");	 // hiện tại để trống
+			
+			InvoiceReceiverUserInfoXMLDTO receiverUser = new InvoiceReceiverUserInfoXMLDTO();
+			receiverUser.setRECEIVER_NAME(agreement.getReceiverName());
+			receiverUser.setRECEIVER_MOIBLE(agreement.getReceiverMoible());
+			receiverUser.setRECEIVER_ADDRESS(converAddress(agreement.getReceiverAddress()));
+			bvpXML.setRECEIVEINFO(receiverUser);
+			
+			InvoiceReceiverUserInfoXMLDTO invoice = new InvoiceReceiverUserInfoXMLDTO();
+			invoice.setINVOICE_BUYER(agreement.getInvoiceBuyer());
+			invoice.setINVOICE_COMPANY(agreement.getInvoiceCompany());
+			invoice.setINVOICE_TAX_NO(agreement.getInvoiceTaxNo());
+			invoice.setINVOICE_ADDRESS(converAddress(agreement.getInvoiceAddress()));
+			bvpXML.setINVOICEINFO(invoice);
 			
 			Agency agency = agencyRepository.findByMa(agreement.getAgentId());
 			String kenhPP = agency.getKenhPhanPhoi();

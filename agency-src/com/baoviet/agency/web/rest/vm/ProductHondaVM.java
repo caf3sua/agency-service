@@ -30,9 +30,8 @@ public class ProductHondaVM extends ProductBaseVM {
 	@ApiModelProperty(value = "Email thoại chủ xe")
 	private String insuredEmail;
 
-	@NotEmpty
-	@ApiModelProperty(value = "Biển kiểm soát", required = true)
-	private String registrationNumber; // get; set; }
+	@ApiModelProperty(value = "Biển kiểm soát")
+	private String registrationNumber;
 
 	@NotEmpty
 	@ApiModelProperty(value = "Số Khung", required = true)

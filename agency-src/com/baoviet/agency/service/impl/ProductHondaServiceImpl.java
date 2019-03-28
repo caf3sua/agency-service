@@ -92,12 +92,8 @@ public class ProductHondaServiceImpl extends AbstractProductService implements P
 	 */
 	private void validateDataPolicy(ProductHondaVM obj) throws AgencyBusinessException {
 		log.debug("REST request to validateDataPolicy : {}", obj);
-		Date dateNow = new Date();
 		if (!DateUtils.isValidDate(obj.getThoihantu(), "dd/MM/yyyy")) {
 			throw new AgencyBusinessException("thoihantu", ErrorCode.FORMAT_DATE_INVALID);
-		}
-		if (DateUtils.str2Date(obj.getThoihantu()).before(dateNow)) {
-			throw new AgencyBusinessException("thoihantu", ErrorCode.INVALID, "Thời hạn BH phải > ngày hiện tại");
 		}
 
 		if (obj.getTongPhi() <= 0) {
