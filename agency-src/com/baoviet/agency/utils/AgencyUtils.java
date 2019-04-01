@@ -131,7 +131,7 @@ public class AgencyUtils {
 			} else {
 				chuoi = dochangtrieu(ty, false) + hauto + chuoi;
 			}
-			hauto = " tỷ, ";
+			hauto = " tỷ ";
 		} while (so > 0);
 		
 		if (StringUtils.isNotEmpty(chuoi)) {
@@ -186,7 +186,7 @@ public class AgencyUtils {
 		int trieu = (int) Math.floor(so / 1000000);
 		so = so % 1000000;
 		if (trieu > 0) {
-			chuoi = docblock(trieu, daydu) + " triệu, ";
+			chuoi = docblock(trieu, daydu) + " triệu ";
 			daydu = true;
 		}
 		double nghin = Math.floor(so / 1000);

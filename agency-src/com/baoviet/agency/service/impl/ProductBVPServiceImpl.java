@@ -1106,6 +1106,11 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				bvpXML.setDIEN_THOAI("");
 			}
 			
+			bvpXML.setLOGO_BVGI("logo_bvgi.jpg");
+			
+			String logoDT = agency.getKenhPhanPhoi() + ".jpg";
+			bvpXML.setLOGO_DOITAC(logoDT);
+			
 			BvpNdbhXML bvpNdbhXML = new BvpNdbhXML();
 			bvpNdbhXML.setNGUOIDBH_NAME(bvp.getNguoidbhName());
 			bvpNdbhXML.setNGUOIDBH_DIACHITHUONGTRU(converAddress(bvp.getNguoidbhDiachithuongtru()));
@@ -1135,16 +1140,16 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				bvpNdbhXML.setMUCDONGCHITRA("0");	
 			}
 			
-//			bvpNdbhXML.setTNCN(formatNumber(bvp.getTncnSotienbh().longValue()));
 			if (StringUtils.equals(bvp.getTncn(), "1")) {
-				bvpNdbhXML.setTNCN("x");	// có tham gia
+				bvpNdbhXML.setTNCN(formatNumber(bvp.getTncnSotienbh().longValue()));
+//				bvpNdbhXML.setTNCN("x");	// có tham gia
 			} else {
 				bvpNdbhXML.setTNCN("-");
 			}
 			
-			bvpNdbhXML.setSINHMANG_SOTIENBH(formatNumber(bvp.getSinhmangSotienbh().longValue()));
 			if (StringUtils.equals(bvp.getSinhmang(), "1")) {
-				bvpNdbhXML.setSINHMANG_SOTIENBH("x");	// có tham gia
+				bvpNdbhXML.setSINHMANG_SOTIENBH(formatNumber(bvp.getSinhmangSotienbh().longValue()));
+//				bvpNdbhXML.setSINHMANG_SOTIENBH("x");	// có tham gia
 			} else {
 				bvpNdbhXML.setSINHMANG_SOTIENBH("-");
 			}
@@ -1264,10 +1269,6 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 			bvpNdbhXML.setQ1(bvp.getQ1());
 			bvpNdbhXML.setQ2(bvp.getQ2());
 			bvpNdbhXML.setQ3(bvp.getQ3());
-			bvpNdbhXML.setLOGO_BVGI("logo_bvgi.jpg");
-			
-			String logoDT = agency.getKenhPhanPhoi() + ".jpg";
-			bvpNdbhXML.setLOGO_DOITAC(logoDT);
 			
 			BvpNdbhObj nguoidbh = new BvpNdbhObj();
 			nguoidbh.setNGUOIDBH(bvpNdbhXML);
@@ -1282,11 +1283,21 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
 				String strlstTinhtrangSk = "";
 				for (TinhtrangSk tinhtrangSk : lstTinhtrangSk) {
 					strlstTinhtrangSk += "<TINHTRANGSK>";
-						strlstTinhtrangSk += "<NGAYKHAM>" + DateUtils.date2Str(tinhtrangSk.getNgaydieutri()) + "</NGAYKHAM>";
+						if (tinhtrangSk.getNgaydieutri() != null) {
+							strlstTinhtrangSk += "<NGAYKHAM>" + DateUtils.date2Str(tinhtrangSk.getNgaydieutri()) + "</NGAYKHAM>";	
+						} else {
+							strlstTinhtrangSk += "<NGAYKHAM></NGAYKHAM>";
+						}
+						
 						strlstTinhtrangSk += "<CHUANDOAN>"+ tinhtrangSk.getChuandoan() + "</CHUANDOAN>";
 						strlstTinhtrangSk += "<CHITIET>" + tinhtrangSk.getChitietdieutri() + "</CHITIET>";
 						strlstTinhtrangSk += "<KETQUA>" + tinhtrangSk.getKetqua() + "</KETQUA>";
-						strlstTinhtrangSk += "<BENHVIEN>" + tinhtrangSk.getBenhvienorbacsy() + "</BENHVIEN>";
+						if (StringUtils.isNotEmpty(tinhtrangSk.getBenhvienorbacsy())){
+							strlstTinhtrangSk += "<BENHVIEN>" + tinhtrangSk.getBenhvienorbacsy() + "</BENHVIEN>";	
+						} else {
+							strlstTinhtrangSk += "<BENHVIEN></BENHVIEN>";
+						}
+						
 					strlstTinhtrangSk += "</TINHTRANGSK>";
 				}
 				strlstTinhtrangSk += "";
@@ -1306,7 +1317,7 @@ public class ProductBVPServiceImpl extends AbstractProductService implements Pro
         try {
             NumberFormat formatter = new DecimalFormat("###,###");
             String resp = formatter.format(number);
-            resp = resp.replaceAll(",", ".");
+            resp = resp.replace(".", ",");
             return resp;
         } catch (Exception e) {
             return "";

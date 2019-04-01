@@ -1,6 +1,7 @@
 package com.baoviet.agency.web.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -101,11 +102,21 @@ public class ProductHondaResource extends AbstractAgencyResource{
     	
     	if (lstMotoHondaCat != null && lstMotoHondaCat.size() > 0) {
     		// Return data
-            return new ResponseEntity<>(lstMotoHondaCat, HttpStatus.OK);	
+            return new ResponseEntity<>(convertLstMotoHondaCat(lstMotoHondaCat), HttpStatus.OK);	
     	}
 
 		// Return data
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    private List<MotoHondaCat> convertLstMotoHondaCat(List<MotoHondaCat> lstMotoHondaCat){
+    	List<MotoHondaCat> result = new ArrayList<MotoHondaCat>();
+    	for (MotoHondaCat motoHondaCat : lstMotoHondaCat) {
+			if (motoHondaCat.getGiaTriXe() >= 10000000) {
+				result.add(motoHondaCat);
+			}
+		}
+    	return result;
     }
     
     @GetMapping("/get-mau-xe-chi-tiet/{id}")

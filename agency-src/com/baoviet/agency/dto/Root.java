@@ -38,6 +38,8 @@ public class Root implements Serializable {
 	private String BAOVIET_COMPANY_NAME;
 	private String KENH_PHAN_PHOI;
 	private String DIEN_THOAI;
+	private String LOGO_BVGI;
+	private String LOGO_DOITAC;
 
 	private String TINHTRANGSK_LIST;
 	private List<BvpNdbhObj> NGUOIDBH_COL;
